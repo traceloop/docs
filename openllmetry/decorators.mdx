@@ -22,6 +22,8 @@ We will consider every call to OpenAI as a distinct step (or task). You can even
 </Tip>
 
 ```python
+from traceloop.sdk.decorators import workflow, task
+
 @task(name="joke_creation")
 def create_joke():
     completion = openai.ChatCompletion.create(
@@ -65,8 +67,8 @@ Update `tsconfig.json` to enable decorators:
 }
 ```
 
-Use it in your code `@workflow("my_workflow")` for class methods only.
-We will consider every call to OpenAI as a distinct step (or task). You can even annotate the task with a name, using `@task(name="my_task")`.
+Use it in your code `@traceloop.workflow("my_workflow")` for class methods only.
+We will consider every call to OpenAI as a distinct step (or task). You can even annotate the task with a name, using `@traceloop.task("my_task")`.
 
 <Tip>
   The name is optional. If you don't provide it, we will use the function name
@@ -74,8 +76,10 @@ We will consider every call to OpenAI as a distinct step (or task). You can even
 </Tip>
 
 ```js
+import * as traceloop from "@traceloop/node-server-sdk";
+
 class JokeCreation {
-  @task("joke_creation")
+  @traceloop.task("joke_creation")
   async create_joke() {
     completion = await openai.chat.completions({
       model: "gpt-3.5-turbo",
@@ -87,7 +91,7 @@ class JokeCreation {
     return completion.choices[0].message.content;
   }
 
-  @task("signature_generation")
+  @traceloop.task("signature_generation")
   async generate_signature(joke: string) {
     completion = await openai.completions.create({
       model: "text-davinci-003",
@@ -97,7 +101,7 @@ class JokeCreation {
     return completion.choices[0].text;
   }
 
-  @workflow("pirate_joke_generator")
+  @traceloop.workflow("pirate_joke_generator")
   async joke_workflow() {
     eng_joke = create_joke();
     pirate_joke = await translate_joke_to_pirate(eng_joke);
@@ -119,6 +123,8 @@ Each tool should be marked with `@tool`.
 <Tab title="Python">
 
 ```python
+from traceloop.sdk.decorators import agent, tool
+
 @agent(name="joke_translation")
 def translate_joke_to_pirate(joke: str):
     completion = openai.ChatCompletion.create(
@@ -147,8 +153,10 @@ def history_jokes_tool():
 Remember to set `experimentalDecorators` to `true` in your `tsconfig.json`.
 </Note>
 ```js
+import * as traceloop from "@traceloop/node-server-sdk";
+
 class Agent {
-    @agent("joke_translation")
+    @traceloop.agent("joke_translation")
     async translate_joke_to_pirate(joke: str) {
         completion = await openai.chat.completions.create({
             model="gpt-3.5-turbo",
@@ -161,7 +169,7 @@ class Agent {
 
     }
 
-    @tool("history_jokes")
+    @traceloop.tool("history_jokes")
     async history_jokes_tool() {
         completion = await openai.chat.completions.create({
             model="gpt-3.5-turbo",
@@ -184,6 +192,8 @@ While the examples above shows how to decorate functions, you can also decorate 
 In this case, you will also need to provide the name of the method that runs the workflow, task, agent or tool.
 
 ```python Python
+from traceloop.sdk.decorators import agent
+
 @agent(name="base_joke_generator", method_name="generate_joke")
 class JokeAgent:
     def generate_joke(self):
@@ -200,6 +210,10 @@ class JokeAgent:
 All decorators have an equivalent async decorator.
 
 So, if you're decorating an `async` method, use `@aworkflow`, `@atask` and so forth.
+
+<Note>
+Javascript support async methods with the regular decorators, `traceloop.workflow()`, `traceloop.task()`, etc.
+</Note>
 
 ## Grouping multiple workflows
 
