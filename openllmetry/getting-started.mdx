@@ -23,6 +23,12 @@ from traceloop.sdk import Traceloop
 Traceloop.init(app_name="your_app_name")
 ```
 
+If you're running this locally, you may want to disable batch sending, so you can see the traces immediately:
+
+```python
+Traceloop.init(app_name="your_app_name", disable_batch=True)
+```
+
   </Tab>
   <Tab title="Javascript">
 Run the following command in your terminal:
@@ -43,6 +49,12 @@ traceloop.initialize({ app_name: "your_app_name" });
   Because of the way Javascript works, you must import the Traceloop SDK before
   importing any LLM module like OpenAI. 
 </Warning>
+
+If you're running this locally, you may want to disable batch sending, so you can see the traces immediately:
+
+```js
+traceloop.initialize({ app_name:"your_app_name", disable_batch: true});
+```
 
   </Tab>
 </Tabs>
