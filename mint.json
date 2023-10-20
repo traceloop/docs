@@ -30,9 +30,9 @@
   },
   "anchors": [
     {
-      "name": "Python SDK",
-      "icon": "python",
-      "url": "python-sdk"
+      "name": "OpenLLMetry",
+      "icon": "telescope",
+      "url": "openllmetry"
     },
     {
       "name": "Community",
@@ -52,25 +52,25 @@
     },
     {
       "group": "Quick Start",
-      "pages": ["python-sdk/introduction", "python-sdk/getting-started"]
+      "pages": ["openllmetry/introduction", "openllmetry/getting-started"]
     },
     {
       "group": "Tracing",
       "pages": [
-        "python-sdk/decorators",
-        "python-sdk/exporting",
-        "python-sdk/threads"
+        "openllmetry/decorators",
+        "openllmetry/threads",
+        "openllmetry/exporting"
       ]
     },
     {
       "group": "Prompt Management",
-      "pages": ["python-sdk/prompts"]
+      "pages": ["openllmetry/prompts"]
     },
     {
       "group": "Contribute",
       "pages": [
-        "python-sdk/contributing/overview",
-        "python-sdk/contributing/developing"
+        "openllmetry/contributing/overview",
+        "openllmetry/contributing/developing"
       ]
     }
   ],
