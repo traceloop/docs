@@ -39,26 +39,41 @@ import * as traceloop from "@traceloop/node-server-sdk";
 traceloop.initialize({ app_name: "your_app_name" });
 ```
 
+<Warning>
+  Because of the way Javascript works, you must import the Traceloop SDK before
+  importing any LLM module like OpenAI. However, you can call `initialize()`
+  wherever you want.
+</Warning>
+
   </Tab>
 </Tabs>
 
 </Step>
 <Step title="Annotate your workflows">
-You'll need to start a [new span](https://opentelemetry-python.readthedocs.io/en/latest/api/trace.html)
-for each operation you want to trace. 
-If you're using an LLM framework like Haystack, Langchain or LlamaIndex - 
-we'll create the appropriate workflow and tasks for you.
+If you have complex workflows or chains, you can annotate them to get a better understanding of what's going on.
+If you're using an LLM framework like Haystack, Langchain or LlamaIndex - we'll do that for you.
 
-Otherwise, you'll need to do it yourself.
+Otherwise, you can do it yourself.
 We have a set of [decorators](/openllmetry/decorators) to make this easier.
-Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow` (or `@aworkflow` if
-it's an asynchronous method).
+Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow` (or if you have a Python asynchronous method - `@aworkflow`).
 
-```python
+<CodeGroup>
+```python Python
 @workflow(name="suggest_answers")
 def suggest_answers(question: str):
   ...
 ```
+
+```js Javascript
+class MyLLM {
+  @workflow("suggest_answers")
+  async suggestAnswers(question: string) {
+    ...
+  }
+}
+```
+
+</CodeGroup>
 
 For more information, see the [dedicated section in the docs](/openllmetry/decorators).
 
