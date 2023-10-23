@@ -1,0 +1,11 @@
+---
+title: "Honeycomb"
+---
+
+Since Honeycomb natively supports OpenTelemetry, you just need to route the traces to Honeycomb's endpoint and set the
+API key:
+
+```bash
+TRACELOOP_BASE_URL=https://api.honeycomb.io
+TRACELOOP_HEADERS="x-honeycomb-team=<YOUR_API_KEY>"
+```

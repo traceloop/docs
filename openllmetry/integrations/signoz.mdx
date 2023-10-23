@@ -1,0 +1,30 @@
+---
+title: "Signoz"
+---
+
+### With SigNoz cloud
+
+Since SigNoz natively supports OpenTelemetry, you just need to route the traces to SigNoz's endpoint and set the
+ingestion key (note no `https` in the URL):
+
+```bash
+TRACELOOP_BASE_URL=ingest.{region}.signoz.cloud
+TRACELOOP_HEADERS="signoz-access-token=<SIGNOZ_INGESTION_KEY>"
+```
+
+Where `region` depends on the choice of your SigNoz cloud region:
+| Region | Endpoint |
+| ------ | -------- |
+| US | ingest.us.signoz.cloud:443 |
+| IN | ingest.in.signoz.cloud:443 |
+| EU | ingest.eu.signoz.cloud:443 |
+
+Validate your configuration by [following these instructions](https://signoz.io/docs/instrumentation/python/#validating-instrumentation-by-checking-for-traces)
+
+### With Self-Hosted version
+
+Once you have an up and running instance of SigNoz, use the following environment variables to export your traces:
+
+```bash
+TRACELOOP_BASE_URL="http://localhost:4318"
+```

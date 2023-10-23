@@ -51,15 +51,32 @@
       "pages": ["introduction"]
     },
     {
+      "group": "Introduction",
+      "pages": ["openllmetry/introduction"]
+    },
+    {
       "group": "Quick Start",
-      "pages": ["openllmetry/introduction", "openllmetry/getting-started"]
+      "pages": [
+        "openllmetry/getting-started-python",
+        "openllmetry/getting-started-ts"
+      ]
     },
     {
       "group": "Tracing",
+      "pages": ["openllmetry/decorators", "openllmetry/threads"]
+    },
+    {
+      "group": "Integrations",
       "pages": [
-        "openllmetry/decorators",
-        "openllmetry/threads",
-        "openllmetry/exporting"
+        "openllmetry/integrations/exporting",
+        "openllmetry/integrations/traceloop",
+        "openllmetry/integrations/dynatrace",
+        "openllmetry/integrations/datadog",
+        "openllmetry/integrations/newrelic",
+        "openllmetry/integrations/honeycomb",
+        "openllmetry/integrations/grafana",
+        "openllmetry/integrations/otel-collector",
+        "openllmetry/integrations/signoz"
       ]
     },
     {
