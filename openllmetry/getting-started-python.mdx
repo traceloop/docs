@@ -33,11 +33,15 @@ Traceloop.init(app_name="your_app_name", disable_batch=True)
   <img src="/img/workflow.png" />
 </Frame>
 If you have complex workflows or chains, you can annotate them to get a better understanding of what's going on.
-If you're using an LLM framework like Haystack, Langchain or LlamaIndex - we'll do that for you.
+You'll see the complete trace of your workflow on Traceloop or any other dashboard you're using.
 
-Otherwise, you can do it yourself.
 We have a set of [decorators](/openllmetry/decorators) to make this easier.
 Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow` (or for asynchronous methods - `@aworkflow`).
+
+<Tip>
+  If you're using an LLM framework like Haystack, Langchain or LlamaIndex -
+  we'll do that for you. No need to add any annotations to your code.
+</Tip>
 
 ```python
 @workflow(name="suggest_answers")
