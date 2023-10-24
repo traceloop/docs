@@ -58,7 +58,9 @@
       "group": "Quick Start",
       "pages": [
         "openllmetry/getting-started-python",
-        "openllmetry/getting-started-ts"
+        "openllmetry/getting-started-ts",
+        "openllmetry/configuration",
+        "openllmetry/troubleshooting"
       ]
     },
     {

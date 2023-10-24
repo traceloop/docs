@@ -29,7 +29,7 @@ In your LLM app, initialize the Traceloop tracer like this:
 ```js
 import * as traceloop from "@traceloop/node-server-sdk";
 
-traceloop.initialize({ appName: "your_app_name" });
+traceloop.initialize();
 ```
 
 <Warning>
@@ -40,7 +40,7 @@ traceloop.initialize({ appName: "your_app_name" });
 If you're running this locally, you may want to disable batch sending, so you can see the traces immediately:
 
 ```js
-traceloop.initialize({ appName: "your_app_name", disableBatch: true });
+traceloop.initialize({ disableBatch: true });
 ```
 
 </Step>

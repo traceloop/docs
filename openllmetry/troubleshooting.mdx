@@ -1,0 +1,62 @@
+---
+title: "Troubleshooting"
+description: "Not seeing anything? Here are some things to check."
+---
+
+<Frame>
+  <img src="/img/no_traces.png" />
+</Frame>
+
+We've all been there. You followed all the instructions, but you're not seeing any traces. Let's fix this.
+
+## 1. Disable batch sending
+
+Sending traces in batch is useful in production, but can be confusing if you're working locally.
+Make sure you've [disabled batch sending](/openllmetry/configuration#disable-batch).
+
+## 2. Check the logs
+
+When Traceloop initializes, it logs a message to the console, specifying the endpoint that it uses.
+If you don't see that, you might not be initializing the SDK properly.
+
+
+## 3. Try outputting traces to the console
+
+Use the `ConsoleExporter` and check if you see traces in the console.
+
+<CodeGroup>
+```python Python
+from opentelemetry.sdk.trace.export import ConsoleSpanExporter
+
+Traceloop.init(exporter=ConsoleExporter())
+```
+
+```js Typescript / Javascript
+import { ConsoleSpanExporter } from "@opentelemetry/sdk-trace-node";
+
+Traceloop.init({ exporter: new ConsoleSpanExporter() });
+```
+
+</CodeGroup>
+
+If you see traces in the console, then you probable haven't configured the exporter properly.
+Check the [integration guide](/openllmetry/integrations) again, and make sure you're using the right endpoint and API key.
+
+## 4. (Typescript / Javascript only) Did you import the SDK correctly?
+
+If you're using Typescript or Javascript, you must import the SDK before importing any LLM package like OpenAI, Pinecone, and others.
+```js
+import * as traceloop from "@traceloop/node-server-sdk";
+```
+
+## 5. Is your library supported yet?
+
+Checkout [OpenLLMetry](https://github.com/traceloop/openllmetry#readme) or [OpenLLMetry-JS](https://github.com/traceloop/openllmetry-js#readme) README files to see which libraries and versions are currently supported.
+Contributions are always welcome! If you want to add support for a library, please open a PR.
+
+## 4. Talk to us!
+
+We're here to help.
+Reach out any time over
+[Slack](https://join.slack.com/t/traceloopcommunity/shared_invite/zt-1plpfpm6r-zOHKI028VkpcWdobX65C~g),
+[email](mailto:dev@traceloop.com), and we'd love to assist you.
