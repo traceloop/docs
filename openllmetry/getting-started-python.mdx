@@ -35,7 +35,7 @@ Traceloop.init(app_name="your_app_name", disable_batch=True)
 If you have complex workflows or chains, you can annotate them to get a better understanding of what's going on.
 You'll see the complete trace of your workflow on Traceloop or any other dashboard you're using.
 
-We have a set of [decorators](/openllmetry/decorators) to make this easier.
+We have a set of [decorators](/openllmetry/tracing/decorators) to make this easier.
 Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow` (or for asynchronous methods - `@aworkflow`).
 
 <Tip>
@@ -49,7 +49,7 @@ def suggest_answers(question: str):
   ...
 ```
 
-For more information, see the [dedicated section in the docs](/openllmetry/decorators).
+For more information, see the [dedicated section in the docs](/openllmetry/tracing/decorators).
 
 </Step>
 <Step title="Configure trace exporting">

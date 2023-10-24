@@ -63,7 +63,11 @@
     },
     {
       "group": "Tracing",
-      "pages": ["openllmetry/decorators", "openllmetry/threads"]
+      "pages": [
+        "openllmetry/tracing/decorators",
+        "openllmetry/tracing/association",
+        "openllmetry/tracing/python-threads"
+      ]
     },
     {
       "group": "Integrations",

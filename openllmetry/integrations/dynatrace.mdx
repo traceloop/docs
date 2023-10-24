@@ -15,13 +15,13 @@ The access token needs the following permission scopes that allow the ingest of 
 Set `TRACELOOP_BASE_URL` environment variable to the URL of your Dynatrace OpenTelemetry ingest endpoint
 
 ```bash
-TRACELOOP_BASE_URL=https://<YOUR_ENV>.live.dynatrace.com\api\v2\otlp`
+TRACELOOP_BASE_URL=https://<YOUR_ENV>.live.dynatrace.com\api\v2\otlp
 ```
 
 Set the `TRACELOOP_HEADERS` environment variable to include your previously created access token
 
 ```bash
-TRACELOOP_HEADERS=Authorization=Api-Token%20<YOUR_ACCESS_TOKEN>`
+TRACELOOP_HEADERS=Authorization=Api-Token%20<YOUR_ACCESS_TOKEN>
 ```
 
 Done! All the exported spans along with their span attributes will show up within the Dynatrace trace view.
