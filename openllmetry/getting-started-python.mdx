@@ -52,6 +52,8 @@ Assume you have a function that renders a prompt and calls an LLM, simply add `@
 </Tip>
 
 ```python
+from traceloop.sdk.decorators import workflow
+
 @workflow(name="suggest_answers")
 def suggest_answers(question: str):
   ...
