@@ -14,11 +14,26 @@ We've all been there. You followed all the instructions, but you're not seeing a
 Sending traces in batch is useful in production, but can be confusing if you're working locally.
 Make sure you've [disabled batch sending](/openllmetry/configuration#disable-batch).
 
+<CodeGroup>
+
+```python Python
+Traceloop.init(disable_batch=True)
+```
+
+```js Typescript / Javascript
+Traceloop.init({ disableBatch: true });
+```
+
+</CodeGroup>
+
 ## 2. Check the logs
 
 When Traceloop initializes, it logs a message to the console, specifying the endpoint that it uses.
 If you don't see that, you might not be initializing the SDK properly.
 
+<Check>
+Traceloop exporting traces to https://api.traceloop.com authenticating with bearer token
+</Check>
 
 ## 3. Try outputting traces to the console
 
@@ -47,6 +62,8 @@ Check the [integration guide](/openllmetry/integrations) again, and make sure yo
 If you're using Typescript or Javascript, you must import the SDK before importing any LLM package like OpenAI, Pinecone, and others.
 ```js
 import * as traceloop from "@traceloop/node-server-sdk";
+
+import OpenAI from "openai";
 ```
 
 ## 5. Is your library supported yet?
@@ -54,7 +71,7 @@ import * as traceloop from "@traceloop/node-server-sdk";
 Checkout [OpenLLMetry](https://github.com/traceloop/openllmetry#readme) or [OpenLLMetry-JS](https://github.com/traceloop/openllmetry-js#readme) README files to see which libraries and versions are currently supported.
 Contributions are always welcome! If you want to add support for a library, please open a PR.
 
-## 4. Talk to us!
+## 6. Talk to us!
 
 We're here to help.
 Reach out any time over
