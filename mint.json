@@ -68,6 +68,7 @@
       "pages": [
         "openllmetry/tracing/decorators",
         "openllmetry/tracing/association",
+        "openllmetry/tracing/privacy",
         "openllmetry/tracing/python-threads"
       ]
     },
