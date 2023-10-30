@@ -1,0 +1,51 @@
+---
+title: "Privacy"
+---
+
+By default, OpenLLMetry logs prompts, completions, and embeddings to span attributes.
+This gives you a clear visibility into how your LLM application is working, and can make it easy to debug and evaluate the quality of the outputs.
+
+However, you may want to disable this logging for privacy reasons, as they may contain highly sensitive data from your users.
+You may also simply want to reduce the size of your traces.
+
+To disable logging, set the `TRACELOOP_TRACE_CONTENT` environment variable to `false`:
+
+```bash
+TRACELOOP_TRACE_CONTENT=false
+```
+
+Traceloop SDK, as well as all individual instrumentations will respect this setting.
+
+## Enabling logging only for specific users
+
+You can decide to selectively enable prompt logging for specific users or workflows.
+To do that, first make sure content tracing is disabled globally:
+
+```bash
+TRACELOOP_TRACE_CONTENT=false
+```
+
+### Using Traceloop
+
+We have an API to enable content tracing for specific users or workflows.
+See the [Traceloop API documentation](/api-reference/privacy/whitelist_user) for more information.
+
+### Without Traceloop
+
+Set a key called `override_enable_content_tracing` in the OpenTelemetry context to `True` right before making the LLM call
+you want to trace with prompts.
+This will create a new context that will instruct instrumentations to log prompts and completions as span attributes.
+
+```python Python
+from opentelemetry.context import attach, set_value
+
+attach(set_value("override_enable_content_tracing", True))
+```
+
+Make sure to also disable it afterwards:
+
+```python Python
+from opentelemetry.context import attach, set_value
+
+attach(set_value("override_enable_content_tracing", False))
+```
