@@ -35,6 +35,11 @@
       "url": "openllmetry"
     },
     {
+      "name": "Dashboard API",
+      "icon": "webhook",
+      "url": "api"
+    },
+    {
       "name": "Community",
       "icon": "slack",
       "url": "https://join.slack.com/t/traceloopcommunity/shared_invite/zt-1plpfpm6r-zOHKI028VkpcWdobX65C~g"
@@ -98,6 +103,18 @@
         "openllmetry/contributing/overview",
         "openllmetry/contributing/developing"
       ]
+    },
+    {
+      "group": "API Reference",
+      "pages": ["api/introduction"]
+    },
+    {
+      "group": "Tracing",
+      "pages": ["api/tracing/whitelist_user"]
+    },
+    {
+      "group": "GDPR & Privacy",
+      "pages": ["api/privacy/delete_request", "api/privacy/delete_status"]
     }
   ],
   "footerSocials": {
@@ -116,5 +133,11 @@
   "feedback": {
     "thumbsRating": true,
     "suggestEdit": true
+  },
+  "api": {
+    "baseUrl": "https://app.traceloop.com/api",
+    "auth": {
+      "method": "bearer"
+    }
   }
 }
