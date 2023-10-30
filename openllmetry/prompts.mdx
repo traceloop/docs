@@ -4,16 +4,11 @@ description: "Manage your prompts on the Traceloop platform"
 ---
 
 <Frame>
-  <img src="/img/prompt.png" />
+  <img src="/img/prompt_configuration.png" />
 </Frame>
 
 You can use Traceloop to manage your prompts and model configurations.
 That way you can easily experiement with different prompts, run pre-defined tests, and rollout changes gradually and safely.
-
-<Info>
-  This feature is still in beta. To get access to it, [sign up
-  here](https://www.traceloop.com/waitlist).
-</Info>
 
 To enable this on the SDK, you'll need to set an environment variable: `TRACELOOP_PROMPT_REGISTRY_ENABLED=true`.
 
@@ -37,3 +32,32 @@ completion = openai.ChatCompletion.create(**prompt_args)
   foundation models SDKs (OpenAI, Anthropic, etc.) which means you can directly
   plug in the response to the appropriate API call.
 </Tip>
+
+
+## Quick Start
+
+### Configuring your prompt
+
+<Frame>
+  <img src="/img/prompt_configuration.png" />
+</Frame>
+
+### Testing your prompt configuration (Prompt Playground)
+
+By using the prompt playground you will be able to re-iterate and refine your prompt before deploying it.
+
+<Frame>
+  <img src="/img/prompt_playground.png" />
+</Frame>
+
+In order to test your newly defined prompt you can use the playground feature.
+In the right tab menu select the variables tab.
+This tab will contain all the variable names which is declared in your prompt template.
+Assign value to each of them, and then click the `Test` button in the playground section at the bottom of the page.
+Once you click the test button your prompt template will be rendered with the values you provided and will be sent to the configured LLM with the model configuration define and the completion including the tokens usage will appear.
+
+### Deploying your prompt
+
+<Frame>
+  <img src="/img/prompt_deployment.png" />
+</Frame>
