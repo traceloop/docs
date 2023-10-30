@@ -37,7 +37,7 @@
     {
       "name": "Dashboard API",
       "icon": "webhook",
-      "url": "api"
+      "url": "api-reference"
     },
     {
       "name": "Community",
@@ -106,15 +106,18 @@
     },
     {
       "group": "API Reference",
-      "pages": ["api/introduction"]
+      "pages": ["api-reference/introduction"]
     },
     {
       "group": "Tracing",
-      "pages": ["api/tracing/whitelist_user"]
+      "pages": ["api-reference/tracing/whitelist_user"]
     },
     {
       "group": "GDPR & Privacy",
-      "pages": ["api/privacy/delete_request", "api/privacy/delete_status"]
+      "pages": [
+        "api-reference/privacy/delete_request",
+        "api-reference/privacy/delete_status"
+      ]
     }
   ],
   "footerSocials": {
