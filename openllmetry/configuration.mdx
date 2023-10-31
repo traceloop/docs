@@ -1,6 +1,6 @@
 ---
 title: "SDK Initialization Options"
-description: "Documenation of the initialization options for the SDKs."
+description: "Documentation of the initialization options for the SDKs."
 ---
 
 Most configuration options can be set via environment variables or via the SDK's initialization options.
@@ -58,6 +58,10 @@ Traceloop.init({ baseUrl: <opentelemetry endpoint> })
 ## API Key
 
 If set, this is sent as a bearer token on the Authorization header.
+
+API keys can be generated from the [Traceloop Dashboard](https://app.traceloop.com/settings/api-keys), for each of the three supported environments (Development, Staging, Production).
+
+Note that API Keys are only displayed once, at the time of their creation and are not stored anywhere. If you lose your API key, you will need to generate a new one.
 
 <Tip>
   If this is not set, and the base URL is set to `https://api.traceloop.com`,

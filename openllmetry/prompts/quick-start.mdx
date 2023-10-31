@@ -1,0 +1,36 @@
+---
+title: "Quick Start"
+description: "Manage your prompts on the Traceloop platform"
+---
+
+You can use Traceloop to manage your prompts and model configurations.
+That way you can easily experiment with different prompts, and rollout changes gradually and safely.
+
+### Define a prompt in the Prompt Registry
+
+<Frame>
+  <img src="/img/prompt_configuration.png" />
+</Frame>
+
+First, define the prompt, and deploy it to the environment in which you want to use it.
+
+For more information see [Registry Documentation](/openllmetry/prompts/registry)
+
+### Use the prompt in your code with the SDK
+
+Then, you can retrieve your prompt (in this example with the key `joke_generator` and a single variable `persona` as defined above) with `get_prompt`:
+
+```python
+from traceloop.sdk.prompts import get_prompt
+
+prompt_args = get_prompt("joke_generator", persona="pirate")
+completion = openai.ChatCompletion.create(**prompt_args)
+```
+
+<Tip>
+  The returned variable `prompt_args` is compatible with the API used by the
+  foundation models SDKs (OpenAI, Anthropic, etc.) which means you can directly
+  plug in the response to the appropriate API call.
+</Tip>
+
+For more information see [SDK Usage Documentation](/openllmetry/prompts/sdk-usage)
