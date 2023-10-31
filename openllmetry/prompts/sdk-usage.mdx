@@ -1,0 +1,37 @@
+---
+title: "Prompt Usage"
+description: "Use your managed prompts with the Traceloop SDKs"
+---
+
+### Using your prompt
+
+To enable the prompt feature on the Traceloop SDK, you'll need to set the environment variable: `TRACELOOP_PROMPT_REGISTRY_ENABLED=true`.
+
+You must also configure the SDK with your API Key for a particular environment. See the [SDK documentation](/openllmetry/configuration#api-key) for more information.
+
+<Info>
+  The Traceloop SDK will automatically fetch updates you make to your prompts.
+  This way, you can deploy your prompt changes without having to redeploy your
+  application.
+</Info>
+
+After creating a with the key `joke_generator` in the UI with the following prompt:
+
+```
+Tell me a joke about OpenTelemetry as a {{persona}}
+```
+
+Then, you can retrieve it with in your code using `get_prompt`:
+
+```python
+from traceloop.sdk.prompts import get_prompt
+
+prompt_args = get_prompt("joke_generator", persona="pirate")
+completion = openai.ChatCompletion.create(**prompt_args)
+```
+
+<Tip>
+  The returned variable `prompt_args` is compatible with the API used by the
+  foundation models SDKs (OpenAI, Anthropic, etc.) which means you can directly
+  plug in the response to the appropriate API call.
+</Tip>

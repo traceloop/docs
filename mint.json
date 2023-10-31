@@ -95,7 +95,11 @@
     },
     {
       "group": "Prompt Management",
-      "pages": ["openllmetry/prompts"]
+      "pages": [
+        "openllmetry/prompts/quick-start",
+        "openllmetry/prompts/registry",
+        "openllmetry/prompts/sdk-usage"
+      ]
     },
     {
       "group": "Contribute",
