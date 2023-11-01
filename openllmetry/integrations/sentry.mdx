@@ -1,0 +1,64 @@
+---
+title: "Sentry"
+---
+
+Install Sentry SDK with OpenTelemetry support:
+
+<CodeGroup>
+```bash Python
+pip install --upgrade 'sentry-sdk[opentelemetry]'
+```
+
+```bash Typescript (Node.js)
+npm install @sentry/node @sentry/opentelemetry-node
+```
+
+</CodeGroup>
+
+Initialize Sentry and enable OpenTelemetry instrumentation:
+
+<CodeGroup>
+```python Python
+import sentry_sdk
+
+sentry_sdk.init(
+    dsn=<Your DSN>,
+    enable_tracing=True,
+
+    # set the instrumenter to use OpenTelemetry instead of Sentry
+    instrumenter="otel",
+)
+
+```
+
+```javascript Typescript (Node.js)
+Sentry.init({
+  dsn: <Your DSN>,
+  tracesSampleRate: 1.0,
+
+  // set the instrumenter to use OpenTelemetry instead of Sentry
+  instrumenter: "otel",
+});
+```
+
+</CodeGroup>
+
+Then, when initializing the Traceloop SDK, make sure to override the processor and propagator:
+<CodeGroup>
+```python Python
+from traceloop.sdk import Traceloop
+from sentry_sdk.integrations.opentelemetry import SentrySpanProcessor, SentryPropagator
+
+Traceloop.init(processor=SentrySpanProcessor(), propagator=SentryPropagator())
+```
+
+```javascript Typescript (Node.js)
+import * as traceloop from "@traceloop/node-server-sdk";
+import { SentrySpanProcessor, SentryPropagator } from "@sentry/opentelemetry-node";
+
+Traceloop.init({
+  processor: new SentrySpanProcessor(),
+  propagator: new SentryPropagator()
+})
+```
+</CodeGroup>

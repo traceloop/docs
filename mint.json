@@ -83,6 +83,7 @@
       "pages": [
         "openllmetry/integrations/exporting",
         "openllmetry/integrations/traceloop",
+        "openllmetry/integrations/sentry",
         "openllmetry/integrations/dynatrace",
         "openllmetry/integrations/datadog",
         "openllmetry/integrations/newrelic",
