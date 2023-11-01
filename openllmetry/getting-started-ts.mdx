@@ -56,7 +56,7 @@ traceloop.initialize({ disableBatch: true });
 If you have complex workflows or chains, you can annotate them to get a better understanding of what's going on.
 You'll see the complete trace of your workflow on Traceloop or any other dashboard you're using.
 
-We have a set of [decorators](/openllmetry/decorators) to make this easier.
+We have a set of [decorators](/openllmetry/tracing/decorators) to make this easier.
 Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow` to a method.
 
 <Tip>
@@ -73,7 +73,7 @@ class MyLLM {
 }
 ```
 
-For more information, see the [dedicated section in the docs](/openllmetry/decorators).
+For more information, see the [dedicated section in the docs](/openllmetry/tracing/decorators).
 
 </Step>
 <Step title="Configure trace exporting">
@@ -86,7 +86,7 @@ For more information, see the [dedicated section in the docs](/openllmetry/decor
 Lastly, you'll need to configure where to export your traces.
 The 2 environment variables controlling this are `TRACELOOP_API_KEY` and `TRACELOOP_BASE_URL`.
 
-For Traceloop, read on. For other options, see [Exporting](/openllmetry/exporting).
+For Traceloop, read on. For other options, see [Exporting](/openllmetry/integrations/exporting).
 
 ### Using Traceloop Cloud
 
