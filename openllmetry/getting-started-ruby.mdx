@@ -1,0 +1,94 @@
+---
+title: "Ruby"
+---
+
+<Warning>This is still in beta. Give us feedback at dev@traceloop.com</Warning>
+
+Install Traceloop by following these 3 easy steps and get instant monitoring.
+
+<Steps>
+<Step title="Install the SDK">
+
+Run the following command in your terminal:
+
+<CodeGroup>
+```bash gem
+gem install traceloop-sdk
+```
+
+```bash bundler
+bundle add traceloop-sdk
+```
+
+</CodeGroup>
+
+In your LLM app, initialize the Traceloop tracer like this:
+
+<Tip>
+  If you're using Rails, this needs to be in `config/initializers/traceloop.rb`
+</Tip>
+
+```ruby
+require "traceloop/sdk"
+
+traceloop = Traceloop::SDK::Traceloop.new
+```
+
+</Step>
+<Step title="Log your prompts">
+<Frame>
+  <img src="/img/single_trace_prompt.png" />
+</Frame>
+For now, we don't automatically instrument libraries on Ruby (as opposed to Python and Javascript).
+This will change in later versions.
+
+This means that you'll need to manually log your prompts and completions.
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+# This tracks the latency of the call and the response
+traceloop.llm_call() do |tracer|
+  # Log the prompt
+  tracer.log_prompt(model="gpt-3.5-turbo", user_prompt="Tell me a joke about OpenTelemetry")
+
+  # Call OpenAI like you normally would
+  response = client.chat(
+    parameters: {
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: "Tell me a joke about OpenTelemetry" }]
+    })
+
+  # Pass the response form OpenAI as is to log the completion and token usage
+  tracer.log_response(response)
+end
+```
+
+</Step>
+<Step title="Configure trace exporting">
+Lastly, you'll need to configure where to export your traces.
+The 2 environment variables controlling this are `TRACELOOP_API_KEY` and `TRACELOOP_BASE_URL`.
+
+For Traceloop, read on. For other options, see [Exporting](/openllmetry/integrations/exporting).
+
+### Using Traceloop Cloud
+
+Go to [Traceloop](https://app.traceloop.com), and create a new account.
+Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys.
+Click **Generate API Key** to generate an API key for the developement environment and click **Copy API Key** to copy it over.
+
+<Warning>Make sure to copy it as it won't be shown again.</Warning>
+
+<Frame>
+  <img src="/img/apikey.png" />
+</Frame>
+
+Set the copied Traceloop's API key as an environment variable in your app named `TRACELOOP_API_KEY`.
+
+Done! You'll get instant visibility into everything that's happening with your LLM.
+If you're calling a vector DB, or any other external service or database, you'll also see it in the Traceloop dashboard.
+
+</Step>
+</Steps>
