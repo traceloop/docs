@@ -82,7 +82,7 @@
     {
       "group": "Integrations",
       "pages": [
-        "openllmetry/integrations/exporting",
+        "openllmetry/integrations/introduction",
         "openllmetry/integrations/traceloop",
         "openllmetry/integrations/sentry",
         "openllmetry/integrations/dynatrace",
@@ -125,6 +125,12 @@
         "api-reference/privacy/delete_request",
         "api-reference/privacy/delete_status"
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/openllmetry/integrations/exporting",
+      "destination": "/openllmetry/integrations/introduction"
     }
   ],
   "footerSocials": {
