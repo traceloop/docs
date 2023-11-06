@@ -63,15 +63,25 @@ await traceloop.waitForInitialization();
 If you have complex workflows or chains, you can annotate them to get a better understanding of what's going on.
 You'll see the complete trace of your workflow on Traceloop or any other dashboard you're using.
 
-We have a set of [decorators](/openllmetry/tracing/decorators) to make this easier.
-Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow` to a method.
+We have a set of [methods and decorators](/openllmetry/tracing/annotations) to make this easier.
+Assume you have a function that renders a prompt and calls an LLM, simply wrap it in a `withWorkflow()` function call.
+
+We also have compatible Typescript decorators for class methods which are more convenient.
 
 <Tip>
   If you're using an LLM framework like Haystack, Langchain or LlamaIndex -
   we'll do that for you. No need to add any annotations to your code.
 </Tip>
 
-```js
+<CodeGroup>
+```js Functions (async / sync)
+async function suggestAnswers(question: string) {
+  return await withWorkflow("suggestAnswers", () => {
+    ...
+  });
+}
+```
+```js Class Methods
 class MyLLM {
   @workflow("suggest_answers")
   async suggestAnswers(question: string) {
@@ -79,6 +89,7 @@ class MyLLM {
   }
 }
 ```
+</CodeGroup>
 
 For more information, see the [dedicated section in the docs](/openllmetry/tracing/decorators).
 
