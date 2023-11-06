@@ -73,7 +73,7 @@
     {
       "group": "Tracing",
       "pages": [
-        "openllmetry/tracing/decorators",
+        "openllmetry/tracing/annotations",
         "openllmetry/tracing/association",
         "openllmetry/tracing/privacy",
         "openllmetry/tracing/python-threads"
@@ -130,6 +130,10 @@
     {
       "source": "/openllmetry/integrations/exporting",
       "destination": "/openllmetry/integrations/introduction"
+    },
+    {
+      "source": "/openllmetry/tracing/decorators",
+      "destination": "/openllmetry/tracing/annotations"
     }
   ],
   "footerSocials": {
