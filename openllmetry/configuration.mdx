@@ -19,7 +19,7 @@ Traceloop.init(app_name="my app name")
 ```
 
 ```js Typescript / Javascript
-Traceloop.init({ appName: "my app name" });
+Traceloop.initialize({ appName: "my app name" });
 ```
 
 </CodeGroup>
@@ -50,7 +50,7 @@ Traceloop.init(api_endpoint=<opentelemetry endpoint>)
 ```
 
 ```js Typescript / Javascript
-Traceloop.init({ baseUrl: <opentelemetry endpoint> })
+Traceloop.initialize({ baseUrl: <opentelemetry endpoint> })
 ```
 
 </CodeGroup>
@@ -80,7 +80,7 @@ Traceloop.init(api_key=<api key>)
 ```
 
 ```js Typescript / Javascript
-Traceloop.init({ apiKey: <opentelemetry endpoint> })
+Traceloop.initialize({ apiKey: <api key> })
 ```
 
 </CodeGroup>
@@ -105,7 +105,7 @@ Traceloop.init(headers={"key1": "value1", "key2": "value2"})
 ```
 
 ```js Typescript / Javascript
-Traceloop.init({ headers: { key1: "value1", key2: "value2" } });
+Traceloop.initialize({ headers: { key1: "value1", key2: "value2" } });
 ```
 
 </CodeGroup>
@@ -126,7 +126,7 @@ Traceloop.init(exporter=ZipkinExporter(endpoint="http://localhost:9411/api/v2/sp
 ```
 
 ```js Typescript / Javascript
-Traceloop.init({ exporter: new ZipkinExporter() });
+Traceloop.initialize({ exporter: new ZipkinExporter() });
 ```
 
 </CodeGroup>
@@ -143,7 +143,7 @@ Traceloop.init(disable_batch=True)
 ```
 
 ```js Typescript / Javascript
-Traceloop.init({ disableBatch: true });
+Traceloop.initialize({ disableBatch: true });
 ```
 
 </CodeGroup>
@@ -159,7 +159,29 @@ Traceloop.init(suppress_logs=True)
 ```
 
 ```js Typescript / Javascript
-Traceloop.init({ suppressLogs: true });
+Traceloop.initialize({ suppressLogs: true });
+```
+
+</CodeGroup>
+
+## Traceloop Sync (polling)
+
+By default, the Traceloop SDK's sync functionality is active.
+To disable it or change any defaults, see the example below.
+
+<CodeGroup>
+
+```python Python
+Traceloop.init(traceloop_sync_enabled=True)
+```
+
+```js Typescript / Javascript
+Traceloop.initialize({ 
+  traceloopSyncEnabled: true, // also via TRACELOOP_SYNC_ENABLED env variable (default: true)
+  traceloopSyncMaxRetries: 3, // also via TRACELOOP_SYNC_MAX_RETRIES env variable (default: 3)
+  traceloopSyncPollingInterval, // also via TRACELOOP_SYNC_POLLING_INTERVAL env variable (default: 60) - seconds
+  traceloopSyncDevPollingInterval // also via TRACELOOP_SYNC_DEV_POLLING_INTERVAL env variable (default: 5) - seconds
+ });
 ```
 
 </CodeGroup>

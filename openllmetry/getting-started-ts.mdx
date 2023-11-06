@@ -48,6 +48,13 @@ If you're running this locally, you may want to disable batch sending, so you ca
 traceloop.initialize({ disableBatch: true });
 ```
 
+If you are using the prompt registry, then you should wait for the SDK to become ready before fetching any prompts.
+`waitForInitialization` will return a promise that resolves when the SDK is ready, or reject on error.
+
+```js
+await traceloop.waitForInitialization();
+```
+
 </Step>
 <Step title="Annotate your workflows">
 <Frame>
@@ -80,7 +87,7 @@ For more information, see the [dedicated section in the docs](/openllmetry/traci
 <Tip>
   If you just want to explore - you don't need to do anything! Just run your app
   without setting any environment variable and a new account will automatically
-  be created for you so you can start seeing traces from your developement
+  be created for you so you can start seeing traces from your development
   environment.
 </Tip>
 Lastly, you'll need to configure where to export your traces.
@@ -92,7 +99,7 @@ For Traceloop, read on. For other options, see [Exporting](/openllmetry/integrat
 
 Go to [Traceloop](https://app.traceloop.com), and create a new account.
 Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys.
-Click **Generate API Key** to generate an API key for the developement environment and click **Copy API Key** to copy it over.
+Click **Generate API Key** to generate an API key for the development environment and click **Copy API Key** to copy it over.
 
 <Warning>Make sure to copy it as it won't be shown again.</Warning>
 

@@ -5,7 +5,13 @@ description: "Use your managed prompts with the Traceloop SDKs"
 
 ### Using your prompt
 
-To enable the prompt feature on the Traceloop SDK, you'll need to set the environment variable: `TRACELOOP_PROMPT_REGISTRY_ENABLED=true`.
+The SDK fetches your prompts from Traceloop servers. Changes made to a prompt are available in the SDK during runtime.
+The SDK polls the Traceloop servers for changes every every poll interval.
+
+The default poll interval is 60 seconds but can be configured with the `TRACELOOP_SYNC_POLL_INTERVAL` environment variable, or the initialization function.
+When in the `Development` environment, the poll interval is determined by the `TRACELOOP_SYNC_DEV_POLL_INTERVAL` environment variable or appropriate initialization argument, and defaults to 5 seconds.
+
+To disable polling all together, set the `TRACELOOP_SYNC_ENABLED` environment variable to false (its enabled by default).
 
 You must also configure the SDK with your API Key for a particular environment. See the [SDK documentation](/openllmetry/configuration#api-key) for more information.
 
@@ -32,6 +38,6 @@ completion = openai.ChatCompletion.create(**prompt_args)
 
 <Tip>
   The returned variable `prompt_args` is compatible with the API used by the
-  foundation models SDKs (OpenAI, Anthropic, etc.) which means you can directly
+  foundation models SDKs (OpenAI, Anthropic, etc.) which means you should directly
   plug in the response to the appropriate API call.
 </Tip>
