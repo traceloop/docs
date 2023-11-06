@@ -1,19 +1,17 @@
 ---
-title: "Prompt Usage"
+title: "Fetching Prompts"
 description: "Use your managed prompts with the Traceloop SDKs"
 ---
 
-### Using your prompt
+Make sure you've configured the SDK with the right environment and API Key. See the [SDK documentation](/openllmetry/configuration#api-key) for more information.
 
-You must also configure the SDK with your API Key for a particular environment. See the [SDK documentation](/openllmetry/configuration#api-key) for more information.
+<Tip>
+  The SDK uses smart caching mechanisms to proide zero latency for fetching prompts.
+</Tip>
 
-<Info>
-  The Traceloop SDK will automatically fetch updates you make to your prompts.
-  This way, you can deploy your prompt changes without having to redeploy your
-  application.
-</Info>
+## Get Prompt API
 
-After creating a with the key `joke_generator` in the UI with the following prompt:
+Let's say you've created a prompt with a key `joke_generator` in the UI and set ot to:
 
 ```
 Tell me a joke about OpenTelemetry as a {{persona}}
