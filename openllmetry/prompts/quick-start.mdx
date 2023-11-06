@@ -1,24 +1,51 @@
 ---
 title: "Quick Start"
-description: "Manage your prompts on the Traceloop platform"
 ---
-
-You can use Traceloop to manage your prompts and model configurations.
-That way you can easily experiment with different prompts, and rollout changes gradually and safely.
-
-### Define a prompt in the Prompt Registry
 
 <Frame>
   <img src="/img/prompt_configuration.png" />
 </Frame>
 
-First, define the prompt, and deploy it to the environment in which you want to use it.
+You can use Traceloop to manage your prompts and model configurations.
+That way you can easily experiment with different prompts, and rollout changes gradually and safely.
 
-For more information see [Registry Documentation](/openllmetry/prompts/registry)
+<Note>
+  Make sure you've created an API key and set it as an environment variable
+  `TRACELOOP_API_KEY` before you start. Check out the [getting started
+  guide](/openllmetry/getting-started-python) for more information.
+</Note>
 
-### Use the prompt in your code with the SDK
+<Steps>
+<Step title="Create a new prompt">
 
-Then, you can retrieve your prompt (in this example with the key `joke_generator` and a single variable `persona` as defined above) with `get_prompt`:
+Click **New Prompt** to create a new prompt. Give it a name, which will be used to retrieve it in your code later.
+
+</Step>
+
+<Step title="Define it in the Prompt Registry">
+Set the system and/or user prompt. You can use variables in your prompt by
+following the [Jinja format](https://jinja.palletsprojects.com/en/3.1.x/templates/) of `{{ variable_name }}`. 
+The values of these variables will be passed in when you retrieve the prompt in your code.
+
+For more information see the [Registry Documentation](/openllmetry/prompts/registry).
+
+<Tip>
+This screen is also a prompt playground. Give the prompt a try by clicking **Test** at the bottom.
+</Tip>
+
+</Step>
+
+<Step title="Deploy the prompt to your developement environement">
+Click **Deploy to Dev** to deploy the prompt to your development environment.
+</Step>
+
+<Step title="Use the prompt in your code">
+
+If you haven't done so, make sure to [generate an API key](https://app.traceloop.com/settings/api-keys) and 
+set it as an environment variable `TRACELOOP_API_KEY`.
+
+Retrieve your prompt by using the `get_prompt` function.
+For example, if you've created a prompt with the key `joke_generator` and a single variable `persona`:
 
 ```python
 from traceloop.sdk.prompts import get_prompt
@@ -27,10 +54,13 @@ prompt_args = get_prompt("joke_generator", persona="pirate")
 completion = openai.ChatCompletion.create(**prompt_args)
 ```
 
-<Tip>
+<Note>
   The returned variable `prompt_args` is compatible with the API used by the
   foundation models SDKs (OpenAI, Anthropic, etc.) which means you can directly
   plug in the response to the appropriate API call.
-</Tip>
+</Note>
 
-For more information see [SDK Usage Documentation](/openllmetry/prompts/sdk-usage)
+For more information see the [SDK Usage Documentation](/openllmetry/prompts/sdk-usage).
+
+</Step>
+</Steps>

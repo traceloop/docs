@@ -8,13 +8,20 @@ things like `user_id`, `chat_id`, or anything else that is tied to the flow that
 
 OpenLLMetry allows you to easily mark traces with these IDs so you can track them in the UI.
 
+<CodeGroup>
 ```python Python
 Tracer.set_association_properties({ "user_id": "user12345", "chat_id": "chat12345" })
 ```
 
-<Note>
-  Older versions of OpenLLMetry (before 0.0.62), used the `set_correlation_id`
-  method to set a single ID. If you're using this API, you should switch to the
-  new `set_association_properties` method. `set_correlation_id` will be removed
-  in a future version.
-</Note>
+```js Typescript
+traceloop.withAssociationProperties({
+  userId: "user12345",
+  chatId: "chat12345",
+  () => {
+    // Your code here
+    // (can be async or sync)
+  }
+});
+```
+
+</CodeGroup>

@@ -3,98 +3,59 @@ title: "Prompt Registry"
 description: "Manage your prompts on the Traceloop platform"
 ---
 
+Traceloop's Prompt Registry is where you manage your prompts. You can create, edit, evaluate and deploy prompts to your environments.
+
+## Configuring Prompts
+
 <Frame>
   <img src="/img/prompt_configuration.png" />
 </Frame>
 
-You can use Traceloop to manage your prompts and model configurations.
-That way you can easily experiment with different prompts, and rollout changes gradually and safely.
-
-Assume you created the following prompt with the key `joke_generator` in the UI:
-
-```
-Tell me a joke about OpenTelemetry as a {{persona}}
-```
-
-Then, you can retrieve it with `get_prompt`:
-
-```python
-from traceloop.sdk.prompts import get_prompt
-
-prompt_args = get_prompt("joke_generator", persona="pirate")
-completion = openai.ChatCompletion.create(**prompt_args)
-```
+The prompt configuration is composed of two parts:
+* The prompt template (system and/or user prompts)
+* The model configuration (temperature, top_p, etc.)
 
 <Tip>
-  The returned variable `prompt_args` is compatible with the API used by the
-  foundation models SDKs (OpenAI, Anthropic, etc.) which means you can directly
-  plug in the response to the appropriate API call.
-</Tip>
-
-## Quick Start
-
-### Configuring your prompt
-
-<Frame>
-  <img src="/img/prompt_configuration.png" />
-</Frame>
-
-Define both the prompt template (system and/or user prompts) and the model configuration (all parameters can be found in the right side menu) you want to use.
-
-Initially, prompts are created in `Draft Mode`. In this mode, you can make changes to the prompt and configuration. You can also test your prompt in the playground (see below). While in `Draft Mode`, prompts can only be deployed to the `Development` environment.
-Once you are satisfied with the prompt, you can publish it and make it available to deploy in all environments. Once published, the prompt version cannot be edited anymore.
-
-<Note>
-  Only prompt versions in `Draft Mode` can be edited. While in this mode, they
-  can only be deployed to the `development` environment. `Publish` a prompt to
-  make it available for use in `staging` & `production` environments as well.
-  You can add a name to help you identify this version. Once published, changes
-  to this version will not be possible.
-</Note>
-
-If you want to make changes to your prompt, simply create a new version by clicking on the `New Version` button. New versions will be created in `Draft Mode`.
-For more information on deploying prompts, see the section below.
-
-<Note>
-  Your prompt can include variables. Variables are defined according to the
+  Your prompt template can include variables. Variables are defined according to the
   syntax of the parser specified. For example, if using `jinjia2` the syntax
   will be `{{ variable_name }}`. You can then pass variable values to the SDK
   when calling `get_prompt`. See the example on the [SDK
   Usage](/openllmetry/prompts/sdk-usage) section.
-</Note>
+</Tip>
 
-<Note>
-  If you change the names of variables or add/remove existing variables, you
-  will be required to create a new prompt.
-</Note>
+Initially, prompts are created in `Draft Mode`. In this mode, you can make changes to the prompt and configuration. You can also test your prompt in the playground (see below). 
 
-### Testing your prompt configuration (Prompt Playground)
+## Testing a Prompt Configuration (Prompt Playground)
 
-By using the prompt playground you will be able to re-iterate and refine your prompt before deploying it.
+By using the prompt playground you can iterate and refine your prompt before deploying it.
 
 <Frame>
   <img src="/img/prompt_playground.png" />
 </Frame>
 
-In order to test your newly defined prompt you can use the playground feature.
 Simply click on the `Test` button in the playground tab at the bottom of the screen.
 
 If your prompt includes variables, then you need to define values for them before testing.
-Choose `Variables` in the right side menu and assign a value to each.
+Choose `Variables` in the right side bar and assign a value to each.
 
 Once you click the `Test` button your prompt template will be rendered with the values you provided and will be sent to the configured LLM with the model configuration defined.
 The completion response (including token usage) will be displayed in the playground.
 
-### Deploying your prompt
+## Deploying Prompts
+
+<Frame>
+  <img src="/img/prompt_deployment.png" />
+</Frame>
+
+Draft mode prompts can only be deployed to the `development` environment.
+
+Once you are satisfied with the prompt, you can publish it and make it available to deploy in all environments. 
+Once published, the prompt version cannot be edited anymore.
 
 Choose the `Deploy` Tab to navigate to the deployments page for your prompt.
 
 Here, you can see all recent prompt versions, and which environments they are deployed to.
 Simply click on the `Deploy` button to deploy a prompt version to an environment. Similarly, click `Rollback` to revert to a previous prompt version for a specific environment.
-
-<Note>
-  Prompts in `Draft Mode` can only be deployed to the `Development` environment.
-</Note>
 
 <Note>
   As a safeguard, you cannot deploy a prompt to the `Staging` environment before
@@ -104,6 +65,11 @@ Simply click on the `Deploy` button to deploy a prompt version to an environment
 
 To fetch prompts from a specific environment, you must supply that environment's API key to the Traceloop SDK. See the [SDK Configuration](/openllmetry/configuration#api-key) for details
 
-<Frame>
-  <img src="/img/prompt_deployment.png" />
-</Frame>
+## Prompt Versions
+
+If you want to make changes to your prompt after deployment, simply create a new version by clicking on the `New Version` button. New versions will be created in `Draft Mode`.
+
+<Warning>
+  If you change the names of variables or add/remove existing variables, you
+  will be required to create a new prompt.
+</Warning>

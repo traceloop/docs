@@ -1,20 +1,28 @@
 ---
-title: "Decorators"
+title: "Workflows, Tasks, Agents and Tools"
 description: "Enrich your traces by annotating chains and workflows in your app"
 ---
 
-Traceloop SDK supports several decorators that can be used instead of manually starting a span.
-You also get extra visibility into your LLM application structure.
+<Frame>
+  <img src="/img/workflow.png" />
+</Frame>
+
+Traceloop SDK supports several ways to annotate workflows, tasks, agents and tools in your code to get a more complete picture of your app structure.
+
+<Tip>
+  If you're using a framework like Langchain, Haystack or LlamaIndex - no need
+  to do anything! OpenLLMetry will automatically detect the framework and
+  annotate your traces.
+</Tip>
 
 ## Workflows and Tasks
 
-Sometimes called a "chain", is a decorator for a multi-step process that can be traced as a single unit.
+Sometimes called a "chain", intended for a multi-step process that can be traced as a single unit.
 
 <Tabs>
 <Tab title="Python">
 
-Use it as `@workflow(name="my_workflow")`.
-We will consider every call to OpenAI as a distinct step (or task). You can even annotate the task with a name, using `@task(name="my_task")`.
+Use it as `@workflow(name="my_workflow")` or `@task(name="my_task")`.
 
 <Tip>
   The `name` argument is optional. If you don't provide it, we will use the
@@ -52,7 +60,50 @@ def joke_workflow():
 ```
 
 </Tab>
-<Tab title="Typescript">
+<Tab title="Typescript / Javascript">
+
+Use it as `withWorkflow("my_workflow", () => ...)` or `withTask(name="my_task", () => ...)`.
+The function passed to `withWorkflow` or `withTask` witll be part of the workflow or task and can be async or sync.
+
+```js
+import * as traceloop from "@traceloop/node-server-sdk";
+
+async function create_joke() {
+  return await traceloop.withTask("joke_creation", async () => {
+    completion = await openai.chat.completions({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { role: "user", content: "Tell me a joke about opentelemetry" },
+      ],
+    });
+
+    return completion.choices[0].message.content;
+  });
+}
+
+async function generate_signature(joke: string) {
+  return await traceloop.withTask("signature_generation", async () => {
+    completion = await openai.completions.create({
+      model: "text-davinci-003",
+      prompt: "add a signature to the joke:\n\n" + joke,
+    });
+
+    return completion.choices[0].text;
+  });
+}
+
+async function joke_workflow() {
+  return await traceloop.withWorkflow("pirate_joke_generator", async () => {
+    eng_joke = create_joke();
+    pirate_joke = await translate_joke_to_pirate(eng_joke);
+    signature = await generate_signature(pirate_joke);
+    console.log(pirate_joke + "\n\n" + signature);
+  });
+}
+```
+
+</Tab>
+<Tab title="Typescript - with Decorators">
 <Note>
 This feature is only available in Typescript. You'll need to update your `tsconfig.json` to enable decorators.
 </Note>
@@ -116,11 +167,11 @@ class JokeCreation {
 
 ## Agents and Tools
 
-Similarily, if you use autonomous agents, you can use the `@agent` decorator to trace them as a single unit.
-Each tool should be marked with `@tool`.
-
 <Tabs>
 <Tab title="Python">
+
+Similarily, if you use autonomous agents, you can use the `@agent` decorator to trace them as a single unit.
+Each tool should be marked with `@tool`.
 
 ```python
 from traceloop.sdk.decorators import agent, tool
@@ -148,7 +199,43 @@ def history_jokes_tool():
 ```
 
 </Tab>
-<Tab title="Typescript">
+<Tab title="Typescript / Javascript">
+
+Similarily, if you use autonomous agents, you can use the `withAgent` to trace them as a single unit.
+Each tool should be in `withTool`.
+
+```js
+import * as traceloop from "@traceloop/node-server-sdk";
+
+async function translate_joke_to_pirate(joke: str) {
+  return await withAgent("joke_translation", () => {
+    completion = await openai.chat.completions.create({
+      model="gpt-3.5-turbo",
+      messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
+    })
+
+    history_jokes_tool()
+
+    return completion.choices[0].message.content
+  }
+}
+
+async function history_jokes_tool() {
+  return await withTool("history_jokes", () => {
+    completion = await openai.chat.completions.create({
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": f"get some history jokes"}],
+    })
+
+    return completion.choices[0].message.content
+  }
+}
+```
+
+</Tab>
+<Tab title="Typescript - with Decorators">
+Similarily, if you use autonomous agents, you can use the `@agent` decorator to trace them as a single unit.
+Each tool should be marked with `@tool`.
 <Note>
 Remember to set `experimentalDecorators` to `true` in your `tsconfig.json`.
 </Note>
@@ -163,23 +250,22 @@ model="gpt-3.5-turbo",
 messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
 })
 
-        history_jokes_tool()
+    history_jokes_tool()
 
-        return completion.choices[0].message.content
+    return completion.choices[0].message.content
 
-    }
+}
 
-    @traceloop.tool("history_jokes")
-    async history_jokes_tool() {
-        completion = await openai.chat.completions.create({
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": f"get some history jokes"}],
-        })
+@traceloop.tool("history_jokes")
+async history_jokes_tool() {
+completion = await openai.chat.completions.create({
+model="gpt-3.5-turbo",
+messages=[{"role": "user", "content": f"get some history jokes"}],
+})
 
-            return completion.choices[0].message.content
+      return completion.choices[0].message.content
 
-    }
-
+}
 }
 
 ````
@@ -216,4 +302,5 @@ So, if you're decorating an `async` method, use `@aworkflow`, `@atask` and so fo
   `traceloop.workflow()`, `traceloop.task()`, etc.
 </Note>
 
-See also a [separate section on using threads with OpenLLMetry](tracing/python-threads).
+See also a [separate section on using threads with OpenLLMetry](openllmetry/tracing/python-threads).
+````

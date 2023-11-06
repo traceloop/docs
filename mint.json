@@ -73,7 +73,7 @@
     {
       "group": "Tracing",
       "pages": [
-        "openllmetry/tracing/decorators",
+        "openllmetry/tracing/annotations",
         "openllmetry/tracing/association",
         "openllmetry/tracing/privacy",
         "openllmetry/tracing/python-threads"
@@ -82,7 +82,7 @@
     {
       "group": "Integrations",
       "pages": [
-        "openllmetry/integrations/exporting",
+        "openllmetry/integrations/introduction",
         "openllmetry/integrations/traceloop",
         "openllmetry/integrations/sentry",
         "openllmetry/integrations/dynatrace",
@@ -124,6 +124,16 @@
         "api-reference/privacy/delete_request",
         "api-reference/privacy/delete_status"
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/openllmetry/integrations/exporting",
+      "destination": "/openllmetry/integrations/introduction"
+    },
+    {
+      "source": "/openllmetry/tracing/decorators",
+      "destination": "/openllmetry/tracing/annotations"
     }
   ],
   "footerSocials": {

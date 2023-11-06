@@ -1,5 +1,5 @@
 ---
-title: "Prompt Usage"
+title: "Fetching Prompts"
 description: "Use your managed prompts with the Traceloop SDKs"
 ---
 
@@ -13,15 +13,15 @@ When in the `Development` environment, the poll interval is determined by the `T
 
 To disable polling all together, set the `TRACELOOP_SYNC_ENABLED` environment variable to false (its enabled by default).
 
-You must also configure the SDK with your API Key for a particular environment. See the [SDK documentation](/openllmetry/configuration#api-key) for more information.
+Make sure you've configured the SDK with the right environment and API Key. See the [SDK documentation](/openllmetry/configuration#api-key) for more information.
 
-<Info>
-  The Traceloop SDK will automatically fetch updates you make to your prompts.
-  This way, you can deploy your prompt changes without having to redeploy your
-  application.
-</Info>
+<Tip>
+  The SDK uses smart caching mechanisms to proide zero latency for fetching prompts.
+</Tip>
 
-After creating a with the key `joke_generator` in the UI with the following prompt:
+## Get Prompt API
+
+Let's say you've created a prompt with a key `joke_generator` in the UI and set ot to:
 
 ```
 Tell me a joke about OpenTelemetry as a {{persona}}

@@ -1,5 +1,6 @@
 ---
-title: "Sentry"
+title: "LLM Observability with Sentry and OpenLLMetry"
+sidebarTitle: "Sentry"
 ---
 
 Install Sentry SDK with OpenTelemetry support:
@@ -22,14 +23,15 @@ Initialize Sentry and enable OpenTelemetry instrumentation:
 import sentry_sdk
 
 sentry_sdk.init(
-    dsn=<Your DSN>,
-    enable_tracing=True,
+dsn=<Your DSN>,
+enable_tracing=True,
 
     # set the instrumenter to use OpenTelemetry instead of Sentry
     instrumenter="otel",
+
 )
 
-```
+````
 
 ```javascript Typescript (Node.js)
 Sentry.init({
@@ -39,18 +41,20 @@ Sentry.init({
   // set the instrumenter to use OpenTelemetry instead of Sentry
   instrumenter: "otel",
 });
-```
+````
 
 </CodeGroup>
 
 Then, when initializing the Traceloop SDK, make sure to override the processor and propagator:
+
 <CodeGroup>
 ```python Python
 from traceloop.sdk import Traceloop
 from sentry_sdk.integrations.opentelemetry import SentrySpanProcessor, SentryPropagator
 
 Traceloop.init(processor=SentrySpanProcessor(), propagator=SentryPropagator())
-```
+
+````
 
 ```javascript Typescript (Node.js)
 import * as traceloop from "@traceloop/node-server-sdk";
@@ -60,5 +64,6 @@ Traceloop.init({
   processor: new SentrySpanProcessor(),
   propagator: new SentryPropagator()
 })
-```
+````
+
 </CodeGroup>

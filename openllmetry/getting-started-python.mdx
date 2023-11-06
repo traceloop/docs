@@ -1,10 +1,9 @@
 ---
 title: "Python"
+description: "Install OpenLLMetry for Python by following these 3 easy steps and get instant monitoring."
 ---
 
 You can also check out our full working example of a RAG pipeline with Pinecone [here](https://github.com/traceloop/pinecone-demo).
-
-Install Traceloop by following these 3 easy steps and get instant monitoring.
 
 <Steps>
 <Step title="Install the SDK">
@@ -45,7 +44,7 @@ Traceloop.init(disable_batch=True)
 If you have complex workflows or chains, you can annotate them to get a better understanding of what's going on.
 You'll see the complete trace of your workflow on Traceloop or any other dashboard you're using.
 
-We have a set of [decorators](/openllmetry/tracing/decorators) to make this easier.
+We have a set of [decorators](/openllmetry/tracing/annotations) to make this easier.
 Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow` (or for asynchronous methods - `@aworkflow`).
 
 <Tip>
@@ -61,7 +60,7 @@ def suggest_answers(question: str):
   ...
 ```
 
-For more information, see the [dedicated section in the docs](/openllmetry/tracing/decorators).
+For more information, see the [dedicated section in the docs](/openllmetry/tracing/annotations).
 
 </Step>
 <Step title="Configure trace exporting">
@@ -74,7 +73,7 @@ For more information, see the [dedicated section in the docs](/openllmetry/traci
 Lastly, you'll need to configure where to export your traces.
 The 2 environment variables controlling this are `TRACELOOP_API_KEY` and `TRACELOOP_BASE_URL`.
 
-For Traceloop, read on. For other options, see [Exporting](/openllmetry/integrations/exporting).
+For Traceloop, read on. For other options, see [Exporting](/openllmetry/integrations/introduction).
 
 ### Using Traceloop Cloud
 
