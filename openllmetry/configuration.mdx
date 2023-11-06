@@ -164,7 +164,11 @@ Traceloop.initialize({ suppressLogs: true });
 
 </CodeGroup>
 
-## Traceloop Sync (polling)
+## Traceloop Sync
+
+<Note>
+  Traceloop Sync must be enabled in order to use the prompt registry.
+</Note>
 
 By default, the Traceloop SDK's sync functionality is active.
 To disable it or change any defaults, see the example below.
@@ -179,8 +183,8 @@ Traceloop.init(traceloop_sync_enabled=True)
 Traceloop.initialize({ 
   traceloopSyncEnabled: true, // also via TRACELOOP_SYNC_ENABLED env variable (default: true)
   traceloopSyncMaxRetries: 3, // also via TRACELOOP_SYNC_MAX_RETRIES env variable (default: 3)
-  traceloopSyncPollingInterval, // also via TRACELOOP_SYNC_POLLING_INTERVAL env variable (default: 60) - seconds
-  traceloopSyncDevPollingInterval // also via TRACELOOP_SYNC_DEV_POLLING_INTERVAL env variable (default: 5) - seconds
+  traceloopSyncPollingInterval: 60, // also via TRACELOOP_SYNC_POLLING_INTERVAL env variable (default: 60) - seconds
+  traceloopSyncDevPollingInterval: 5 // also via TRACELOOP_SYNC_DEV_POLLING_INTERVAL env variable (default: 5) - seconds
  });
 ```
 
