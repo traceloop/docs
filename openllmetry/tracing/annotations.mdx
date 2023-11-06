@@ -10,7 +10,9 @@ description: "Enrich your traces by annotating chains and workflows in your app"
 Traceloop SDK supports several ways to annotate workflows, tasks, agents and tools in your code to get a more complete picture of your app structure.
 
 <Tip>
-If you're using a framework like Langchain, Haystack or LlamaIndex - no need to do anything! OpenLLMetry will automatically detect the framework and annotate your traces.
+  If you're using a framework like Langchain, Haystack or LlamaIndex - no need
+  to do anything! OpenLLMetry will automatically detect the framework and
+  annotate your traces.
 </Tip>
 
 ## Workflows and Tasks
@@ -99,6 +101,7 @@ async function joke_workflow() {
   });
 }
 ```
+
 </Tab>
 <Tab title="Typescript - with Decorators">
 <Note>
@@ -240,29 +243,31 @@ Remember to set `experimentalDecorators` to `true` in your `tsconfig.json`.
 import * as traceloop from "@traceloop/node-server-sdk";
 
 class Agent {
-  @traceloop.agent("joke_translation")
-  async translate_joke_to_pirate(joke: str) {
-    completion = await openai.chat.completions.create({
-      model="gpt-3.5-turbo",
-      messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
-    })
+@traceloop.agent("joke_translation")
+async translate_joke_to_pirate(joke: str) {
+completion = await openai.chat.completions.create({
+model="gpt-3.5-turbo",
+messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
+})
 
     history_jokes_tool()
 
     return completion.choices[0].message.content
 
-  }
+}
 
-  @traceloop.tool("history_jokes")
-  async history_jokes_tool() {
-      completion = await openai.chat.completions.create({
-          model="gpt-3.5-turbo",
-          messages=[{"role": "user", "content": f"get some history jokes"}],
-      })
+@traceloop.tool("history_jokes")
+async history_jokes_tool() {
+completion = await openai.chat.completions.create({
+model="gpt-3.5-turbo",
+messages=[{"role": "user", "content": f"get some history jokes"}],
+})
 
       return completion.choices[0].message.content
-  }
+
 }
+}
+
 ````
 </Tab>
 </Tabs>
@@ -297,5 +302,5 @@ So, if you're decorating an `async` method, use `@aworkflow`, `@atask` and so fo
   `traceloop.workflow()`, `traceloop.task()`, etc.
 </Note>
 
-See also a [separate section on using threads with OpenLLMetry](tracing/python-threads).
+See also a [separate section on using threads with OpenLLMetry](openllmetry/tracing/python-threads).
 ````
