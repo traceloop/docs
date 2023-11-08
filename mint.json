@@ -92,7 +92,7 @@
         "openllmetry/integrations/grafana",
         "openllmetry/integrations/hyperdx",
         "openllmetry/integrations/signoz",
-        "openllmety/integrations/splunk",
+        "openllmetry/integrations/splunk",
         "openllmetry/integrations/otel-collector"
       ]
     },
