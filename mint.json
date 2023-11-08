@@ -93,6 +93,7 @@
         "openllmetry/integrations/azure",
         "openllmetry/integrations/hyperdx",
         "openllmetry/integrations/signoz",
+        "openllmety/integrations/splunk",
         "openllmetry/integrations/otel-collector"
       ]
     },
