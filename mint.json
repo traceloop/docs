@@ -75,7 +75,6 @@
       "pages": [
         "openllmetry/tracing/annotations",
         "openllmetry/tracing/association",
-        "openllmetry/tracing/privacy",
         "openllmetry/tracing/python-threads"
       ]
     },
@@ -96,6 +95,10 @@
         "openllmetry/integrations/splunk",
         "openllmetry/integrations/otel-collector"
       ]
+    },
+    {
+      "group": "Privacy",
+      "pages": ["openllmetry/privacy/traces", "openllmetry/privacy/telemetry"]
     },
     {
       "group": "Prompt Management",
@@ -136,6 +139,10 @@
     {
       "source": "/openllmetry/tracing/decorators",
       "destination": "/openllmetry/tracing/annotations"
+    },
+    {
+      "source": "/openllmetry/tracing/privacy",
+      "destination": "/openllmetry/privacy/traces"
     }
   ],
   "footerSocials": {

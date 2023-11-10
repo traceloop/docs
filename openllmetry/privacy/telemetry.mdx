@@ -1,0 +1,37 @@
+---
+title: "Telemetry"
+---
+
+OpenLLMetry contains a telemetry feature that collects **anonymous** usage information.
+
+## Why?
+
+We use this information to help us understand how OpenLLMetry is used, to help us prioritize work on new features and bug fixes,
+and to help us improve OpenLLMetry's performance and stability.
+
+## Opting out
+
+If you prefer to opt out of telemetry, you can do this by setting the `TRACELOOP_TELEMETRY` environment variable to `FALSE`.
+
+## What do you track?
+
+We will only track usage details that help us make product decisions, specifically:
+
+- OpenLLMetry version
+- Tracing endpoint type (e.g. Honeycomb, Datadog, Traceloop, etc.)
+- Types of instrumentations that were initialized
+- Usage of prompt rendering (without logging any details about the prompt, variables, or values)
+
+We **do not** collect personally-identifiable or sensitive information, such as: API keys, prompts, completions, embeddings, or spans and traces.
+
+To view the list of events we track, you may reference the [code](https://github.com/traceloop/openllmetry/blob/main/packages/traceloop-sdk/traceloop/sdk/telemetry.py).
+
+## Where is telemetry information stored?
+
+We use Posthog to store and visualize telemetry data.
+
+<Info>
+  Posthog is an open source platform for product analytics. Learn more about
+  Posthog on [posthog.com](posthog.com) or
+  [github.com/posthog](github.com/posthog).
+</Info>
