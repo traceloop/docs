@@ -30,29 +30,60 @@ The values of these variables will be passed in when you retrieve the prompt in 
 For more information see the [Registry Documentation](/openllmetry/prompts/registry).
 
 <Tip>
-This screen is also a prompt playground. Give the prompt a try by clicking **Test** at the bottom.
+  This screen is also a prompt playground. Give the prompt a try by clicking
+  **Test** at the bottom.
 </Tip>
 
 </Step>
 
 <Step title="Deploy the prompt to your developement environement">
-Click **Deploy to Dev** to deploy the prompt to your development environment.
+  Click **Deploy to Dev** to deploy the prompt to your development environment.
 </Step>
 
 <Step title="Use the prompt in your code">
 
-If you haven't done so, make sure to [generate an API key](https://app.traceloop.com/settings/api-keys) and 
+If you haven't done so, make sure to [generate an API key](https://app.traceloop.com/settings/api-keys) and
 set it as an environment variable `TRACELOOP_API_KEY`.
+
+Make sure to initialize the SDK. On Typescript/Javascript, you should also wait for the initialization to complete.
+
+<CodeGroup>
+
+```python Python
+from traceloop.sdk import Traceloop
+
+Traceloop.init()
+```
+
+```js Typescript / Javascript
+import * as traceloop from "@traceloop/node-server-sdk";
+
+traceloop.initialize();
+await traceloop.waitForInitialization();
+```
+
+</CodeGroup>
 
 Retrieve your prompt by using the `get_prompt` function.
 For example, if you've created a prompt with the key `joke_generator` and a single variable `persona`:
 
-```python
+<CodeGroup>
+
+```python Python
 from traceloop.sdk.prompts import get_prompt
 
 prompt_args = get_prompt("joke_generator", persona="pirate")
 completion = openai.ChatCompletion.create(**prompt_args)
 ```
+
+```js Typescript / Javascript
+import * as traceloop from "@traceloop/node-server-sdk";
+
+const prompt = traceloop.getPrompt("joke_generator", { persona: "pirate" });
+const chatCompletion = await openai.chat.completions.create(prompt);
+```
+
+</CodeGroup>
 
 <Note>
   The returned variable `prompt_args` is compatible with the API used by the
