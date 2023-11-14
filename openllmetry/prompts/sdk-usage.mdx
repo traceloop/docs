@@ -29,12 +29,23 @@ Tell me a joke about OpenTelemetry as a {{persona}}
 
 Then, you can retrieve it with in your code using `get_prompt`:
 
-```python
+<CodeGroup>
+
+```python Python
 from traceloop.sdk.prompts import get_prompt
 
 prompt_args = get_prompt("joke_generator", persona="pirate")
 completion = openai.ChatCompletion.create(**prompt_args)
 ```
+
+```js Typescript / Javascript
+import * as traceloop from "@traceloop/node-server-sdk";
+
+const prompt = traceloop.getPrompt("joke_generator", { persona: "pirate" });
+const chatCompletion = await openai.chat.completions.create(prompt);
+```
+
+</CodeGroup>
 
 <Tip>
   The returned variable `prompt_args` is compatible with the API used by the
