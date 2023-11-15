@@ -59,9 +59,7 @@ Traceloop.initialize({ baseUrl: <opentelemetry endpoint> })
 
 If set, this is sent as a bearer token on the Authorization header.
 
-API keys can be generated from the [Traceloop Dashboard](https://app.traceloop.com/settings/api-keys), for each of the three supported environments (Development, Staging, Production).
-
-Note that API Keys are only displayed once, at the time of their creation and are not stored anywhere. If you lose your API key, you will need to generate a new one.
+[Traceloop](/openllmetry/integrations/traceloop), for example, use this to authenticate incoming traces and requests.
 
 <Tip>
   If this is not set, and the base URL is set to `https://api.traceloop.com`,
@@ -166,9 +164,7 @@ Traceloop.initialize({ suppressLogs: true });
 
 ## Traceloop Sync
 
-<Note>
-  Traceloop Sync must be enabled in order to use the prompt registry.
-</Note>
+<Note>Traceloop Sync must be enabled in order to use the prompt registry.</Note>
 
 By default, the Traceloop SDK's sync functionality is active.
 To disable it or change any defaults, see the example below.
@@ -180,12 +176,12 @@ Traceloop.init(traceloop_sync_enabled=True)
 ```
 
 ```js Typescript / Javascript
-Traceloop.initialize({ 
+Traceloop.initialize({
   traceloopSyncEnabled: true, // also via TRACELOOP_SYNC_ENABLED env variable (default: true)
   traceloopSyncMaxRetries: 3, // also via TRACELOOP_SYNC_MAX_RETRIES env variable (default: 3)
   traceloopSyncPollingInterval: 60, // also via TRACELOOP_SYNC_POLLING_INTERVAL env variable (default: 60) - seconds
-  traceloopSyncDevPollingInterval: 5 // also via TRACELOOP_SYNC_DEV_POLLING_INTERVAL env variable (default: 5) - seconds
- });
+  traceloopSyncDevPollingInterval: 5, // also via TRACELOOP_SYNC_DEV_POLLING_INTERVAL env variable (default: 5) - seconds
+});
 ```
 
 </CodeGroup>

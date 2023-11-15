@@ -7,12 +7,24 @@ sidebarTitle: "Traceloop"
   <img src="/img/trace.png" />
 </Frame>
 
+[Traceloop](https://app.traceloop.com) is a platform for observability and evaluation of LLM outputs.
+It allows you to deploy changes to prompts and model configurations with confidence, without breaking existing functionality.
+
+## Connecting OpenLLMetry to Traceloop
+
+On Traceloop, API keys can be generated from the [Traceloop Dashboard](https://app.traceloop.com/settings/api-keys), for each of the three supported environments (Development, Staging, Production).
+
 Go to [Traceloop Environments Management](https://app.traceloop.com/settings/api-keys)
 (you can also reach here by clicking on **Environments** on the left-hand navigation bar).
-Click on **Generate API Key**. Click **Copy Key** to copy the API key as it won't be shown again.
+Click on **Generate API Key**. Click **Copy Key** to copy the API key.
 
-Set the API key as an environment variable in your app named `TRACELOOP_API_KEY`.
-For on-prem deployments, set `TRACELOOP_BASE_URL` to the URL of your Traceloop instance.
+<Note>
+  API Keys are only displayed once, at the time of their creation and are not
+  stored anywhere. If you lose your API key, you will need to revoke the old one
+  and generate a new one.
+</Note>
+
+Set the API key as an environment variable named `TRACELOOP_API_KEY`.
 
 Done! You'll get instant visibility into everything that's happening with your LLM.
 If you're calling a vector DB, or any other external service or database, you'll also see it in the Traceloop dashboard.

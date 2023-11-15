@@ -13,10 +13,11 @@ When in the `Development` environment, the poll interval is determined by the `T
 
 To disable polling all together, set the `TRACELOOP_SYNC_ENABLED` environment variable to false (its enabled by default).
 
-Make sure you've configured the SDK with the right environment and API Key. See the [SDK documentation](/openllmetry/configuration#api-key) for more information.
+Make sure you've configured the SDK with the right environment and API Key. See the [SDK documentation](/openllmetry/integrations/traceloop) for more information.
 
 <Tip>
-  The SDK uses smart caching mechanisms to proide zero latency for fetching prompts.
+  The SDK uses smart caching mechanisms to proide zero latency for fetching
+  prompts.
 </Tip>
 
 ## Get Prompt API
@@ -49,6 +50,6 @@ const chatCompletion = await openai.chat.completions.create(prompt);
 
 <Tip>
   The returned variable `prompt_args` is compatible with the API used by the
-  foundation models SDKs (OpenAI, Anthropic, etc.) which means you should directly
-  plug in the response to the appropriate API call.
+  foundation models SDKs (OpenAI, Anthropic, etc.) which means you should
+  directly plug in the response to the appropriate API call.
 </Tip>
