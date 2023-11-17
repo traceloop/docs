@@ -13,11 +13,12 @@ Run the following command in your terminal:
 <CodeGroup>
 
 ```bash pip
-pip install traceloop-sdk
+pip install traceloop-sdk --extra-index-url https://pip.traceloop.com/simple/
 ```
 
 ```bash poetry
-poetry add traceloop-sdk
+poetry source add --priority=supplemental traceloop  https://pip.traceloop.com/simple/
+poetry add --source traceloop traceloop-sdk
 ```
 
 </CodeGroup>
