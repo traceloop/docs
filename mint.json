@@ -2,8 +2,8 @@
   "name": "traceloop",
   "favicon": "/favicon.png",
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo/traceloop-light.png",
+    "dark": "/logo/traceloop-dark.png"
   },
   "colors": {
     "primary": "#FFB53D",
