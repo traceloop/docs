@@ -35,7 +35,7 @@ Then, you can retrieve it with in your code using `get_prompt`:
 ```python Python
 from traceloop.sdk.prompts import get_prompt
 
-prompt_args = get_prompt("joke_generator", persona="pirate")
+prompt_args = get_prompt(key="joke_generator", variables={"persona": "pirate"})
 completion = openai.ChatCompletion.create(**prompt_args)
 ```
 

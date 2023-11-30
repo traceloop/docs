@@ -72,7 +72,7 @@ For example, if you've created a prompt with the key `joke_generator` and a sing
 ```python Python
 from traceloop.sdk.prompts import get_prompt
 
-prompt_args = get_prompt("joke_generator", persona="pirate")
+prompt_args = get_prompt(key="joke_generator", variables={"persona": "pirate"})
 completion = openai.ChatCompletion.create(**prompt_args)
 ```
 
