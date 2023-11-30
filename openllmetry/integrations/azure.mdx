@@ -15,7 +15,7 @@ Review how to setup [OpenTelemetry with Python in Azure Application Insights](ht
 3. Install required packages
 
 ```bash
-pip install opentelemetry-api opentelemetry-sdk azure-monitor-opentelemetry-exporter traceloop-sdk
+pip install azure-monitor-opentelemetry-exporter traceloop-sdk
 ```
 
 4. Example implementation
@@ -24,39 +24,26 @@ pip install opentelemetry-api opentelemetry-sdk azure-monitor-opentelemetry-expo
 
 from traceloop.sdk import Traceloop
 from traceloop.sdk.decorators import workflow
-from opentelemetry import trace
-from opentelemetry.sdk.trace import TracerProvider
 from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
-from opentelemetry.sdk.trace.export import SimpleSpanProcessor
-
-# Set the tracer provider
-trace.set_tracer_provider(TracerProvider())
-
-# Configure the tracer provider to export traces to Azure Application Insights
-exporter = AzureMonitorTraceExporter(connection_string="INSERT_CONNECTION_STRING_HERE")
-span_processor = SimpleSpanProcessor(exporter)
-trace.get_tracer_provider().add_span_processor(span_processor)
-
 
 import openai  # Ensure you have the openai library installed
 
+# Configure the tracer provider to export traces to Azure Application Insights.
+# Get your complete connection string from the Azure Portal or CLI.
+exporter = AzureMonitorTraceExporter(connection_string="INSERT_CONNECTION_STRING_HERE")
+
+# Pass your exporter to Traceloop
 Traceloop.init(app_name="your_app_name", exporter=exporter)
-tracer = trace.get_tracer(__name__)
 
 
 @workflow(name="llm_execution")
 def execute_llm():
-    with tracer.start_as_current_span("llm_span") as span:
-        span.add_event("API request initiated")
-
         # Replace with your actual OpenAI API call
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hello world"}],
             max_tokens=60
         )
-
-        span.add_event("API request completed")
 
         return response['choices'][0]['message']['content']
 
