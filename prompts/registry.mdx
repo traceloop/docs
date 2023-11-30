@@ -12,18 +12,19 @@ Traceloop's Prompt Registry is where you manage your prompts. You can create, ed
 </Frame>
 
 The prompt configuration is composed of two parts:
-* The prompt template (system and/or user prompts)
-* The model configuration (temperature, top_p, etc.)
+
+- The prompt template (system and/or user prompts)
+- The model configuration (temperature, top_p, etc.)
 
 <Tip>
-  Your prompt template can include variables. Variables are defined according to the
-  syntax of the parser specified. For example, if using `jinjia2` the syntax
+  Your prompt template can include variables. Variables are defined according to
+  the syntax of the parser specified. For example, if using `jinjia2` the syntax
   will be `{{ variable_name }}`. You can then pass variable values to the SDK
   when calling `get_prompt`. See the example on the [SDK
-  Usage](/openllmetry/prompts/sdk-usage) section.
+  Usage](/prompts/sdk-usage) section.
 </Tip>
 
-Initially, prompts are created in `Draft Mode`. In this mode, you can make changes to the prompt and configuration. You can also test your prompt in the playground (see below). 
+Initially, prompts are created in `Draft Mode`. In this mode, you can make changes to the prompt and configuration. You can also test your prompt in the playground (see below).
 
 ## Testing a Prompt Configuration (Prompt Playground)
 
@@ -49,7 +50,7 @@ The completion response (including token usage) will be displayed in the playgro
 
 Draft mode prompts can only be deployed to the `development` environment.
 
-Once you are satisfied with the prompt, you can publish it and make it available to deploy in all environments. 
+Once you are satisfied with the prompt, you can publish it and make it available to deploy in all environments.
 Once published, the prompt version cannot be edited anymore.
 
 Choose the `Deploy` Tab to navigate to the deployments page for your prompt.
@@ -63,7 +64,7 @@ Simply click on the `Deploy` button to deploy a prompt version to an environment
   `Production` without first deploying to `Staging`.
 </Note>
 
-To fetch prompts from a specific environment, you must supply that environment's API key to the Traceloop SDK. See the [SDK Configuration](/openllmetry/configuration#api-key) for details
+To fetch prompts from a specific environment, you must supply that environment's API key to the Traceloop SDK. See the [SDK Configuration](/openllmetry/integrations/traceloop) for details
 
 ## Prompt Versions
 
