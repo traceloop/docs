@@ -1,0 +1,54 @@
+---
+title: "Azure Application Insights"
+---
+
+Traceloop supports sending traces to Azure Application Insights via standard OpenTelemetry integrations.
+
+Review how to setup [OpenTelemetry with Python in Azure Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/app/opentelemetry-enable?tabs=python).
+
+<Frame>
+  <img src="/img/integrations/azure.png" />
+</Frame>
+
+1. Provision an Application Insights instance in the [Azure portal](https://portal.azure.com/).
+2. Get your Connection String from the instance - [details here](https://learn.microsoft.com/en-us/azure/azure-monitor/app/sdk-connection-string?tabs=python).
+3. Install required packages
+
+```bash
+pip install azure-monitor-opentelemetry-exporter traceloop-sdk
+```
+
+4. Example implementation
+
+```python
+
+from traceloop.sdk import Traceloop
+from traceloop.sdk.decorators import workflow
+from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
+
+import openai  # Ensure you have the openai library installed
+
+# Configure the tracer provider to export traces to Azure Application Insights.
+# Get your complete connection string from the Azure Portal or CLI.
+exporter = AzureMonitorTraceExporter(connection_string="INSERT_CONNECTION_STRING_HERE")
+
+# Pass your exporter to Traceloop
+Traceloop.init(app_name="your_app_name", exporter=exporter)
+
+
+@workflow(name="llm_execution")
+def execute_llm():
+        # Replace with your actual OpenAI API call
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": "Hello world"}],
+            max_tokens=60
+        )
+
+        return response['choices'][0]['message']['content']
+
+if __name__ == "__main__":
+    execute_llm()
+```
+
+

@@ -89,6 +89,7 @@
         "openllmetry/integrations/newrelic",
         "openllmetry/integrations/honeycomb",
         "openllmetry/integrations/grafana",
+        "openllmetry/integrations/azure",
         "openllmetry/integrations/hyperdx",
         "openllmetry/integrations/signoz",
         "openllmetry/integrations/splunk",
