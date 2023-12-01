@@ -4,7 +4,9 @@ description: "Documentation of the initialization options for the SDKs."
 ---
 
 Most configuration options can be set via environment variables or via the SDK's initialization options.
+<Warning>
 The SDK initialization options always take precedence over the environment variables.
+</Warning>
 See below for the list of options.
 
 ## Application Name
@@ -146,7 +148,24 @@ Traceloop.initialize({ disableBatch: true });
 
 </CodeGroup>
 
-## Disable Logging
+## Disable Tracing of Prompt Content
+
+By default, OpenLLMetry logs prompts, completions, and embeddings to span attributes.
+
+However, you may want to disable this logging for privacy reasons, as they may contain highly sensitive data from your users.
+You may also simply want to reduce the size of your traces.
+
+<CodeGroup>
+```bash Environment Variable
+TRACELOOP_TRACE_CONTENT=false
+```
+
+```js Typescript / Javascript
+Traceloop.initialize({ traceContent: false })
+```
+</CodeGroup>
+
+## Disable Console Logging
 
 By default, the SDK outputs some debug logs to the console. You can disable this behavior with this flag.
 
@@ -164,12 +183,19 @@ Traceloop.initialize({ suppressLogs: true });
 
 ## Traceloop Sync
 
+By default, if you're sending traces to Traceloop, then the Traceloop SDK's sync functionality is also active.
+To disable it or change any defaults, see the example below. The values listed are the default values, 
+so you don't need to set them unless you want to change the defaults.
+
 <Note>Traceloop Sync must be enabled in order to use the prompt registry.</Note>
 
-By default, the Traceloop SDK's sync functionality is active.
-To disable it or change any defaults, see the example below.
-
 <CodeGroup>
+```bash Environment Variable
+TRACELOOP_SYNC_ENABLED=true
+TRACELOOP_SYNC_MAX_RETRIES=3
+TRACELOOP_SYNC_POLLING_INTERVAL=60 # seconds
+TRACELOOP_SYNC_DEV_POLLING_INTERVAL=5 # seconds
+```
 
 ```python Python
 Traceloop.init(traceloop_sync_enabled=True)
@@ -177,10 +203,10 @@ Traceloop.init(traceloop_sync_enabled=True)
 
 ```js Typescript / Javascript
 Traceloop.initialize({
-  traceloopSyncEnabled: true, // also via TRACELOOP_SYNC_ENABLED env variable (default: true)
-  traceloopSyncMaxRetries: 3, // also via TRACELOOP_SYNC_MAX_RETRIES env variable (default: 3)
-  traceloopSyncPollingInterval: 60, // also via TRACELOOP_SYNC_POLLING_INTERVAL env variable (default: 60) - seconds
-  traceloopSyncDevPollingInterval: 5, // also via TRACELOOP_SYNC_DEV_POLLING_INTERVAL env variable (default: 5) - seconds
+  traceloopSyncEnabled: true, 
+  traceloopSyncMaxRetries: 3, 
+  traceloopSyncPollingInterval: 60, // in seconds
+  traceloopSyncDevPollingInterval: 5, // in seconds
 });
 ```
 

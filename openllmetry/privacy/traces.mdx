@@ -2,28 +2,33 @@
 title: "Prompts, Completions and Embeddings"
 ---
 
-By default, OpenLLMetry logs prompts, completions, and embeddings to span attributes.
+**By default, OpenLLMetry logs prompts, completions, and embeddings to span attributes.**
 This gives you a clear visibility into how your LLM application is working, and can make it easy to debug and evaluate the quality of the outputs.
 
 However, you may want to disable this logging for privacy reasons, as they may contain highly sensitive data from your users.
 You may also simply want to reduce the size of your traces.
 
-To disable logging, set the `TRACELOOP_TRACE_CONTENT` environment variable to `false`:
+## Disabling logging globally
 
-```bash
+To disable logging, set the `TRACELOOP_TRACE_CONTENT` environment variable to `false`.
+On Typescript/Javascript you can also pass the `traceContent` option.
+
+<CodeGroup>
+```bash Environment Variable
 TRACELOOP_TRACE_CONTENT=false
 ```
+
+```js Typescript / Javascript
+Traceloop.initialize({ traceContent: false })
+```
+</CodeGroup>
 
 Traceloop SDK, as well as all individual instrumentations will respect this setting.
 
-## Enabling logging only for specific users
+## Enabling logging selectively for specific users
 
 You can decide to selectively enable prompt logging for specific users or workflows.
-To do that, first make sure content tracing is disabled globally:
-
-```bash
-TRACELOOP_TRACE_CONTENT=false
-```
+To do that, first make sure content tracing is disabled globally as described in the previous section.
 
 ### Using Traceloop
 
