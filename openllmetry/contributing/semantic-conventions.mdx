@@ -1,0 +1,51 @@
+---
+title: "GenAI Semantic Conventions"
+---
+
+With OpenLLMetry, we aim at defining an extension of the standard
+[OpenTelemetry Semantic Conventions](https://github.com/open-telemetry/semantic-conventions) for gen AI applications.
+It defines additional attributes for spans to so we can log prompts, completions, token usage, etc.
+These attributes are reported on relevant spans when you use the OpenLLMetry SDK or the individual instrumentations.
+
+This is a work in progress, and we welcome your feedback and contributions!
+
+## Implementations
+
+- [Python](https://github.com/traceloop/openllmetry/tree/main/packages/opentelemetry-semantic-conventions-ai)
+- [TypeScript](https://github.com/traceloop/openllmetry-js/tree/main/packages/ai-semantic-conventions)
+- [Ruby](https://github.com/traceloop/openllmetry-ruby/tree/main/semantic_conventions_ai)
+
+## Definitions
+
+### LLM Foundation Models
+
+- `llm.vendor` - The vendor of the LLM (e.g. OpenAI, Anthropic, etc.)
+- `llm.request.tyoe` - The type of request (e.g. `completion`, `chat`, etc.)
+- `llm.request.model` - The model requested (e.g. `gpt-4`, `claude`, etc.)
+- `llm.request.functions` - An array of function definitions provided to the model in the request
+- `llm.prompts` - An array of prompts as sent to the LLM model
+- `llm.request.max_tokens` - The maximum number of response tokens requested
+- `llm.response.model` - The model actually used (e.g. `gpt-4-0613`, etc.)
+- `llm.usage.total_tokens` - The total number of tokens used
+- `llm.usage.completion_tokens` - The number of tokens used for the completion response
+- `llm.usage.prompt_tokens` - The number of tokens used for the prompt in the request
+- `llm.completions` - An array of completions returned from the LLM model
+- `llm.temperature`
+- `llm.top_p`
+- `llm.frequency_penalty`
+- `llm.presence_penalty`
+- `llm.chat.stop_sequences`
+- `llm.user` - The user ID sent with the request
+- `llm.headers` - The headers used for the request
+
+### Vector DBs
+
+- `vector_db.vendor` - The vendor of the Vector DB (e.g. Chroma, Pinecone, etc.)
+- `vector_db.query.top_k` - The top k used for the query
+
+### LLM Frameworks
+
+- `traceloop.span.kind` - One of `workflow`, `task`, `agent`, `tool`.
+- `traceloop.workflow.name` - The name of the parent workflow/chain associated with this span
+- `traceloop.entity.name` - Framework-related name for the entity (for example, in Langchain, this will be the name of the specific class that defined the chain / subchain).
+- `traceloop.association.properties` - Context on the request (relevant User ID, Chat ID, etc.)
