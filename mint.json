@@ -75,7 +75,8 @@
       "pages": [
         "openllmetry/tracing/annotations",
         "openllmetry/tracing/association",
-        "openllmetry/tracing/python-threads"
+        "openllmetry/tracing/python-threads",
+        "openllmetry/tracing/without-sdk"
       ]
     },
     {
