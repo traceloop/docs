@@ -10,7 +10,9 @@ OpenLLMetry allows you to easily mark traces with these IDs so you can track the
 
 <CodeGroup>
 ```python Python
-Tracer.set_association_properties({ "user_id": "user12345", "chat_id": "chat12345" })
+from traceloop.sdk import Traceloop
+ 
+Traceloop.set_association_properties({ "user_id": "user12345", "chat_id": "chat12345" })
 ```
 
 ```js Typescript
