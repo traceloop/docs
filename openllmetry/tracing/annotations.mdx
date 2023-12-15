@@ -243,34 +243,41 @@ Remember to set `experimentalDecorators` to `true` in your `tsconfig.json`.
 import * as traceloop from "@traceloop/node-server-sdk";
 
 class Agent {
-@traceloop.agent("joke_translation")
-async translate_joke_to_pirate(joke: str) {
-completion = await openai.chat.completions.create({
-model="gpt-3.5-turbo",
-messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
-})
+  @traceloop.agent("joke_translation")
+  async translate_joke_to_pirate(joke: str) {
+    completion = await openai.chat.completions.create({
+      model="gpt-3.5-turbo",
+      messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
+    })
 
     history_jokes_tool()
 
     return completion.choices[0].message.content
+  }
 
-}
+  @traceloop.tool("history_jokes")
+  async history_jokes_tool() {
+    completion = await openai.chat.completions.create({
+      model="gpt-3.5-turbo",
+      messages=[{"role": "user", "content": f"get some history jokes"}],
+    })
 
-@traceloop.tool("history_jokes")
-async history_jokes_tool() {
-completion = await openai.chat.completions.create({
-model="gpt-3.5-turbo",
-messages=[{"role": "user", "content": f"get some history jokes"}],
-})
-
-      return completion.choices[0].message.content
-
-}
+    return completion.choices[0].message.content
+  }
 }
 
 ````
 </Tab>
 </Tabs>
+
+## Async methods
+
+In Typescript, you can use the same syntax for async methods.
+
+In Python, you'll need to switch to an equivalent async decorator.
+So, if you're decorating an `async` method, use `@aworkflow`, `@atask` and so forth.
+
+See also a [separate section on using threads in Python with OpenLLMetry](/openllmetry/tracing/python-threads).
 
 ## Decorating Classes (Python only)
 
@@ -290,17 +297,3 @@ class JokeAgent:
 
         return completion.choices[0].message.content
 ```
-
-## Async methods and classes (Python only)
-
-All decorators have an equivalent async decorator.
-
-So, if you're decorating an `async` method, use `@aworkflow`, `@atask` and so forth.
-
-<Note>
-  Javascript support async methods with the regular decorators,
-  `traceloop.workflow()`, `traceloop.task()`, etc.
-</Note>
-
-See also a [separate section on using threads with OpenLLMetry](openllmetry/tracing/python-threads).
-````
