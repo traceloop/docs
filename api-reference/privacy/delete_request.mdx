@@ -3,7 +3,7 @@ title: "Delete specific user data"
 api: "DELETE https://app.traceloop.com/api/config/privacy/data-deletion"
 ---
 
-You can delete traces data for a specific user of yours by specifying their association properties.
+You can delete traces data for specific users using their association properties.
 
 ## Request Body
 
@@ -23,6 +23,5 @@ You can delete traces data for a specific user of yours by specifying their asso
 
 <ResponseField name="requestId" type="string">
   The request ID for this deletion request. You can use it to query the status
-  of the deletion.
+  of the deletion using the [delete status API](https://www.traceloop.com/docs/api-reference/privacy/delete_status).
 </ResponseField>
-```
