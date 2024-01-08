@@ -4,8 +4,10 @@ description: "Documentation of the initialization options for the SDKs."
 ---
 
 Most configuration options can be set via environment variables or via the SDK's initialization options.
+
 <Warning>
-The SDK initialization options always take precedence over the environment variables.
+  The SDK initialization options always take precedence over the environment
+  variables.
 </Warning>
 See below for the list of options.
 
@@ -29,6 +31,7 @@ Traceloop.initialize({ appName: "my app name" });
 ## Base URL
 
 This defines the OpenTelemetry endpoint to connect to. It defaults to https://api.traceloop.com
+
 If you prefix it with `http` or `https`, it will use the OTLP/HTTP protocol.
 Otherwise, it will use the OTLP/GRPC protocol.
 
@@ -161,8 +164,9 @@ TRACELOOP_TRACE_CONTENT=false
 ```
 
 ```js Typescript / Javascript
-Traceloop.initialize({ traceContent: false })
+Traceloop.initialize({ traceContent: false });
 ```
+
 </CodeGroup>
 
 ## Disable Console Logging
@@ -184,7 +188,7 @@ Traceloop.initialize({ suppressLogs: true });
 ## Traceloop Sync
 
 By default, if you're sending traces to Traceloop, then the Traceloop SDK's sync functionality is also active.
-To disable it or change any defaults, see the example below. The values listed are the default values, 
+To disable it or change any defaults, see the example below. The values listed are the default values,
 so you don't need to set them unless you want to change the defaults.
 
 <Note>Traceloop Sync must be enabled in order to use the prompt registry.</Note>
@@ -203,8 +207,8 @@ Traceloop.init(traceloop_sync_enabled=True)
 
 ```js Typescript / Javascript
 Traceloop.initialize({
-  traceloopSyncEnabled: true, 
-  traceloopSyncMaxRetries: 3, 
+  traceloopSyncEnabled: true,
+  traceloopSyncMaxRetries: 3,
   traceloopSyncPollingInterval: 60, // in seconds
   traceloopSyncDevPollingInterval: 5, // in seconds
 });
