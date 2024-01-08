@@ -3,14 +3,14 @@ title: "Enable logging of prompts and responses"
 api: "POST https://app.traceloop.com/api/config/pii/traceing-allow-list"
 ---
 
-By default, all prompts and responses are logged.
-If you want to disable this behavior by following [this guide](/openllmetry/privacy/traces),
-you can selectively enable it for some of your users with this API.
+By default, Traceloop logs all prompts and responses created by your users. You can disable this behaviour by following [this guide](/openllmetry/privacy/traces). 
+
+This endpoint allows you to selectively enable this behaviour for some of your users, using their association proprties such as their user IDs.
 
 ## Request Body
 
 <ParamField body="associationPropertyAllowList" type="Associated Property Object">
-The list of association properties (like `{userId: "123"}`) that will be allowed to be logged.
+The list of association properties (like `{userId: "123"}`) that will be used to determine which users' data is to be logged.
 </ParamField>
 
 Example:
