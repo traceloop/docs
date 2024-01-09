@@ -1,0 +1,96 @@
+---
+title: "Go"
+description: "Install OpenLLMetry for Go by following these 3 easy steps and get instant monitoring."
+---
+
+<Warning>This is still in beta. Email dev@traceloop.com to get access</Warning>
+
+<Steps>
+<Step title="Install the SDK">
+
+Run the following command in your terminal:
+
+```bash
+go get "github.com/traceloop/go-openllmetry"
+```
+
+In your LLM app, initialize the Traceloop tracer like this:
+
+```go
+import traceloop "github.com/traceloop/go-openllmetry"
+
+func main() {
+    tracer := traceloop.NewTracer()
+    defer tracer.Close()
+}
+```
+
+</Step>
+<Step title="Log your prompts">
+<Frame>
+  <img src="/img/single_trace_prompt.png" />
+</Frame>
+For now, we don't automatically instrument libraries on Go (as opposed to Python and Javascript).
+This will change in later versions.
+
+This means that you'll need to manually log your prompts and completions.
+
+```go
+import (
+    openai "github.com/sashabaranov/go-openai"
+    traceloop "github.com/traceloop/go-openllmetry"
+)
+
+func call_llm() {
+    client := openai.NewClient("your token")
+
+    // Log the prompt
+    tracer.LogPrompt("gpt-3.5-turbo", "Tell me a joke about OpenTelemetry")
+
+    // Call OpenAI like you normally would
+    resp, err := client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: "Tell me a joke about OpenTelemetry!",
+				},
+			},
+		},
+	)
+
+    // Pass the response form OpenAI as is to log the completion and token usage
+    tracer.LogResponse(resp)
+}
+```
+
+}
+
+</Step>
+<Step title="Configure trace exporting">
+Lastly, you'll need to configure where to export your traces.
+The 2 environment variables controlling this are `TRACELOOP_API_KEY` and `TRACELOOP_BASE_URL`.
+
+For Traceloop, read on. For other options, see [Exporting](/openllmetry/integrations/introduction).
+
+### Using Traceloop Cloud
+
+Go to [Traceloop](https://app.traceloop.com), and create a new account.
+Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys.
+Click **Generate API Key** to generate an API key for the developement environment and click **Copy API Key** to copy it over.
+
+<Warning>Make sure to copy it as it won't be shown again.</Warning>
+
+<Frame>
+  <img src="/img/apikey.png" />
+</Frame>
+
+Set the copied Traceloop's API key as an environment variable in your app named `TRACELOOP_API_KEY`.
+
+Done! You'll get instant visibility into everything that's happening with your LLM.
+If you're calling a vector DB, or any other external service or database, you'll also see it in the Traceloop dashboard.
+
+</Step>
+</Steps>

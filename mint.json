@@ -66,6 +66,7 @@
         "openllmetry/getting-started-ts",
         "openllmetry/getting-started-nextjs",
         "openllmetry/getting-started-ruby",
+        "openllmetry/getting-started-go",
         "openllmetry/configuration",
         "openllmetry/troubleshooting"
       ]
