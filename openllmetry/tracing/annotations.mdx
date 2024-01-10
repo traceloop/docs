@@ -44,7 +44,7 @@ def create_joke():
 @task(name="signature_generation")
 def generate_signature(joke: str):
     completion = openai.Completion.create(
-        model="text-davinci-003",[]
+        model="davinci-002",[]
         prompt="add a signature to the joke:\n\n" + joke,
     )
 
@@ -84,7 +84,7 @@ async function create_joke() {
 async function generate_signature(joke: string) {
   return await traceloop.withTask("signature_generation", async () => {
     completion = await openai.completions.create({
-      model: "text-davinci-003",
+      model: "davinci-002",
       prompt: "add a signature to the joke:\n\n" + joke,
     });
 
@@ -145,7 +145,7 @@ class JokeCreation {
   @traceloop.task("signature_generation")
   async generate_signature(joke: string) {
     completion = await openai.completions.create({
-      model: "text-davinci-003",
+      model: "davinci-002",
       prompt: "add a signature to the joke:\n\n" + joke,
     });
 
@@ -243,27 +243,29 @@ Remember to set `experimentalDecorators` to `true` in your `tsconfig.json`.
 import * as traceloop from "@traceloop/node-server-sdk";
 
 class Agent {
-  @traceloop.agent("joke_translation")
-  async translate_joke_to_pirate(joke: str) {
-    completion = await openai.chat.completions.create({
-      model="gpt-3.5-turbo",
-      messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
-    })
+@traceloop.agent("joke_translation")
+async translate_joke_to_pirate(joke: str) {
+completion = await openai.chat.completions.create({
+model="gpt-3.5-turbo",
+messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
+})
 
     history_jokes_tool()
 
     return completion.choices[0].message.content
-  }
 
-  @traceloop.tool("history_jokes")
-  async history_jokes_tool() {
-    completion = await openai.chat.completions.create({
-      model="gpt-3.5-turbo",
-      messages=[{"role": "user", "content": f"get some history jokes"}],
-    })
+}
+
+@traceloop.tool("history_jokes")
+async history_jokes_tool() {
+completion = await openai.chat.completions.create({
+model="gpt-3.5-turbo",
+messages=[{"role": "user", "content": f"get some history jokes"}],
+})
 
     return completion.choices[0].message.content
-  }
+
+}
 }
 
 ````
@@ -297,3 +299,4 @@ class JokeAgent:
 
         return completion.choices[0].message.content
 ```
+````
