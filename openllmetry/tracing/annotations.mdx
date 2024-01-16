@@ -30,11 +30,14 @@ Use it as `@workflow(name="my_workflow")` or `@task(name="my_task")`.
 </Tip>
 
 ```python
+from openai import OpenAI
 from traceloop.sdk.decorators import workflow, task
+
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 @task(name="joke_creation")
 def create_joke():
-    completion = openai.ChatCompletion.create(
+    completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": "Tell me a joke about opentelemetry"}],
     )
@@ -174,11 +177,14 @@ Similarily, if you use autonomous agents, you can use the `@agent` decorator to 
 Each tool should be marked with `@tool`.
 
 ```python
+from openai import OpenAI
 from traceloop.sdk.decorators import agent, tool
+
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 @agent(name="joke_translation")
 def translate_joke_to_pirate(joke: str):
-    completion = openai.ChatCompletion.create(
+    completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
     )
@@ -190,7 +196,7 @@ def translate_joke_to_pirate(joke: str):
 
 @tool(name="history_jokes")
 def history_jokes_tool():
-    completion = openai.ChatCompletion.create(
+    completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": f"get some history jokes"}],
     )
@@ -287,12 +293,15 @@ While the examples above shows how to decorate functions, you can also decorate 
 In this case, you will also need to provide the name of the method that runs the workflow, task, agent or tool.
 
 ```python Python
+from openai import OpenAI
 from traceloop.sdk.decorators import agent
+
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 @agent(name="base_joke_generator", method_name="generate_joke")
 class JokeAgent:
     def generate_joke(self):
-        completion = openai.ChatCompletion.create(
+        completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Tell me a joke about Traceloop"}],
         )

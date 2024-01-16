@@ -33,10 +33,13 @@ Then, you can retrieve it with in your code using `get_prompt`:
 <CodeGroup>
 
 ```python Python
+from openai import OpenAI
 from traceloop.sdk.prompts import get_prompt
 
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
 prompt_args = get_prompt(key="joke_generator", variables={"persona": "pirate"})
-completion = openai.ChatCompletion.create(**prompt_args)
+completion = client.chat.completions.create(**prompt_args)
 ```
 
 ```js Typescript / Javascript

@@ -18,7 +18,7 @@ You can choose to export the traces to Traceloop, or to your existing observabil
 <CodeGroup>
 
 ```python Python
-import openai
+from openai import OpenAI
 from traceloop.sdk import Traceloop
 from traceloop.sdk.decorators import workflow
 
@@ -26,12 +26,13 @@ Traceloop.init(app_name="joke_generation_service")
 
 @workflow(name="joke_creation")
 def create_joke():
-    completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": "Tell me a joke about opentelemetry"}],
-    )
+  client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+  completion = client.chat.completions.create(
+      model="gpt-3.5-turbo",
+      messages=[{"role": "user", "content": "Tell me a joke about opentelemetry"}],
+  )
 
-    return completion.choices[0].message.content
+  return completion.choices[0].message.content
 ```
 
 ```js Typescript

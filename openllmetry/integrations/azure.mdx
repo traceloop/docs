@@ -26,7 +26,9 @@ from traceloop.sdk import Traceloop
 from traceloop.sdk.decorators import workflow
 from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
 
-import openai  # Ensure you have the openai library installed
+from openai import OpenAI  # Ensure you have the openai library installed
+
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 # Configure the tracer provider to export traces to Azure Application Insights.
 # Get your complete connection string from the Azure Portal or CLI.
@@ -39,7 +41,7 @@ Traceloop.init(app_name="your_app_name", exporter=exporter)
 @workflow(name="llm_execution")
 def execute_llm():
         # Replace with your actual OpenAI API call
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hello world"}],
             max_tokens=60
@@ -50,5 +52,3 @@ def execute_llm():
 if __name__ == "__main__":
     execute_llm()
 ```
-
-
