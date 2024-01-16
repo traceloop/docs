@@ -8,6 +8,12 @@ things like `user_id`, `chat_id`, or anything else that is tied to the flow that
 
 OpenLLMetry allows you to easily mark traces with these IDs so you can track them in the UI.
 
+<Tip>
+  You can use any key-value pair to associate a trace with an entity - it can
+  also be `org_id`, `team_id`, whatever you want. The only requirement is that
+  the key and the value are strings.
+</Tip>
+
 <CodeGroup>
 ```python Python
 from traceloop.sdk import Traceloop
@@ -16,6 +22,13 @@ Traceloop.set_association_properties({ "user_id": "user12345", "chat_id": "chat1
 ```
 
 ```js Typescript
+// Option 1 - set association properties within a workflow or agent
+traceloop.withWorkflow("workflow_name", { userId: "user12345", chatId: "chat12345" } , () => {
+    // Your code here
+    // (function can be made async if needed)
+  });
+
+// Option 2  - set association properties directly
 traceloop.withAssociationProperties({
   userId: "user12345",
   chatId: "chat12345",
