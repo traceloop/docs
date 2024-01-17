@@ -65,7 +65,7 @@ def joke_workflow():
 </Tab>
 <Tab title="Typescript / Javascript">
 
-Use it as `withWorkflow("my_workflow", () => ...)` or `withTask(name="my_task", () => ...)`.
+Use it as `withWorkflow("my_workflow", {}, () => ...)` or `withTask(name="my_task", () => ...)`.
 The function passed to `withWorkflow` or `withTask` witll be part of the workflow or task and can be async or sync.
 
 ```js
@@ -96,7 +96,7 @@ async function generate_signature(joke: string) {
 }
 
 async function joke_workflow() {
-  return await traceloop.withWorkflow("pirate_joke_generator", async () => {
+  return await traceloop.withWorkflow("pirate_joke_generator", {}, async () => {
     eng_joke = create_joke();
     pirate_joke = await translate_joke_to_pirate(eng_joke);
     signature = await generate_signature(pirate_joke);
@@ -214,15 +214,15 @@ Each tool should be in `withTool`.
 import * as traceloop from "@traceloop/node-server-sdk";
 
 async function translate_joke_to_pirate(joke: str) {
-  return await withAgent("joke_translation", () => {
+  return await withAgent("joke_translation", {}, () => {
     completion = await openai.chat.completions.create({
       model="gpt-3.5-turbo",
       messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
-    })
+    });
 
-    history_jokes_tool()
+    history_jokes_tool();
 
-    return completion.choices[0].message.content
+    return completion.choices[0].message.content;
   }
 }
 
@@ -231,9 +231,9 @@ async function history_jokes_tool() {
     completion = await openai.chat.completions.create({
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": f"get some history jokes"}],
-    })
+    });
 
-    return completion.choices[0].message.content
+    return completion.choices[0].message.content;
   }
 }
 ```
@@ -251,27 +251,24 @@ import * as traceloop from "@traceloop/node-server-sdk";
 class Agent {
 @traceloop.agent("joke_translation")
 async translate_joke_to_pirate(joke: str) {
-completion = await openai.chat.completions.create({
-model="gpt-3.5-turbo",
-messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
-})
+  completion = await openai.chat.completions.create({
+    model="gpt-3.5-turbo",
+    messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
+  });
 
-    history_jokes_tool()
+  history_jokes_tool();
 
-    return completion.choices[0].message.content
-
+  return completion.choices[0].message.content;
 }
 
 @traceloop.tool("history_jokes")
 async history_jokes_tool() {
-completion = await openai.chat.completions.create({
-model="gpt-3.5-turbo",
-messages=[{"role": "user", "content": f"get some history jokes"}],
-})
+  completion = await openai.chat.completions.create({
+    model="gpt-3.5-turbo",
+    messages=[{"role": "user", "content": f"get some history jokes"}],
+  });
 
-    return completion.choices[0].message.content
-
-}
+  return completion.choices[0].message.content;
 }
 
 ````
