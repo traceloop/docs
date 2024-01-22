@@ -28,6 +28,19 @@ Traceloop.initialize({ appName: "my app name" });
 
 </CodeGroup>
 
+## Resource Attributes
+
+You can further add any custom attributes to the OpenTelemetry resource. This is useful to add information about the environment
+where the application is running, such as the environment name, the application version, etc.
+
+<CodeGroup>
+
+```python Python
+Traceloop.init(resource_attributes={"env": "prod", "version": "1.0.0"})
+```
+
+</CodeGroup>
+
 ## Base URL
 
 This defines the OpenTelemetry endpoint to connect to. It defaults to https://api.traceloop.com
