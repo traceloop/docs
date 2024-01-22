@@ -17,11 +17,18 @@ go get "github.com/traceloop/go-openllmetry"
 In your LLM app, initialize the Traceloop tracer like this:
 
 ```go
-import traceloop "github.com/traceloop/go-openllmetry"
+import sdk "github.com/traceloop/go-openllmetry/traceloop-sdk"
 
 func main() {
-    tracer := traceloop.NewTracer()
-    defer tracer.Close()
+  ctx := context.Background()
+
+  traceloop := sdk.NewClient(config.Config{
+    BaseURL: "api.traceloop.com",
+    APIKey: os.Getenv("TRACELOOP_API_KEY"),
+  })
+  defer func() { traceloop.Shutdown(ctx) }()
+
+  traceloop.Initialize(ctx)
 }
 ```
 
@@ -38,17 +45,11 @@ This means that you'll need to manually log your prompts and completions.
 ```go
 import (
     openai "github.com/sashabaranov/go-openai"
-    traceloop "github.com/traceloop/go-openllmetry"
 )
 
 func call_llm() {
-    client := openai.NewClient("your token")
-
-    // Log the prompt
-    tracer.LogPrompt("gpt-3.5-turbo", "Tell me a joke about OpenTelemetry")
-
-    // Call OpenAI like you normally would
-    resp, err := client.CreateChatCompletion(
+	// Call OpenAI like you normally would
+	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
 			Model: openai.GPT3Dot5Turbo,
@@ -61,8 +62,40 @@ func call_llm() {
 		},
 	)
 
-    // Pass the response form OpenAI as is to log the completion and token usage
-    tracer.LogResponse(resp)
+	// Log the request and the response
+	log := dto.PromptLogAttributes{
+		Prompt: dto.Prompt{
+			Vendor: "openai",
+			Mode:   "chat",
+			Model:  request.Model,
+		},
+		Completion: dto.Completion{
+			Model: resp.Model,
+		},
+		Usage: dto.Usage{
+			TotalTokens:      resp.Usage.TotalTokens,
+			CompletionTokens: resp.Usage.CompletionTokens,
+			PromptTokens:     resp.Usage.PromptTokens,
+		},
+	}
+
+	for i, message := range request.Messages {
+		log.Prompt.Messages = append(log.Prompt.Messages, dto.Message{
+			Index:   i,
+			Content: message.Content,
+			Role:    message.Role,
+		})
+	}
+
+	for _, choice := range resp.Choices {
+		log.Completion.Messages = append(log.Completion.Messages, dto.Message{
+			Index:   choice.Index,
+			Content: choice.Message.Content,
+			Role:    choice.Message.Role,
+		})
+	}
+
+	traceloop.LogPrompt(ctx, log)
 }
 ```
 
