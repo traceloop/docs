@@ -92,10 +92,10 @@ import "github.com/sashabaranov/go-openai"
 func call_llm() {
   // traceloop is the object you got when you initialized the SDK
   request, err := traceloop.GetOpenAIChatCompletionRequest("joke_generator", map[string]interface{}{ "persona": "pirate" })
-    if err != nil {
-      fmt.Printf("GetOpenAIChatCompletionRequest error: %v\n", err)
-      return
-    }
+  if err != nil {
+    fmt.Printf("GetOpenAIChatCompletionRequest error: %v\n", err)
+    return
+  }
   client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
     resp, err := client.CreateChatCompletion(
       context.Background(),

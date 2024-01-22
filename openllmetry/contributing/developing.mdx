@@ -1,8 +1,31 @@
 ---
-title: "Local Developement - Python"
+title: "Local Development"
 ---
 
-You can contribute both new instrumentations or update and improve the Python SDK wrapper.
+You can contribute both new instrumentations or update and improve the different SDKs.
+
+[Join our Slack community](https://traceloop.com/slack) to chat and get help on any issues you may encounter.
+
+The Python and Typescript are monorepos that use [nx](https://nx.dev) to manage the different packages.
+Make sure you have `node >= 18` and `nx` installed globally.
+
+## Basic guide for using nx
+
+Most commands can be run from the root of the project. For example, to lint the entire project, run:
+
+```bash
+nx run-many -t lint
+```
+
+Other commands you can use simiarily are `test`, or `build`, or `lock` and `install` (for Python).
+
+To run a specific command on a specific package, run:
+
+```bash
+nx run <package>:<command>
+```
+
+## Python
 
 We use `poetry` to manage packages, and each package is managed independently under its own directory under `/packages`.
 All instrumentations depends on `opentelemetry-semantic-conventions-ai`,
@@ -10,14 +33,12 @@ and `traceloop-sdk` depends on all the instrumentations.
 
 If adding a new instrumentation, make sure to use it in `traceloop-sdk`, and write proper tests.
 
-[Join our Slack community](https://traceloop.com/slack) to chat and get help on any issues you may encounter.
-
-## Debugging
+### Debugging
 
 No matter if you're working on an instrumentation or on the SDK, we recommend testing the changes by using
 the SDK in the sample app (`/packages/sample-app`) or the tests under the SDK.
 
-## Running tests
+### Running tests
 
 All tests are currently under `packages/python-sdk`. Since we wanted to simulate a real environment,
 the tests make actual calls to OpenAI and other services.
@@ -37,3 +58,8 @@ cd packages/python-sdk
 poetry install
 poetry run pytest
 ```
+
+## Typescript
+
+We use `npm` with workspaces to manage packages in the monorepo. Install by running `npm install` in the root of the project.
+Each package has its own test suite. You can use the sample app to run and test changes locally.
