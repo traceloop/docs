@@ -86,19 +86,19 @@
       "pages": [
         "openllmetry/integrations/introduction",
         "openllmetry/integrations/traceloop",
-        "openllmetry/integrations/sentry",
-        "openllmetry/integrations/dynatrace",
+        "openllmetry/integrations/azure",
         "openllmetry/integrations/datadog",
+        "openllmetry/integrations/dynatrace",
+        "openllmetry/integrations/grafana",
+        "openllmetry/integrations/honeycomb",
+        "openllmetry/integrations/hyperdx",
         "openllmetry/integrations/instana",
         "openllmetry/integrations/newrelic",
-        "openllmetry/integrations/honeycomb",
-        "openllmetry/integrations/grafana",
-        "openllmetry/integrations/azure",
-        "openllmetry/integrations/hyperdx",
+        "openllmetry/integrations/otel-collector",
         "openllmetry/integrations/service-now",
         "openllmetry/integrations/signoz",
-        "openllmetry/integrations/splunk",
-        "openllmetry/integrations/otel-collector"
+        "openllmetry/integrations/sentry",
+        "openllmetry/integrations/splunk"
       ]
     },
     {

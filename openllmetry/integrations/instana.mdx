@@ -7,16 +7,17 @@ sidebarTitle: "Instana"
   <img src="/img/integrations/instana.png" />
 </Frame>
 
-With Instana, you can export directly to a Instana Agent in your cluster, Instana Agent will report back the tracing and metrics back to Instana Backend and display all of the tracing and metrics on Instana UI.
+With Instana, you can export directly to an Instana Agent in your cluster.
+The Instana Agent will report back the tracing and metrics to the Instana Backend and display them on the Instana UI.
 
-After instana OS agent installed. edit agent config file configuration.yaml under `/opt/instana/agent/etc/instana` folder.
+After an Instana OS agent is installed, edit the agent config file `configuration.yaml` under the `/opt/instana/agent/etc/instana` folder.
 
 ```
 cd /opt/instana/agent/etc/instana
 vi configuration.yaml
 ```
 
-Add following to the file:
+Add the following to the file:
 
 ```
 com.instana.plugin.opentelemetry:
@@ -25,13 +26,13 @@ com.instana.plugin.opentelemetry:
     enabled: true
 ```
 
-Restart the instana agent:
+Restart the Instana agent:
 
 ```
 systemctl restart instana-agent.service
 ```
 
-The instana agent should be ready for opentelemetry data at port 4317.
+The Instana agent should be ready for OpenTelemetry data at port 4317.
 
 Then, set this env var, and you're done!
 
