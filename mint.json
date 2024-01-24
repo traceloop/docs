@@ -89,6 +89,7 @@
         "openllmetry/integrations/sentry",
         "openllmetry/integrations/dynatrace",
         "openllmetry/integrations/datadog",
+        "openllmetry/integrations/instana",
         "openllmetry/integrations/newrelic",
         "openllmetry/integrations/honeycomb",
         "openllmetry/integrations/grafana",
