@@ -1,0 +1,40 @@
+---
+title: "LLM Observability with Instana and OpenLLMetry"
+sidebarTitle: "Instana"
+---
+
+<Frame>
+  <img src="/img/integrations/instana.png" />
+</Frame>
+
+With Instana, you can export directly to a Instana Agent in your cluster, Instana Agent will report back the tracing and metrics back to Instana Backend and display all of the tracing and metrics on Instana UI.
+
+After instana OS agent installed. edit agent config file configuration.yaml under `/opt/instana/agent/etc/instana` folder.
+
+```
+cd /opt/instana/agent/etc/instana
+vi configuration.yaml
+```
+
+Add following to the file:
+
+```
+com.instana.plugin.opentelemetry:
+  enabled: true
+  grpc:
+    enabled: true
+```
+
+Restart the instana agent:
+
+```
+systemctl restart instana-agent.service
+```
+
+The instana agent should be ready for opentelemetry data at port 4317.
+
+Then, set this env var, and you're done!
+
+```bash
+TRACELOOP_BASE_URL=<instana-agent-hostname>:4317
+```
