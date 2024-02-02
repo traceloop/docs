@@ -228,3 +228,18 @@ Traceloop.initialize({
 ```
 
 </CodeGroup>
+
+## Instrumentations
+
+By default, the SDK automatically detects which models and frameworks you are using and instruments them for you.
+You can override this and specify specific frameworks and models you want to instrument. This, for example, allow you to
+specify that you want to log calls to OpenAI, but not Anthropic, or vice-versa.
+
+<CodeGroup>
+```python Python
+from traceloop.sdk.instruments import Instruments
+
+Traceloop.init(instruments={Instruments.OPENAI, Instruments.PINECONE})
+
+```
+</CodeGroup>
