@@ -15,7 +15,7 @@ Review how to setup [OpenTelemetry with Python in Azure Application Insights](ht
 3. Install required packages
 
 ```bash
-pip install azure-monitor-opentelemetry-exporter traceloop-sdk
+pip install azure-monitor-opentelemetry-exporter traceloop-sdk openai
 ```
 
 4. Example implementation
@@ -23,10 +23,9 @@ pip install azure-monitor-opentelemetry-exporter traceloop-sdk
 ```python
 import os
 from traceloop.sdk import Traceloop
-from traceloop.sdk.decorators import workflow
+from traceloop.sdk.decorators import workflow, task, agent, tool
 from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
-
-from openai import OpenAI  # Ensure you have the openai library installed
+from openai import OpenAI
 
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
@@ -38,17 +37,51 @@ exporter = AzureMonitorTraceExporter(connection_string="INSERT_CONNECTION_STRING
 Traceloop.init(app_name="your_app_name", exporter=exporter)
 
 
-@workflow(name="llm_execution")
-def execute_llm():
-    # Replace with your actual OpenAI API call
-    response = client.chat.completions.create(
+@task(name="joke_creation")
+def create_joke():
+    completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": "Hello world"}],
-        max_tokens=60
+        messages=[{"role": "user", "content": "Tell me a joke about opentelemetry"}],
     )
 
-    return response.choices[0].message.content
+    return completion.choices[0].message.content
 
+@task(name="signature_generation")
+def generate_signature(joke: str):
+    completion = client.completions.create(model="davinci-002",
+    prompt="add a signature to the joke:\n\n" + joke)
+
+    return completion.choices[0].text
+
+@agent(name="joke_translation")
+def translate_joke_to_pirate(joke: str):
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
+    )
+
+    history_jokes_tool()
+
+    return completion.choices[0].message.content
+
+
+@tool(name="history_jokes")
+def history_jokes_tool():
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": f"get some history jokes"}],
+    )
+
+    return completion.choices[0].message.content
+
+
+@workflow(name="pirate_joke_generator")
+def joke_workflow():
+    eng_joke = create_joke()
+    pirate_joke = translate_joke_to_pirate(eng_joke)
+    signature = generate_signature(pirate_joke)
+    print(pirate_joke + "\n\n" + signature)
+    
 if __name__ == "__main__":
-    execute_llm()
+    joke_workflow()
 ```
