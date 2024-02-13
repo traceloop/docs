@@ -40,24 +40,34 @@ the SDK in the sample app (`/packages/sample-app`) or the tests under the SDK.
 
 ### Running tests
 
-All tests are currently under `packages/python-sdk`. Since we wanted to simulate a real environment,
-the tests make actual calls to OpenAI and other services.
-To run them, you'll need to set up the following env vars:
+We record HTTP requests and then replay them in tests to avoid making actual calls to the foundation model providers.
+See [vcr.py](https://github.com/kevin1024/vcrpy) and [pollyjs](https://github.com/Netflix/pollyjs/) to do that, check out
+their documentation to understand how to use them and re-record the requests.
 
-```
-OPENAI_API_KEY=...
-ANTHROPIC_API_KEY=...
-PINECONE_API_KEY=...
-PINECONE_ENVIRONMENT=...
-```
-
-Run the tests using:
+You can run all tests by running:
 
 ```bash
-cd packages/python-sdk
-poetry install
-poetry run pytest
+nx run-many -t test
 ```
+
+Or run a specific test by running:
+
+```bash
+nx run <package>:test
+```
+
+For example, to run the tests for the `openai` instrumentation package, run:
+
+<CodeGroup>
+```bash Python
+nx run opentelemetry-instrumentation-openai:test
+```
+
+```bash Typescript
+nx run @traceloop/instrumentation-openai:test
+```
+
+</CodeGroup>
 
 ## Typescript
 
