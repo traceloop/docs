@@ -44,3 +44,8 @@ from opentelemetry.instrumentation.openai import OpenAIInstrumentor
 
 OpenAIInstrumentor().instrument()
 ```
+
+<Tip>
+  If you're setting OpenTelemetry's `TracerProvider` manually, make sure to do
+  this before calling `instrument()`.
+</Tip>
