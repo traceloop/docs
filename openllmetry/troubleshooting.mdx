@@ -41,14 +41,15 @@ Use the `ConsoleExporter` and check if you see traces in the console.
 ```python Python
 from opentelemetry.sdk.trace.export import ConsoleSpanExporter
 
-Traceloop.init(exporter=ConsoleExporter())
-```
+Traceloop.init(exporter=ConsoleSpanExporter())
+
+````
 
 ```js Typescript / Javascript
 import { ConsoleSpanExporter } from "@opentelemetry/sdk-trace-node";
 
 Traceloop.init({ exporter: new ConsoleSpanExporter() });
-```
+````
 
 </CodeGroup>
 
@@ -58,6 +59,7 @@ Check the [integration guide](/openllmetry/integrations) again, and make sure yo
 ## 4. (Typescript / Javascript only) Did you import the SDK correctly?
 
 If you're using Typescript or Javascript, you must import the SDK before importing any LLM package like OpenAI, Pinecone, and others.
+
 ```js
 import * as traceloop from "@traceloop/node-server-sdk";
 
