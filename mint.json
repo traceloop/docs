@@ -123,7 +123,11 @@
     },
     {
       "group": "Tracing",
-      "pages": ["api-reference/tracing/whitelist_user"]
+      "pages": [
+        "api-reference/tracing/whitelist_user",
+        "api-reference/tracing/get_whitelisted_users",
+        "api-reference/tracing/delete_whitelisted_user"
+      ]
     },
     {
       "group": "GDPR & Privacy",

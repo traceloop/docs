@@ -7,15 +7,17 @@ You can delete traces data for a specific user of yours by specifying their asso
 
 ## Request Body
 
-<ParamField body="associationProperty" type="JSON">
-  A specific criterion for deletion like `{userId: "123"}`.
+<ParamField body="associationProperties" type="JSON">
+  A list of users to delete, each specific using a specific criterion for deletion like `{userId: "123"}`.
 </ParamField>
 
 ```json
 {
-  "associationProperty": {
-    "userId": "123"
-  }
+  "associationProperties": [
+    {
+      "userId": "123"
+    }
+  ]
 }
 ```
 

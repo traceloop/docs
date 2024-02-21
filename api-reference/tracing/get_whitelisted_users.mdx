@@ -1,0 +1,30 @@
+---
+title: "Get identifiers of users that are allowed to be logged"
+api: "GET https://app.traceloop.com/api/config/pii/tracing-allow-list"
+---
+
+By default, all prompts and responses are logged.
+If you've disabled this behavior by following [this guide](/openllmetry/privacy/traces),
+and then [selectively enabled it for some of your users](/api-reference/tracing/whitelist_user) then you
+can use this API to view which users you've enabled.
+
+## Response
+
+<ResponseField name="associationPropertyAllowList" type="JSON">
+  The list of users that are allowed to be logged. Listed using their
+  association properties.
+</ResponseField>
+
+```json
+{
+  "associationPropertyAllowList": [
+    {
+      "userId": "123"
+    },
+    {
+      "userId": "456",
+      "chatId": "abc"
+    }
+  ]
+}
+```
