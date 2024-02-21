@@ -86,6 +86,7 @@
       "pages": [
         "openllmetry/integrations/introduction",
         "openllmetry/integrations/traceloop",
+        "openllmetry/integrations/axiom",
         "openllmetry/integrations/azure",
         "openllmetry/integrations/datadog",
         "openllmetry/integrations/dynatrace",
