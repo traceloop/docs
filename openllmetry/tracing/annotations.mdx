@@ -72,7 +72,7 @@ The function passed to `withWorkflow` or `withTask` witll be part of the workflo
 import * as traceloop from "@traceloop/node-server-sdk";
 
 async function create_joke() {
-  return await traceloop.withTask("joke_creation", async () => {
+  return await traceloop.withTask({ name: "joke_creation" }, async () => {
     completion = await openai.chat.completions({
       model: "gpt-3.5-turbo",
       messages: [
@@ -85,30 +85,36 @@ async function create_joke() {
 }
 
 async function generate_signature(joke: string) {
-  return await traceloop.withTask("signature_generation", async () => {
-    completion = await openai.completions.create({
-      model: "davinci-002",
-      prompt: "add a signature to the joke:\n\n" + joke,
-    });
+  return await traceloop.withTask(
+    { name: "signature_generation" },
+    async () => {
+      completion = await openai.completions.create({
+        model: "davinci-002",
+        prompt: "add a signature to the joke:\n\n" + joke,
+      });
 
-    return completion.choices[0].text;
-  });
+      return completion.choices[0].text;
+    }
+  );
 }
 
 async function joke_workflow() {
-  return await traceloop.withWorkflow("pirate_joke_generator", {}, async () => {
-    eng_joke = create_joke();
-    pirate_joke = await translate_joke_to_pirate(eng_joke);
-    signature = await generate_signature(pirate_joke);
-    console.log(pirate_joke + "\n\n" + signature);
-  });
+  return await traceloop.withWorkflow(
+    { name: "pirate_joke_generator" },
+    async () => {
+      eng_joke = create_joke();
+      pirate_joke = await translate_joke_to_pirate(eng_joke);
+      signature = await generate_signature(pirate_joke);
+      console.log(pirate_joke + "\n\n" + signature);
+    }
+  );
 }
 ```
 
 </Tab>
 <Tab title="Typescript - with Decorators">
 <Note>
-This feature is only available in Typescript. You'll need to update your `tsconfig.json` to enable decorators.
+This feature is only available in Typescript. Unless you're on Nest.js, you'll need to update your `tsconfig.json` to enable decorators.
 </Note>
 
 Update `tsconfig.json` to enable decorators:
@@ -121,7 +127,7 @@ Update `tsconfig.json` to enable decorators:
 }
 ```
 
-Use it in your code `@traceloop.workflow("my_workflow")` for class methods only.
+Use it in your code `@traceloop.workflow({ name: "my_workflow" })` for class methods only.
 We will consider every call to OpenAI as a distinct step (or task). You can even annotate the task with a name, using `@traceloop.task("my_task")`.
 
 <Tip>
@@ -133,7 +139,7 @@ We will consider every call to OpenAI as a distinct step (or task). You can even
 import * as traceloop from "@traceloop/node-server-sdk";
 
 class JokeCreation {
-  @traceloop.task("joke_creation")
+  @traceloop.task({ name: "joke_creation" })
   async create_joke() {
     completion = await openai.chat.completions({
       model: "gpt-3.5-turbo",
@@ -145,7 +151,7 @@ class JokeCreation {
     return completion.choices[0].message.content;
   }
 
-  @traceloop.task("signature_generation")
+  @traceloop.task({ name: "signature_generation" })
   async generate_signature(joke: string) {
     completion = await openai.completions.create({
       model: "davinci-002",
@@ -155,7 +161,7 @@ class JokeCreation {
     return completion.choices[0].text;
   }
 
-  @traceloop.workflow("pirate_joke_generator")
+  @traceloop.workflow({ name: "pirate_joke_generator" })
   async joke_workflow() {
     eng_joke = create_joke();
     pirate_joke = await translate_joke_to_pirate(eng_joke);
@@ -214,7 +220,7 @@ Each tool should be in `withTool`.
 import * as traceloop from "@traceloop/node-server-sdk";
 
 async function translate_joke_to_pirate(joke: str) {
-  return await withAgent("joke_translation", {}, () => {
+  return await withAgent({name: "joke_translation" }, () => {
     completion = await openai.chat.completions.create({
       model="gpt-3.5-turbo",
       messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
@@ -227,7 +233,7 @@ async function translate_joke_to_pirate(joke: str) {
 }
 
 async function history_jokes_tool() {
-  return await withTool("history_jokes", () => {
+  return await withTool({ name: "history_jokes" }, () => {
     completion = await openai.chat.completions.create({
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": f"get some history jokes"}],
@@ -243,32 +249,32 @@ async function history_jokes_tool() {
 Similarily, if you use autonomous agents, you can use the `@agent` decorator to trace them as a single unit.
 Each tool should be marked with `@tool`.
 <Note>
-Remember to set `experimentalDecorators` to `true` in your `tsconfig.json`.
+If you're not on Nest.js, remember to set `experimentalDecorators` to `true` in your `tsconfig.json`.
 </Note>
 ```js
 import * as traceloop from "@traceloop/node-server-sdk";
 
 class Agent {
-@traceloop.agent("joke_translation")
+@traceloop.agent({ name: "joke_translation" })
 async translate_joke_to_pirate(joke: str) {
-  completion = await openai.chat.completions.create({
-    model="gpt-3.5-turbo",
-    messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
-  });
+completion = await openai.chat.completions.create({
+model="gpt-3.5-turbo",
+messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
+});
 
-  history_jokes_tool();
+history_jokes_tool();
 
-  return completion.choices[0].message.content;
+return completion.choices[0].message.content;
 }
 
-@traceloop.tool("history_jokes")
+@traceloop.tool({ name: "history_jokes" })
 async history_jokes_tool() {
-  completion = await openai.chat.completions.create({
-    model="gpt-3.5-turbo",
-    messages=[{"role": "user", "content": f"get some history jokes"}],
-  });
+completion = await openai.chat.completions.create({
+model="gpt-3.5-turbo",
+messages=[{"role": "user", "content": f"get some history jokes"}],
+});
 
-  return completion.choices[0].message.content;
+return completion.choices[0].message.content;
 }
 
 ````
