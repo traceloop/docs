@@ -25,21 +25,58 @@ yarn add @traceloop/node-server-sdk
 
 </CodeGroup>
 
-Whenever you use an LLM or a vector DB (API routes, `getServerSideProps()`, etc.),
-you'll need to import the Traceloop SDK and initialize it. Make sure to pass
-the modules you'd like to instrument and set `disableBatch` to `true`.
+Create a file named `instrumentation.ts` in the root of your project (i.e., outside of the `pages` or 'app' directory) and add the following code:
 
-```js
+```ts
+export async function register() {
+  if (process.env.NEXT_RUNTIME === "nodejs") {
+    await import("./instrumentation.node.ts");
+  }
+}
+```
+
+Create a file named `instrumentation.node.ts` in the root of your project and add the following code:
+
+```ts
 import * as traceloop from "@traceloop/node-server-sdk";
 import OpenAI from "openai";
 
 traceloop.initialize({
+  appName: "app",
   disableBatch: true,
   instrumentModules: {
     openAI: OpenAI,
+    // Add any other modules you'd like to instrument here
   },
 });
 ```
+
+<Warning>
+  Make sure to explictly pass any LLM modules you want to instrument as
+  otherwise auto-instrumentation won't work on Next.js. Also make sure to set
+  `disableBatch` to `true`.
+</Warning>
+
+On older versions of Next.js, you'll also need to add the following to your `next.config.js`:
+
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    instrumentationHook: true,
+  },
+};
+
+module.exports = nextConfig;
+```
+
+<Tip>
+  See Next.js official OpenTelemetry docs for [app router
+  projects](https://nextjs.org/docs/app/building-your-application/optimizing/open-telemetry)
+  or [pages router
+  projects](https://nextjs.org/docs/pages/building-your-application/optimizing/open-telemetry)
+  for more information.
+</Tip>
 
 </Step>
 <Step title="Annotate your workflows">
@@ -62,14 +99,14 @@ We also have compatible Typescript decorators for class methods which are more c
 <CodeGroup>
 ```js Functions (async / sync)
 async function suggestAnswers(question: string) {
-  return await withWorkflow("suggestAnswers", () => {
+  return await withWorkflow({ name: "suggestAnswers" }, () => {
     ...
   });
 }
 ```
 ```js Class Methods
 class MyLLM {
-  @traceloop.workflow("suggest_answers")
+  @traceloop.workflow({ name: "suggest_answers" })
   async suggestAnswers(question: string) {
     ...
   }

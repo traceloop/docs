@@ -19,23 +19,49 @@ TRACELOOP_TRACE_CONTENT=false
 ```
 
 ```js Typescript / Javascript
-Traceloop.initialize({ traceContent: false })
+Traceloop.initialize({ traceContent: false });
 ```
+
 </CodeGroup>
 
-Traceloop SDK, as well as all individual instrumentations will respect this setting.
+OpenLLMetry SDK, as well as all individual instrumentations will respect this setting.
+
+## Enabling logging selectively in specific workflows / tasks
+
+You can decide to selectively enable prompt logging for specific workflows, tasks, agents, or tools, using the annotations API.
+If you don't specify a `traceContent` option, the global setting will be used.
+
+<CodeGroup>
+```js Typescript / Javascript
+return await traceloop.withWorkflow(
+    { name: "workflow_name", traceContent: false },
+    async () => {
+        ...
+    }
+  );
+```
+
+```js Typescript - with Decorators
+class MyClass {
+  @traceloop.workflow({ traceContent: false })
+  async some_workflow() {
+    ...
+  }
+}
+```
+
+</CodeGroup>
 
 ## Enabling logging selectively for specific users
 
-You can decide to selectively enable prompt logging for specific users or workflows.
-To do that, first make sure content tracing is disabled globally as described in the previous section.
+You can decide to selectively enable or disable prompt logging for specific users or workflows.
 
-### Using Traceloop
+### Using the Traceloop Platform
 
-We have an API to enable content tracing for specific users or workflows.
+We have an API to enable content tracing for specific users, as defined by [association entities](/openllmetry/tracing/association).
 See the [Traceloop API documentation](/api-reference/tracing/whitelist_user) for more information.
 
-### Without Traceloop
+### Without the Traceloop Platform
 
 Set a key called `override_enable_content_tracing` in the OpenTelemetry context to `True` right before making the LLM call
 you want to trace with prompts.

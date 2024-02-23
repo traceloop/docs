@@ -69,14 +69,14 @@ We also have compatible Typescript decorators for class methods which are more c
 <CodeGroup>
 ```js Functions (async / sync)
 async function suggestAnswers(question: string) {
-  return await withWorkflow("suggestAnswers", () => {
+  return await withWorkflow({ name: "suggestAnswers" }, () => {
     ...
   });
 }
 ```
 ```js Class Methods
 class MyLLM {
-  @traceloop.workflow("suggest_answers")
+  @traceloop.workflow({ name: "suggest_answers" })
   async suggestAnswers(question: string) {
     ...
   }
