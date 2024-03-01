@@ -162,8 +162,7 @@
     }
   },
   "modeToggle": {
-    "default": "dark",
-    "isHidden": true
+    "default": "dark"
   },
   "feedback": {
     "thumbsRating": true,
