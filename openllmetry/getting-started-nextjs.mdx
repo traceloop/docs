@@ -16,7 +16,7 @@ npm install @traceloop/node-server-sdk
 ```
 
 ```bash pnpm
-pnpm install @traceloop/node-server-sdk
+pnpm add @traceloop/node-server-sdk
 ```
 
 ```bash yarn
@@ -24,6 +24,9 @@ yarn add @traceloop/node-server-sdk
 ```
 
 </CodeGroup>
+
+<Tabs>
+<Tab title="With Pages Router">
 
 Create a file named `instrumentation.ts` in the root of your project (i.e., outside of the `pages` or 'app' directory) and add the following code:
 
@@ -40,6 +43,8 @@ Create a file named `instrumentation.node.ts` in the root of your project and ad
 ```ts
 import * as traceloop from "@traceloop/node-server-sdk";
 import OpenAI from "openai";
+// Make sure to import the entire module you want to instrument, like this:
+// import * as LlamaIndex from "llamaindex";
 
 traceloop.initialize({
   appName: "app",
@@ -47,6 +52,8 @@ traceloop.initialize({
   instrumentModules: {
     openAI: OpenAI,
     // Add any other modules you'd like to instrument here
+    // for example:
+    // llamaIndex: LlamaIndex,
   },
 });
 ```
@@ -71,12 +78,73 @@ module.exports = nextConfig;
 ```
 
 <Tip>
-  See Next.js official OpenTelemetry docs for [app router
-  projects](https://nextjs.org/docs/app/building-your-application/optimizing/open-telemetry)
-  or [pages router
-  projects](https://nextjs.org/docs/pages/building-your-application/optimizing/open-telemetry)
+  See Next.js [official OpenTelemetry
+  docs](https://nextjs.org/docs/pages/building-your-application/optimizing/open-telemetry)
   for more information.
 </Tip>
+
+</Tab>
+
+<Tab title="With App Router">
+  Install the `node-loader` package by running the following command in your terminal:
+ <CodeGroup>
+```bash npm
+npm install --save-dev node-loader
+```
+
+```bash pnpm
+pnpm add -D node-loader
+```
+
+```bash yarn
+yarn add -D node-loader
+```
+
+</CodeGroup>
+  Edit your `next.config.js` file and add the following webpack configuration:
+  ```js
+  const nextConfig = {
+  webpack: (config, { isServer }) => {
+    config.module.rules.push({
+      test: /\.node$/,
+      loader: "node-loader",
+    });
+    if (isServer) {
+      config.ignoreWarnings = [{ module: /opentelemetry/ }];
+    }
+    return config;
+  },
+};
+  ```
+
+On every app API route you want to instrument, add the following code at the top of the file:
+
+```ts
+import * as traceloop from "@traceloop/node-server-sdk";
+import OpenAI from "openai";
+// Make sure to import the entire module you want to instrument, like this:
+// import * as LlamaIndex from "llamaindex";
+
+traceloop.initialize({
+  appName: "app",
+  disableBatch: true,
+  instrumentModules: {
+    openAI: OpenAI,
+    // Add any other modules you'd like to instrument here
+    // for example:
+    // llamaIndex: LlamaIndex,
+  },
+});
+```
+
+  <Tip>
+    See Next.js [official OpenTelemetry
+    docs](https://nextjs.org/docs/app/building-your-application/optimizing/open-telemetry)
+    for more information.
+  </Tip>
+</Tab>
+
+</Tabs>
 
 </Step>
 <Step title="Annotate your workflows">
