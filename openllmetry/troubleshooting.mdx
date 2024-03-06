@@ -33,7 +33,30 @@ If you don't see that, you might not be initializing the SDK properly.
 
 > **Traceloop exporting traces to `https://api.traceloop.com`**
 
-## 3. Try outputting traces to the console
+## 3. (TS/JS only) Try to manually instrument
+
+If you're using Typescript or Javascript, you might need to manually instrument the libraries you're using.
+See the [manual instrumentation guide](/openllmetry/tracing/js-manual-instrumentations) for more details.
+
+```js
+import OpenAI from "openai";
+import * as LlamaIndex from "llamaindex";
+
+traceloop.initialize({
+  appName: "app",
+  instrumentModules: {
+    openAI: OpenAI,
+    llamaIndex: LlamaIndex,
+    // Add or omit other modules you'd like to instrument
+  },
+```
+
+## 4. Is your library supported yet?
+
+Check out [OpenLLMetry](https://github.com/traceloop/openllmetry#readme) or [OpenLLMetry-JS](https://github.com/traceloop/openllmetry-js#readme) README files to see which libraries and versions are currently supported.
+Contributions are always welcome! If you want to add support for a library, please open a PR.
+
+## 5. Try outputting traces to the console
 
 Use the `ConsoleExporter` and check if you see traces in the console.
 
@@ -55,21 +78,6 @@ Traceloop.init({ exporter: new ConsoleSpanExporter() });
 
 If you see traces in the console, then you probable haven't configured the exporter properly.
 Check the [integration guide](/openllmetry/integrations) again, and make sure you're using the right endpoint and API key.
-
-## 4. (Typescript / Javascript only) Did you import the SDK correctly?
-
-If you're using Typescript or Javascript, you must import the SDK before importing any LLM package like OpenAI, Pinecone, and others.
-
-```js
-import * as traceloop from "@traceloop/node-server-sdk";
-
-import OpenAI from "openai";
-```
-
-## 5. Is your library supported yet?
-
-Checkout [OpenLLMetry](https://github.com/traceloop/openllmetry#readme) or [OpenLLMetry-JS](https://github.com/traceloop/openllmetry-js#readme) README files to see which libraries and versions are currently supported.
-Contributions are always welcome! If you want to add support for a library, please open a PR.
 
 ## 6. Talk to us!
 
