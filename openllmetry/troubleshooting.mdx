@@ -33,9 +33,18 @@ If you don't see that, you might not be initializing the SDK properly.
 
 > **Traceloop exporting traces to `https://api.traceloop.com`**
 
-## 3. (TS/JS only) Try to manually instrument
+## 3. (TS/JS only) Fix known instrumentation issues
 
-If you're using Typescript or Javascript, you might need to manually instrument the libraries you're using.
+If you're using Typescript or Javascript, make sure to import traceloop before any other LLM libraries.
+This is because traceloop needs to instrument the libraries you're using, and it can only do that if it's imported first.
+
+```js
+import * as traceloop from "@traceloop/traceloop";
+import OpenAI from "openai";
+...
+```
+
+If that doesn't work, you may need to manually instrument the libraries you're using.
 See the [manual instrumentation guide](/openllmetry/tracing/js-manual-instrumentations) for more details.
 
 ```js
