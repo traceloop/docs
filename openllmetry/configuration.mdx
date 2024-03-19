@@ -198,6 +198,18 @@ Traceloop.initialize({ suppressLogs: true });
 
 </CodeGroup>
 
+## Enable Stream Token Usage Collection
+
+By default, the SDK does not collect openai token usage in stream mode, You can enable this behavior with this flag.
+It uses [tiktoken](https://github.com/openai/tiktoken) to calculate the estimated token usage.
+Fow now, it only available in Python SDK.
+
+<CodeGroup>
+```bash Environment Variable
+TRACELOOP_STREAM_TOKEN_USAGE=true
+```
+</CodeGroup>
+
 ## Traceloop Sync
 
 By default, if you're sending traces to Traceloop, then the Traceloop SDK's sync functionality is also active.
