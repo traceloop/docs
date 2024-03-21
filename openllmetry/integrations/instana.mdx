@@ -8,9 +8,12 @@ sidebarTitle: "Instana"
 </Frame>
 
 With Instana, you can export directly to an Instana Agent in your cluster.
+
 The Instana Agent will report back the tracing and metrics to the Instana Backend and display them on the Instana UI.
 
-After an Instana OS agent is installed, edit the agent config file `configuration.yaml` under the `/opt/instana/agent/etc/instana` folder.
+If you are running your Instana Agent on a VM or physical machine, do the following to config:
+
+Edit the agent config file `configuration.yaml` under the `/opt/instana/agent/etc/instana` folder.
 
 ```
 cd /opt/instana/agent/etc/instana
@@ -30,6 +33,25 @@ Restart the Instana agent:
 
 ```
 systemctl restart instana-agent.service
+```
+
+If you are running Instana Agent on OpenShift or Kubernetes, do the following to config:
+
+In Instana Configmap, add the following content:
+
+```yaml
+com.instana.plugin.opentelemetry:
+  enabled: true
+  grpc:
+    enabled: true
+```
+
+For Instana Daemonset, add the following:
+
+```yaml
+- mountPath: /opt/instana/agent/etc/instana/configuration-opentelemetry.yaml
+  name: configuration
+  subPath: configuration-opentelemetry.yaml
 ```
 
 The Instana agent should be ready for OpenTelemetry data at port 4317.
