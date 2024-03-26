@@ -77,7 +77,8 @@
         "openllmetry/tracing/annotations",
         "openllmetry/tracing/association",
         "openllmetry/tracing/user-feedback",
-        "openllmetry/tracing/js-manual-instrumentations",
+        "openllmetry/tracing/manual-reporting",
+        "openllmetry/tracing/js-force-instrumentations",
         "openllmetry/tracing/python-threads",
         "openllmetry/tracing/without-sdk"
       ]
