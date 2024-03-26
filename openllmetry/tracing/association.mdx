@@ -22,27 +22,37 @@ Traceloop.set_association_properties({ "user_id": "user12345", "chat_id": "chat1
 ```
 
 ```js Typescript
-// Option 1 - set association properties within a workflow, task, agent or tool
-traceloop.withWorkflow(
-    {
-      name: "workflow_name",
-      associationProperties:
-        { userId: "user12345", chatId: "chat12345" }
-    },
-    () => {
-      // Your code here
-      // (function can be made async if needed)
-  });
+// Option 1 (for class methods only) - set association properties within a workflow, task, agent or tool
+class MyClass {
+  @traceloop.workflow({ associationProperties: { userId: "user123" })
+  myMethod() {
+    // Your code here
+  }
+}
 
-// Option 2  - set association properties directly
-traceloop.withAssociationProperties({
-  userId: "user12345",
-  chatId: "chat12345",
+// Option 2 - set association properties within a workflow, task, agent or tool
+traceloop.withWorkflow(
+  {
+    name: "workflow_name",
+    associationProperties: { userId: "user12345", chatId: "chat12345" },
+  },
+  () => {
+    // Your code here
+    // (function can be made async if needed)
+  }
+);
+
+// Option 3  - set association properties directly
+traceloop.withAssociationProperties(
+  {
+    userId: "user12345",
+    chatId: "chat12345",
+  },
   () => {
     // Your code here
     // (can be async or sync)
   }
-});
+);
 ```
 
 </CodeGroup>
