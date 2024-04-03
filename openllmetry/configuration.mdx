@@ -182,31 +182,31 @@ Traceloop.initialize({ traceContent: false });
 
 </CodeGroup>
 
-## Disable Console Logging
+## Control Logging
 
-By default, the SDK outputs some debug logs to the console. You can disable this behavior with this flag.
+You can control the logging level of the SDK. By default, the SDK logs at the WARN level.
 
 <CodeGroup>
 
-```python Python
-Traceloop.init(suppress_logs=True)
-```
-
 ```js Typescript / Javascript
-Traceloop.initialize({ suppressLogs: true });
+// one of "debug", "info", "warn", "error"
+Traceloop.initialize({ logLevel: "debug" });
 ```
 
 </CodeGroup>
 
-## Enable Stream Token Usage Collection
+## Enrich Collected Metrics and Traces
 
-By default, the SDK does not collect openai token usage in stream mode, You can enable this behavior with this flag.
-It uses [tiktoken](https://github.com/openai/tiktoken) to calculate the estimated token usage.
-Fow now, it only available in Python SDK.
+By default, the SDK enriches collected metrics and traces with additional information such as the OpenAI token usage.
+This may affect latency on the first request, as it needs to fetch the embeddings.
 
 <CodeGroup>
-```bash Environment Variable
-TRACELOOP_STREAM_TOKEN_USAGE=true
+```python Python
+Traceloop.init(should_enrich_metrics=False) 
+```
+
+```js Typescript / Javascript
+Traceloop.initialize({ should_enrich_metrics: false });
 ```
 </CodeGroup>
 
@@ -255,3 +255,4 @@ Traceloop.init(instruments={Instruments.OPENAI, Instruments.PINECONE})
 
 ```
 </CodeGroup>
+```
