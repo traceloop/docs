@@ -197,7 +197,7 @@ Traceloop.initialize({ logLevel: "debug" });
 
 ## Enrich Collected Metrics and Traces
 
-By default, the SDK enriches collected metrics and traces with additional information such as the OpenAI token usage.
+By default, the SDK enriches collected metrics and traces with additional information such as the OpenAI token usage for streaming requests.
 This may affect latency on the first request, as it needs to fetch the embeddings.
 
 <CodeGroup>
@@ -206,7 +206,7 @@ Traceloop.init(should_enrich_metrics=False)
 ```
 
 ```js Typescript / Javascript
-Traceloop.initialize({ should_enrich_metrics: false });
+Traceloop.initialize({ shouldEnrichMetrics: false });
 ```
 </CodeGroup>
 
