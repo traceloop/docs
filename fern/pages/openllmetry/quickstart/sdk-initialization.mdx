@@ -1,0 +1,243 @@
+---
+excerpt: Documentation of the initialization options for the SDKs.
+---
+
+Most configuration options can be set via environment variables or via the SDK’s initialization options.
+
+<Callout intent="info">
+The SDK initialization options always take precedence over the environment variables.
+</Callout>
+
+## Application Name
+
+You can customize the application name that will be logged with the traces. This is useful to identify if you have multiple services with OpenLLMetry installed.
+
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```python
+    Traceloop.init(app_name="my app name")
+    ```
+    </CodeBlock>
+    <CodeBlock title="Javascript / Typescript">
+    ```typescript
+    Traceloop.initialize({ appName: "my app name" });
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+## Resource Attributes
+
+You can further add any custom attributes to the OpenTelemetry resource. This is useful to add information about the environment where the application is running, such as the environment name, the application version, etc.
+
+<CodeBlock title="Python">
+```python
+Traceloop.init(resource_attributes={"env": "prod", "version": "1.0.0"})
+```
+</CodeBlock>
+
+## Base URL
+
+This defines the OpenTelemetry endpoint to connect to. It defaults to https://api.traceloop.com.
+
+If you prefix it with `http` or `https`, it will use the OTLP/HTTP protocol. Otherwise, it will use the OTLP/GRPC protocol.
+
+For configuring this to different observability platform, check out our [integrations section](/open-ll-metry/integrations/overview).
+
+<Callout intent="info">
+The OpenTelemetry standard defines that the actual endpoint should always end with `/v1/traces`. Thus, if you specify a base URL, we always append `/v1/traces` to it. This is similar to how `OTLP_EXPORTER_OTLP_ENDPOINT` works in all OpenTelemetry SDKs.
+</Callout>
+
+<CodeBlocks>
+    <CodeBlock title="Environment Variable">
+    ```
+    TRACELOOP_BASE_URL=<OpenTelemetry Endpoint>
+    ```
+    </CodeBlock>
+    <CodeBlock title="Python">
+    ```python
+    Traceloop.init(api_endpoint=<opentelemetry endpoint>)
+    ```
+    </CodeBlock>
+    <CodeBlock title="Javascript / Typescript">
+    ```typescript
+    Traceloop.initialize({ baseUrl: <opentelemetry endpoint> })
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+## API Key
+
+If set, this is sent as a bearer token on the Authorization header.
+
+[Traceloop](/open-ll-metry/integrations/traceloop), for example, use this to authenticate incoming traces and requests.
+
+<Callout intent="info">
+If this is not set, and the base URL is set to `https://api.traceloop.com`, the SDK will generate a new API key automatically with the Traceloop dashboard.
+</Callout>
+
+<CodeBlocks>
+    <CodeBlock title="Environment Variable">
+    ```
+    TRACELOOP_API_KEY=<api key>
+    ```
+    </CodeBlock>
+    <CodeBlock title="Python">
+    ```python
+    Traceloop.init(api_key=<api key>)
+    ```
+    </CodeBlock>
+    <CodeBlock title="Javascript / Typescript">
+    ```typescript
+    Traceloop.initialize({ apiKey: <api key> })
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+## Headers
+
+If set, this is sent as-is as HTTP headers. This is useful for custom authentication protocols that some observability platforms require. The format follows the [W3C Correlation-Context format](https://github.com/w3c/baggage/blob/main/baggage/HTTP_HEADER_FORMAT.md), i.e. `key1=value1, key2=value2`. If you need spaces, use `%20`. This is similar to how `OTEL_EXPORTER_OTLP_HEADERS` works in all OpenTelemetry SDKs.
+
+<Callout intent="info">
+If this is set, the API key is ignored.
+</Callout>
+
+<CodeBlocks>
+    <CodeBlock title="Environment Variable">
+    ```
+    TRACELOOP_HEADERS=key1=value1,key2=value2
+    ```
+    </CodeBlock>
+    <CodeBlock title="Python">
+    ```python
+    Traceloop.init(headers={"key1": "value1", "key2": "value2"})
+    ```
+    </CodeBlock>
+    <CodeBlock title="Javascript / Typescript">
+    ```javascript
+    Traceloop.initialize({ headers: { key1: "value1", key2: "value2" } });
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+## Custom Traces Exporter
+
+If, for some reason, you cannot use the OTLP/HTTP or OTLP/GRPC exporter that is provided with the SDK, you can set a custom exporter (for example, to Jaeger, Zipkin, or others)
+
+<Callout intent="info">
+If this is set, Base URL, API key and headers configurations are ignored.
+</Callout>
+
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```python
+    Traceloop.init(exporter=ZipkinExporter(endpoint="http://localhost:9411/api/v2/spans"))
+    ```
+    </CodeBlock>
+    <CodeBlock title="Javascript / Typescript">
+    ```javascript
+    Traceloop.initialize({ exporter: new ZipkinExporter() });
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+## Disable Batch
+
+By default, the SDK batches spans using the [OpenTelemetry batch span processor](https://github.com/open-telemetry/opentelemetry-collector/blob/main/processor/batchprocessor/README.md). When working locally, sometime you may wish to disable this behavior. You can do that with this flag.
+
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```python
+    Traceloop.init(disable_batch=True)
+    ```
+    </CodeBlock>
+    <CodeBlock title="Javascript / Typescript">
+    ```javascript
+    Traceloop.initialize({ disableBatch: true });
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+## Disable Tracing of Prompt Content
+
+By default, OpenLLMetry logs prompts, completions, and embeddings to span attributes.
+
+However, you may want to disable this logging for privacy reasons, as they may contain highly sensitive data from your users. You may also simply want to reduce the size of your traces.
+
+<CodeBlocks>
+    <CodeBlock title="Environment Variable">
+    ```
+    TRACELOOP_TRACE_CONTENT=false
+    ```
+    </CodeBlock>
+    <CodeBlock title="Javascript / Typescript">
+    ```javascript
+    Traceloop.initialize({ traceContent: false });
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+## Disable Console Logging
+
+By default, the SDK outputs some debug logs to the console. You can disable this behavior with this flag.
+
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```python
+    Traceloop.init(suppress_logs=True)
+    ```
+    </CodeBlock>
+    <CodeBlock title="Javascript / Typescript">
+    ```javascript
+    Traceloop.initialize({ suppressLogs: true });
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+## Traceloop Sync
+
+By default, if you’re sending traces to Traceloop, then the Traceloop SDK’s sync functionality is also active. To disable it or change any defaults, see the example below. The values listed are the default values, so you don’t need to set them unless you want to change the defaults.
+
+<Callout intent="info">
+Traceloop Sync must be enabled in order to use the prompt registry.
+</Callout>
+
+<CodeBlocks>
+    <CodeBlock title="Environment Variable">
+    ```
+    TRACELOOP_SYNC_ENABLED=true
+    TRACELOOP_SYNC_MAX_RETRIES=3
+    TRACELOOP_SYNC_POLLING_INTERVAL=60 # seconds
+    TRACELOOP_SYNC_DEV_POLLING_INTERVAL=5 # seconds
+    ```
+    </CodeBlock>
+    <CodeBlock title="Python">
+    ```python
+    Traceloop.init(traceloop_sync_enabled=True)
+    ```
+    </CodeBlock>
+    <CodeBlock title="Javascript / Typescript">
+    ```javascript
+    Traceloop.initialize({
+        traceloopSyncEnabled: true,
+        traceloopSyncMaxRetries: 3,
+        traceloopSyncPollingInterval: 60, // in seconds
+        traceloopSyncDevPollingInterval: 5, // in seconds
+    });
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+## Instrumentations
+
+By default, the SDK automatically detects which models and frameworks you are using and instruments them for you. You can override this and specify specific frameworks and models you want to instrument. This, for example, allow you to specify that you want to log calls to OpenAI, but not Anthropic, or vice-versa.
+
+<CodeBlock title="Python">
+```python
+from traceloop.sdk.instruments import Instruments
+
+Traceloop.init(instruments={Instruments.OPENAI, Instruments.PINECONE})
+```
+</CodeBlock>
+
+
+

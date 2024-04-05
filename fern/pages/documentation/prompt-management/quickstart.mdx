@@ -1,0 +1,100 @@
+<div align="center">
+![prompt-management-quickstart](https://fern-image-hosting.s3.amazonaws.com/traceloop/prompt-management-quickstart.png)
+</div>
+
+You can use Traceloop to manage your prompts and model configurations. That way you can easily experiment with different prompts, and rollout changes gradually and safely.
+
+<Callout intent="info">
+Make sure you’ve created an API key and set it as an environment variable `TRACELOOP_API_KEY` before you start. Check out the SDK’s [getting started guide](/open-ll-metry/quick-start/python) for more information.
+</Callout>
+
+<Steps>
+
+### Create a new prompt
+
+Click **New Prompt** to create a new prompt. Give it a name, which will be used to retrieve it in your code later.
+
+### Step 2: Define it in the Prompt Registry
+
+Set the system and/or user prompt. You can use variables in your prompt by following the [Jinja format](https://jinja.palletsprojects.com/en/3.1.x/templates/) of `{{ variable_name }}`. The values of these variables will be passed in when you retrieve the prompt in your code.
+
+For more information see the [Registry Documentation](/prompt-registry).
+
+<Callout intent="info" icon="fa-light fa-lightbulb">
+This screen is also a prompt playground. Give the prompt a try by clicking **Test** at the bottom.
+</Callout>
+
+### Deploy the prompt to your developement environement
+
+Click **Deploy to Dev** to deploy the prompt to your development environment.
+
+### Use the prompt in your code
+
+If you haven’t done so, make sure to [generate an API key](https://app.traceloop.com/settings/api-keys) and set it as an environment variable `TRACELOOP_API_KEY`.
+
+Make sure to initialize the SDK. On Typescript/Javascript, you should also wait for the initialization to complete.
+
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```python
+    from traceloop.sdk import Traceloop
+
+    Traceloop.init()
+    ```
+    </CodeBlock>
+    <CodeBlock title="Typescript / Javascript">
+    ```javascript
+    import * as traceloop from "@traceloop/node-server-sdk";
+
+    traceloop.initialize();
+    await traceloop.waitForInitialization();
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+Retrieve your prompt by using the `get_prompt` function. For example, if you’ve created a prompt with the key `joke_generator` and a single variable `persona`:
+
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```python
+    from traceloop.sdk import Traceloop
+
+    Traceloop.init()
+    ```
+    </CodeBlock>
+    <CodeBlock title="Typescript / Javascript">
+    ```javascript
+    import * as traceloop from "@traceloop/node-server-sdk";
+
+    traceloop.initialize();
+    await traceloop.waitForInitialization();
+    ```
+    </CodeBlock>
+    <CodeBlock title="Go">
+    ```golang
+    import "github.com/sashabaranov/go-openai"
+
+    func call_llm() {
+    // traceloop is the object you got when you initialized the SDK
+    request, err := traceloop.GetOpenAIChatCompletionRequest("joke_generator", map[string]interface{}{ "persona": "pirate" })
+    if err != nil {
+        fmt.Printf("GetOpenAIChatCompletionRequest error: %v\n", err)
+        return
+    }
+    client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
+        resp, err := client.CreateChatCompletion(
+        context.Background(),
+        *request,
+        )
+    }
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+<Callout intent="info">
+The returned variable `prompt_args` is compatible with the API used by the foundation models SDKs (OpenAI, Anthropic, etc.) which means you can directly plug in the response to the appropriate API call.
+</Callout>
+
+</Steps>
+
+For more information see the [SDK Usage Documentation](/fetching-prompts).

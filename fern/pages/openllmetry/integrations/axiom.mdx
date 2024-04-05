@@ -1,0 +1,16 @@
+---
+excerpt: LLM Observability with Axiom and OpenLLMetry
+---
+
+<Frame>
+![integrations-axiom](https://fern-image-hosting.s3.amazonaws.com/traceloop/integrations-axiom.png)
+</Frame>
+
+Axiom is an [observability platform](https://axiom.co/) that natively supports OpenTelemetry, you just need to route the traces to Axiom’s endpoint and set the dataset, and API key:
+
+```
+TRACELOOP_BASE_URL="https://api.axiom.co"
+TRACELOOP_HEADERS="Authorization=Bearer <YOUR_API_KEY>,X-Axiom-Dataset=<YOUR_DATASET>"
+```
+
+For more information check out the [docs link](https://axiom.co/docs/send-data/opentelemetry).

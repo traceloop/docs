@@ -1,0 +1,88 @@
+docs: |
+
+service:
+  base-path: '/api/config/pii'
+  auth: true
+  endpoints:
+    enable:
+      display-name: Enable logging of prompts and responses
+      docs: |
+        By default, all prompts and responses are logged.
+
+        If you want to disable this behavior by following [this guide](/open-ll-metry/privacy/prompts-completions-and-embeddings), you can selectively enable it for some of your users with this API.
+      path: "/tracing-allow-list"
+      method: POST
+      request: EnableLogging
+      examples:
+        - request: $EnableLogging.ExampleEnableLogging
+    get:
+      display-name: Get identifiers of users that are allowed to be logged
+      docs: |
+        By default, all prompts and responses are logged. 
+
+        If you’ve disabled this behavior by following [this guide](/open-ll-metry/privacy/prompts-completions-and-embeddings), and then selectively enabled it for some of your users, then you can use this API to view which users you’ve enabled.
+      path: "/tracing-allow-list"
+      method: GET
+      response: GetIdentifiersResponse
+      examples:
+        - response: 
+            body: $GetIdentifiersResponse.ExampleGetIdentifiersResponse
+    disable:
+      display-name: Disable logging of prompts and responses for specific users
+      docs: |
+        By default, all prompts and responses are logged. 
+
+        If you’ve disabled this behavior by following [this guide](/open-ll-metry/privacy/prompts-completions-and-embeddings), and then selectively enabled it for some of your users, then you can use this API to disable it for previously enabled ones.
+      path: "/tracing-allow-list"
+      method: DELETE
+      request: DisableLogging
+      examples:
+        - request: $DisableLogging.ExampleDisableLogging
+
+types:
+
+  EnableLogging:
+    properties:
+      associationPropertyAllowList:
+        type: unknown
+        docs: |
+          
+          The list of association properties (like `{ userId: "123" }`) that will be allowed to be logged.
+    examples:
+      - name: ExampleEnableLogging
+        value:
+          associationPropertyAllowList: [
+            userId: "123"
+          ]
+
+  GetIdentifiersResponse:
+    properties:
+      associationPropertyAllowList:
+        type: unknown
+        docs: |
+          
+          The list of association properties (like `{ userId: "123" }`) that are allowed to be logged.
+    examples:
+      - name: ExampleGetIdentifiersResponse
+        value: 
+          associationPropertyAllowList: [
+            {
+              userId: "123"
+            },
+            {
+              userId: "456",
+              chatId: "abc"
+            }
+          ]
+  DisableLogging:
+    properties:
+      associationProperty:
+        type: unknown
+        docs: |
+          
+          A single association property (like `{ userId: "123" }`) that was previously allowed to be logged.
+    examples:
+      - name: ExampleDisableLogging
+        value: 
+          associationProperty:
+            userId: "123"

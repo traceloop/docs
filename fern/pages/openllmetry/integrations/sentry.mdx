@@ -1,0 +1,79 @@
+---
+excerpt: LLM observability with Sentry
+---
+
+<Steps>
+
+### Install Sentry SDK with OpenTelemetry support
+
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```bash
+    pip install --upgrade 'sentry-sdk[opentelemetry]'
+    ```
+    </CodeBlock>
+    <CodeBlock title="Typescript (Node.js)">
+    ```bash
+    npm install @sentry/node @sentry/opentelemetry-node
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+### Initialize Sentry and enable OpenTelemetry instrumentation
+
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```python
+    import sentry_sdk
+
+    sentry_sdk.init(
+    dsn=<Your DSN>,
+    enable_tracing=True,
+
+        # set the instrumenter to use OpenTelemetry instead of Sentry
+        instrumenter="otel",
+
+    )
+    ```
+    </CodeBlock>
+    <CodeBlock title="Typescript (Node.js)">
+    ```typescript
+    Sentry.init({
+        dsn: <Your DSN>,
+        tracesSampleRate: 1.0,
+
+        // set the instrumenter to use OpenTelemetry instead of Sentry
+        instrumenter: "otel",
+    });
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+### Customize Traceloop SDK Initialization for Processor and Propagator
+
+When initializing the Traceloop SDK, make sure to override the processor and propagator:
+
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```python
+    from traceloop.sdk import Traceloop
+    from sentry_sdk.integrations.opentelemetry import SentrySpanProcessor, SentryPropagator
+
+    Traceloop.init(processor=SentrySpanProcessor(), propagator=SentryPropagator())
+    ```
+    </CodeBlock>
+    <CodeBlock title="Typescript (Node.js)">
+    ```typescript
+    import * as traceloop from "@traceloop/node-server-sdk";
+    import { SentrySpanProcessor, SentryPropagator } from "@sentry/opentelemetry-node";
+
+    Traceloop.init({
+        processor: new SentrySpanProcessor(),
+        propagator: new SentryPropagator()
+    })
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+</Steps>
+

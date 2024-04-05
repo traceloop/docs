@@ -1,9 +1,37 @@
-# Traceloop & OpenLLMetry documentation repo
+# Traceloop Documentation
 
-This repo contains all the docs we have on [traceloop.com/docs](https://traceloop.com/docs). Feel free to contribute!
+This repository powers the documentation at [https://traceloop.com/docs](https://traceloop.com/docs). 
 
-Docs are powered by [Mintlify](https://mintlify.com).
+## What is in this repository?
 
-If you want to make changes, make sure to test it locally by running `npx mintlify@latest dev` from the repository root directory.
+This repository contains:
 
-New pages should be declared in the `mint.json` file, otherwise they won't be visible on the navigation bar.
+- Traceloop's Fern API Definition which lives in the [definition](./fern/definition/) folder.
+- MDX files which live in the [pages](./fern/pages) folder.
+
+## What is in the API Definition?
+
+- **API Documentation:** Explore detailed documentation for each of our APIs. Learn about endpoints, request and response formats, authentication methods, and best practices for integration.
+
+- **Getting an API Key:** Follow step-by-step instructions on obtaining your API key. Understand the authentication process and ensure a secure and seamless interaction with our services.
+
+## Definition Validation
+
+To make sure that the definition is valid, you can use the Fern CLI.
+
+```bash
+npm install -g fern-api # Installs CLI
+fern check # Checks if the definition is valid
+```
+
+## Debugging
+
+Encountering errors while generating docs? Run the following command to identify where these errors are occurring:
+
+```bash
+fern generate --docs --log-level debug
+```
+
+## Static Assets
+
+Static assets should be stored in your [assets](./fern/assets) subdirectory.

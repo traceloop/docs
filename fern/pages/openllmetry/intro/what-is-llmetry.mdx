@@ -1,0 +1,75 @@
+<Frame>
+![openllmetry-intro](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-intro.png)
+</Frame>
+
+OpenLLMetry is an open source project that allows you to easily start monitoring and debugging the execution of your LLM app. Tracing is done in a non-intrusive way, built on top of OpenTelemetry. You can choose to export the traces to Traceloop, or to your existing observability stack.
+
+<Callout intent="info">
+You can use OpenLLMetry whether you use a framework like LangChain, or directly interact with a foundation model API.
+</Callout>
+
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```python
+    from openai import OpenAI
+    from traceloop.sdk import Traceloop
+    from traceloop.sdk.decorators import workflow
+
+    Traceloop.init(app_name="joke_generation_service")
+
+    @workflow(name="joke_creation")
+    def create_joke():
+    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": "Tell me a joke about opentelemetry"}],
+    )
+
+    return completion.choices[0].message.content
+    ```
+    </CodeBlock>
+    <CodeBlock title="Typescript">
+    ```typescript
+    import * as traceloop from "@traceloop/node-server-sdk";
+    import OpenAI from "openai";
+
+    Traceloop.init({ app_name="joke_generation_service" })
+    const openai = new OpenAI();
+
+    class MyLLM {
+    @traceloop.workflow("joke_creation")
+    async create_joke():
+        completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [{"role": "user", "content": "Tell me a joke about opentelemetry"}],
+        })
+
+        return completion.choices[0].message.content
+    }
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+## Getting Started
+
+<Cards>
+    <Card title="Start with Python" icon="fa-brands fa-python" href="/open-ll-metry/quick-start/python">
+    Set up Traceloop Python SDK in your project
+    </Card>
+    <Card title="Start with Javascript / Typescript" icon="fa-brands fa-node" href="/open-ll-metry/quick-start/node-js">
+    Set up Traceloop Javascript SDK in your project
+    </Card>
+    <Card title="Start with Go" icon="fa-brands fa-golang" href="/open-ll-metry/quick-start/go">
+    Set up Traceloop Go SDK in your project
+    </Card>
+    <Card title="Workflows, Agents, and Tools" icon="fa-regular fa-code" href="/open-ll-metry/tracing/workflows-tasks-agents-and-tools">
+    Learn how to annotate your code to enrich your traces
+    </Card>
+    <Card title="Integrations" icon="fa-regular fa-bars-staggered" href="/open-ll-metry/integrations/overview">
+    Learn how to connect to your existing observability stack
+    </Card>
+    <Card title="Privacy" icon="fa-regular fa-shield" href="/open-ll-metry/privacy/prompts-completions-and-embeddings">
+    How we secure your data
+    </Card>
+</Cards>
+

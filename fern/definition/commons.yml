@@ -1,0 +1,25 @@
+types:
+  ErrorBody:
+    properties:
+      status: string
+      message: string
+
+  ErrorDetail:
+    properties:
+      value: string
+      msg: string
+      param: string
+      location: string
+
+errors:
+  ServerError:
+    status-code: 500
+    type: ErrorBody
+
+  BadRequestError:
+    status-code: 400
+    type: ErrorBody
+
+  UnauthorizedError:
+    status-code: 401
+    type: ErrorBody
