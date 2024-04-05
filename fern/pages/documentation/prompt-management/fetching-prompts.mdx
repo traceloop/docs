@@ -1,0 +1,72 @@
+---
+excerpt: Use your managed prompts with the Traceloop SDKs
+---
+
+## Using your prompt
+
+The SDK fetches your prompts from Traceloop servers. Changes made to a prompt are available in the SDK during runtime. The SDK polls the Traceloop servers for changes every every poll interval.
+
+The default poll interval is 60 seconds but can be configured with the `TRACELOOP_SYNC_POLL_INTERVAL` environment variable, or the initialization function. When in the `Development` environment, the poll interval is determined by the `TRACELOOP_SYNC_DEV_POLL_INTERVAL` environment variable or appropriate initialization argument, and defaults to 5 seconds.
+
+To disable polling all together, set the `TRACELOOP_SYNC_ENABLED` environment variable to false (its enabled by default).
+
+Make sure you’ve configured the SDK with the right environment and API Key. See the [SDK documentation](/open-ll-metry/integrations/traceloop) for more information.
+
+<Callout intent="info">
+The SDK uses smart caching mechanisms to proide zero latency for fetching prompts.
+</Callout>
+
+## Get Prompt API
+
+Let’s say you’ve created a prompt with a key `joke_generator` in the UI and set ot to:
+
+```json
+Tell me a joke about OpenTelemetry as a {{persona}}
+```
+
+Then, you can retrieve it with in your code using `get_prompt`:
+
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```python
+    from openai import OpenAI
+    from traceloop.sdk.prompts import get_prompt
+
+    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+    prompt_args = get_prompt(key="joke_generator", variables={"persona": "pirate"})
+    completion = client.chat.completions.create(**prompt_args)
+    ```
+    </CodeBlock>
+    <CodeBlock title="Javascript / Typescript">
+    ```javascript
+    import * as traceloop from "@traceloop/node-server-sdk";
+
+    const prompt = traceloop.getPrompt("joke_generator", { persona: "pirate" });
+    const chatCompletion = await openai.chat.completions.create(prompt);
+    ```
+    </CodeBlock>
+    <CodeBlock title="Go">
+    ```golang
+    import "github.com/sashabaranov/go-openai"
+
+    func call_llm() {
+    // traceloop is the object you got when you initialized the SDK
+    request, err := traceloop.GetOpenAIChatCompletionRequest("joke_generator", map[string]interface{}{ "persona": "pirate" })
+        if err != nil {
+        fmt.Printf("GetOpenAIChatCompletionRequest error: %v\n", err)
+        return
+        }
+    client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
+        resp, err := client.CreateChatCompletion(
+        context.Background(),
+        *request,
+        )
+    }
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+<Callout intent="info">
+The returned variable `prompt_args` is compatible with the API used by the foundation models SDKs (OpenAI, Anthropic, etc.) which means you should directly plug in the response to the appropriate API call.
+</Callout>

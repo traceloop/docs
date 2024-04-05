@@ -1,0 +1,16 @@
+---
+excerpt: LLM observability with New Relic and OpenLLMetry
+---
+
+<Frame>
+![integrations-new-relic](https://fern-image-hosting.s3.amazonaws.com/traceloop/integrations-new-relic.png)
+</Frame>
+
+Since New Relic natively supports OpenTelemetry, you just need to route the traces to New Relic’s endpoint and set the API key:
+
+```
+TRACELOOP_BASE_URL=https://otlp.nr-data.net:443
+TRACELOOP_HEADERS="api-key=<YOUR_NEWRELIC_LICENSE_KEY>"
+```
+
+For more information check out the [docs link](https://docs.newrelic.com/docs/more-integrations/open-source-telemetry-integrations/opentelemetry/get-started/opentelemetry-set-up-your-app/#review-settings).

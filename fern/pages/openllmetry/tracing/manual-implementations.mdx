@@ -1,0 +1,39 @@
+---
+excerpt: How to overcome issues with automatic instrumentations on Next.js and some Webpack environments.
+---
+
+Some customers have reported issues with automatic instrumentations on some environments. This means that even though the SDK was installed and configured properly, you might not be seeing any traces.
+
+Specifically, we have seen issues with Next.js and some configurations of Webpack. In order to resolve it, you can provide the SDK with the libraries that you use (like OpenAI, LlamaIndex, Langchain, etc.) to make sure they are instrumented properly.
+
+<Callout intent="info">
+You won’t need this on most environments. We recommend trying without it first.
+</Callout>
+
+Here is an example of how to do it:
+
+```typescript
+import OpenAI from "openai";
+
+import * as LlamaIndex from "llamaindex";
+
+import * as ChainsModule from "langchain/chains";
+import * as AgentsModule from "langchain/agents";
+import * as ToolsModule from "langchain/tools";
+
+traceloop.initialize({
+  appName: "app",
+  instrumentModules: {
+    openAI: OpenAI,
+    llamaIndex: LlamaIndex,
+    langchain: {
+        chains: ChainsModule,
+        agents: AgentsModule,
+        tools: ToolsModule,
+    }
+    // Add or omit other modules you'd like to instrument
+  },
+});
+```
+
+You only need to do this once, on app initialization.

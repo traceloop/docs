@@ -1,0 +1,92 @@
+---
+excerpt: Install OpenLLMetry for Ruby by following these 3 easy steps and get instant monitoring.
+---
+
+<Callout intent="info">
+This is still in beta. Give us feedback at [dev@traceloop.com](mailto:dev@traceloop.com)
+</Callout>
+
+<Steps>
+### Install the SDK
+
+Run the following command in your terminal:
+
+<CodeBlocks>
+    <CodeBlock title="gem">
+    ```bash
+    gem install traceloop-sdk
+    ```
+    </CodeBlock>
+    <CodeBlock title="bundler">
+    ```bash
+    bundle add traceloop-sdk
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+In your LLM app, initialize the Traceloop tracer like this:
+
+```Ruby
+require "traceloop/sdk"
+
+traceloop = Traceloop::SDK::Traceloop.new
+```
+
+<Callout intent="info">
+If you’re using Rails, this needs to be in `config/initializers/traceloop.rb`
+</Callout>
+
+### Log your prompts
+
+<Frame>
+![openllmetry-ruby](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-ruby.png)
+</Frame>
+
+For now, we don’t automatically instrument libraries on Ruby (as opposed to Python and Javascript). This will change in later versions.
+
+This means that you’ll need to manually log your prompts and completions.
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+# This tracks the latency of the call and the response
+traceloop.llm_call() do |tracer|
+  # Log the prompt
+  tracer.log_prompt(model="gpt-3.5-turbo", user_prompt="Tell me a joke about OpenTelemetry")
+
+  # Call OpenAI like you normally would
+  response = client.chat(
+    parameters: {
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: "Tell me a joke about OpenTelemetry" }]
+    })
+
+  # Pass the response form OpenAI as is to log the completion and token usage
+  tracer.log_response(response)
+end
+```
+
+### Configure Trace Exporting
+
+Lastly, you’ll need to configure where to export your traces. The 2 environment variables controlling this are `TRACELOOP_API_KEY` and `TRACELOOP_BASE_URL`.
+
+For Traceloop, read on. For other options, see [Exporting](/open-ll-metry/integrations/overview).
+
+### Using Traceloop Cloud
+
+Go to [Traceloop](https://app.traceloop.com/), and create a new account. Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys. Click **Generate API Key** to generate an API key for the development environment and click **Copy API Key** to copy it over.
+
+<Callout intent="warn">
+Make sure to copy it as it won’t be shown again.
+</Callout>
+
+<Frame>
+![openllmetry-ruby-2](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-ruby-2.png)
+</Frame>
+
+Set the copied Traceloop’s API key as an environment variable in your app named `TRACELOOP_API_KEY`.
+</Steps>
+
+You're all set! You’ll get instant visibility into everything that’s happening with your LLM. If you’re calling a vector DB, or any other external service or database, you’ll also see it in the Traceloop dashboard.

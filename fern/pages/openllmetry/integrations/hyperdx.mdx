@@ -1,0 +1,14 @@
+---
+excerpt: LLM Observability with HyperDX and OpenLLMetry
+---
+
+<Frame>
+![integrations-hyperdx](https://fern-image-hosting.s3.amazonaws.com/traceloop/integrations-hyperdx.png)
+</Frame>
+
+HyperDX is an [open source observability platform](https://github.com/hyperdxio/hyperdx) that natively supports OpenTelemetry. Just route the traces to HyperDX’s endpoint and set the API key:
+
+```
+TRACELOOP_BASE_URL=https://in-otel.hyperdx.io
+TRACELOOP_HEADERS="authorization=<YOUR_INGESTION_API_KEY>"
+```

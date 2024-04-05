@@ -1,0 +1,83 @@
+docs: |
+
+service:
+  base-path: '/api/config/privacy'
+  auth: true
+  endpoints:
+    delete:
+      display-name: Delete specific user data
+      docs: |
+        
+        You can delete traces data for a specific user of yours by specifying their association properties.
+      path: "/data-deletion"
+      method: DELETE
+      request: DeleteUserData
+      response: DeleteUserDataResponse
+      examples:
+        - request: $DeleteUserData.ExampleDeleteUserData
+          response: 
+            body: $DeleteUserDataResponse.ExampleDeleteUserDataResponse
+    get:
+      display-name: Status of user deletion request
+      docs: |
+        By default, all prompts and responses are logged. 
+
+        If you’ve disabled this behavior by following [this guide](/open-ll-metry/privacy/prompts-completions-and-embeddings), and then selectively enabled it for some of your users, then you can use this API to view which users you’ve enabled.
+      path: "/data-deletion"
+      request:
+        name: GetDeletionStatusRequest
+        query-parameters:
+          requestId: 
+            type: string
+            docs: |
+
+              The request ID from the user deletion request.
+      method: GET
+      response: GetDeletionStatusResponse
+
+types:
+
+  DeleteUserData:
+    properties:
+      associationProperties:
+        type: unknown
+        docs: |
+          
+          A list of users to delete, each specific using a specific criterion for deletion like `{ userId: "123" }`.
+    examples:
+      - name: ExampleDeleteUserData
+        value: 
+          associationProperties: [
+            {
+              userId: "123"
+            }
+          ]
+  DeleteUserDataResponse:
+    properties:
+      requestId:
+        type: string
+        docs: |
+
+          The request ID for this deletion request. You can use it to query the status of the deletion.
+    examples:
+      - name: ExampleDeleteUserDataResponse
+        value:
+          requestId: "456"
+
+  GetDeletionStatusResponse:
+    properties:
+      completed:
+        type: boolean
+        docs: |
+
+          `true` if the process was completed, `false` otherwise.
+      deleted:
+        type: string
+        docs: |
+
+          The number of spans that were deleted.
+      total: 
+        type: string
+        docs: |
+
+          The number of spans that need to be deleted in total.

@@ -1,0 +1,30 @@
+When building LLM applications, it quickly becomes highly useful and important to track user feedback on the result of your LLM workflow.
+
+Doing that with OpenLLMetry is easy. First, make sure you [associate your LLM workflow with unique identifiers](/open-ll-metry/tracing/associating-entities-with-traces).
+
+Then, you can simply log a user feedback by calling our Python SDK or Typescript SDK. Feedbacks are always between -1 and 1, where -1 is the worst possible feedback and 1 is the best possible feedback.
+
+For example, if you provide your users with a thumbs-up / thumbs-down feedback, you should log thumbs-up as 1 and thumbs-down as -1.
+
+<Callout intent="info">
+You can only report feedback for one association property at a time. So this call will throw an exception: `traceloop.reportScore({ chat_id: "12345", generation_id: "789", score: 1 });`
+</Callout>
+
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```python
+    from traceloop.sdk import Traceloop
+
+    Traceloop.report_score("chat_id", "12345", 1)
+    ```
+    </CodeBlock>
+
+    <CodeBlock title="Typescript">
+    ```typescript
+    traceloop.reportScore({ chat_id: "12345" }, 1);
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+
+

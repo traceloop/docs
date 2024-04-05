@@ -1,0 +1,155 @@
+instances:
+  - url: traceloop.docs.buildwithfern.com/docs
+    custom-domain: traceloop.com/docs
+
+title: Traceloop | Docs
+
+tabs:
+  docs:
+    display-name: Documentation
+    icon: "fa-duotone fa-book-open"
+  llmetry: 
+    display-name: OpenLLMetry
+    icon: "fa-duotone fa-telescope"
+    slug: openllmetry
+  api:
+    display-name: Dashboard API
+    icon: "fa-duotone fa-webhook"
+
+navigation:
+  - tab: docs
+    layout: 
+      - section: Learn
+        contents:
+          - page: Introduction
+            path: ./pages/documentation/learn/intro.mdx
+      - section: Prompt Management
+        contents:
+          - page: Quick Start
+            path: ./pages/documentation/prompt-management/quickstart.mdx
+          - page: Prompt Registry
+            path: ./pages/documentation/prompt-management/prompt-registry.mdx
+          - page: Fetching Prompts
+            path: ./pages/documentation/prompt-management/fetching-prompts.mdx
+  - tab: llmetry
+    layout:
+      - section: Introduction
+        contents:
+          - page: What is OpenLLMetry?
+            path: ./pages/openllmetry/intro/what-is-llmetry.mdx
+      - section: Quick Start
+        contents: 
+          - page: Python
+            path: ./pages/openllmetry/quickstart/python.mdx
+          - page: Node.js
+            path: ./pages/openllmetry/quickstart/node.mdx
+          - page: Next.js
+            path: ./pages/openllmetry/quickstart/next.mdx
+          - page: Go
+            path: ./pages/openllmetry/quickstart/go.mdx
+          - page: Ruby
+            path: ./pages/openllmetry/quickstart/ruby.mdx
+          - page: SDK Initialization Options
+            path: ./pages/openllmetry/quickstart/sdk-initialization.mdx
+          - page: Troubleshooting
+            path: ./pages/openllmetry/quickstart/troubleshooting.mdx
+      - section: Tracing
+        contents: 
+          - page: Workflows, Tasks, Agents, and Tools
+            path: ./pages/openllmetry/tracing/workflows-tasks-agents-tools.mdx
+          - page: Associating Entities with Traces
+            path: ./pages/openllmetry/tracing/entities-traces.mdx
+          - page: Tracking User Feedback
+            path: ./pages/openllmetry/tracing/tracking-feedback.mdx
+          - page: Manual Implementations (Typescript / Javascript)
+            path: ./pages/openllmetry/tracing/manual-implementations.mdx
+          - page: Usage with Threads (Python)
+            path: ./pages/openllmetry/tracing/usage-threads.mdx
+          - page: Without OpenLLMetry SDK
+            path: ./pages/openllmetry/tracing/without-sdk.mdx
+      - section: Integrations
+        contents: 
+          - page: Overview
+            path: ./pages/openllmetry/integrations/overview.mdx
+          - page: Traceloop
+            path: ./pages/openllmetry/integrations/traceloop.mdx
+          - page: Axiom
+            path: ./pages/openllmetry/integrations/axiom.mdx
+          - page: Azure Applications Insights
+            path: ./pages/openllmetry/integrations/azure-insights.mdx
+          - page: Datadog
+            path: ./pages/openllmetry/integrations/datadog.mdx
+          - page: Dynatrace
+            path: ./pages/openllmetry/integrations/dynatrace.mdx
+          - page: Grafana
+            path: ./pages/openllmetry/integrations/grafana.mdx
+          - page: Honeycomb
+            path: ./pages/openllmetry/integrations/honeycomb.mdx
+          - page: HyperDX
+            path: ./pages/openllmetry/integrations/hyperdx.mdx
+          - page: Instana
+            path: ./pages/openllmetry/integrations/instana.mdx
+          - page: New Relic
+            path: ./pages/openllmetry/integrations/new-relic.mdx
+          - page: OpenTelemetry Collector
+            path: ./pages/openllmetry/integrations/opentelemetry-collector.mdx
+          - page: Service Now Cloud Observability
+            path: ./pages/openllmetry/integrations/service-now.mdx
+          - page: SigNoz
+            path: ./pages/openllmetry/integrations/signoz.mdx
+          - page: Sentry
+            path: ./pages/openllmetry/integrations/sentry.mdx
+          - page: Splunk
+            path: ./pages/openllmetry/integrations/splunk.mdx
+      - section: Privacy
+        contents: 
+          - page: Prompts, Completions, and Embeddings
+            path: ./pages/openllmetry/privacy/prompts-completions-embeddings.mdx
+          - page: Telemetry
+            path: ./pages/openllmetry/privacy/telemetry.mdx
+      - section: Contribute
+        contents: 
+          - page: Overview
+            path: ./pages/openllmetry/contribute/overview.mdx
+          - page: Local Development
+            path: ./pages/openllmetry/contribute/local-development.mdx
+          - page: GenAI Semantic Conventions
+            path: ./pages/openllmetry/contribute/gen-ai.mdx
+  - tab: api
+    layout:
+      - section: API Reference
+        contents:
+          - page: Introduction
+            path: ./pages/api/intro.mdx
+      - api: Endpoints
+
+navbar-links: 
+  - type: secondary
+    text: Community
+    url: https://traceloop.com/slack?_gl=1*898qql*_ga*NDc2NTEyODExLjE3MTAzMzg5OTc.*_ga_HPMNWFTJ5B*MTcxMDMzODk5Ni4xLjEuMTcxMDM1NjMyMy4wLjAuMA..
+  - type: secondary
+    text: Github
+    url: https://github.com/traceloop
+  - type: secondary
+    text: Website
+    url: https://www.traceloop.com/
+  - type: primary
+    text: Start Now
+    url: https://app.traceloop.com/
+
+layout:
+  searchbar-placement: header
+
+colors:
+  accentPrimary:
+    dark: "#ffb53d"
+    light: "#228BE6"
+  background:
+      light: "#ffffff"
+
+logo:
+  dark: ./assets/traceloop-dark.png
+  light: ./assets/traceloop-light.png
+  height: 24
+
+favicon: ./assets/favicon.png

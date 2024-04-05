@@ -1,0 +1,14 @@
+---
+excerpt: LLM Observability with Service Now Cloud Observability and OpenLLMetry
+---
+
+<Frame>
+![integrations-service-now](https://fern-image-hosting.s3.amazonaws.com/traceloop/integrations-service-now.png)
+</Frame>
+
+Since Service Now Cloud Observability natively supports OpenTelemetry, you just need to route the traces to Service Now Cloud Observability’s endpoint and set the access token:
+
+```
+TRACELOOP_BASE_URL=https://ingest.lightstep.com
+TRACELOOP_HEADERS="lightstep-access-token=<YOUR_ACCESS_TOKEN>"
+```

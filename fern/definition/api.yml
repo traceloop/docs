@@ -1,0 +1,14 @@
+name: api
+display-name: Traceloop API
+auth: bearer
+environments:
+  Production: https://app.traceloop.com
+  Sandbox: https://app.traceloop.com
+default-environment: Production
+error-discrimination:
+  strategy: status-code
+imports:
+  commons: commons.yml
+errors:
+  - commons.ServerError
+  - commons.UnauthorizedError
