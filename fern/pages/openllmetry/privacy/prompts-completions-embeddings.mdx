@@ -56,7 +56,7 @@ You can decide to selectively enable or disable prompt logging for specific user
 
 <Tabs>
     <Tab title="Using the Traceloop Platform">
-    We have an API to enable content tracing for specific users, as defined by [association entities](/docs/openllmetry/tracing/associating-entities-with-traces). See the [Traceloop API documentation](/dashboard-api/endpoints) for more information.
+    We have an API to enable content tracing for specific users, as defined by [association entities](/docs/openllmetry/tracing/associating-entities-with-traces). See the [Traceloop API documentation](/docs/dashboard-api/endpoints) for more information.
     </Tab>
     <Tab title="Without the Traceloop Platform">
     Set a key called `override_enable_content_tracing` in the OpenTelemetry context to `True` right before making the LLM call you want to trace with prompts. This will create a new context that will instruct instrumentations to log prompts and completions as span attributes.

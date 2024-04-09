@@ -15,7 +15,7 @@ tabs:
   api:
     display-name: Dashboard API
     icon: "fa-duotone fa-webhook"
-
+    slug: dashboard-api
 navigation:
   - tab: docs
     layout: 
