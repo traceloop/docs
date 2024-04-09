@@ -10,7 +10,7 @@ We’ve all been there. You followed all the instructions, but you’re not seei
 
 ## Disable batch sending
 
-Sending traces in batch is useful in production, but can be confusing if you’re working locally. Make sure you’ve [disabled batch sending](/open-ll-metry/quick-start/sdk-initialization-options#disable-batch).
+Sending traces in batch is useful in production, but can be confusing if you’re working locally. Make sure you’ve [disabled batch sending](/docs/openllmetry/quick-start/sdk-initialization-options#disable-batch).
 
 <CodeBlocks>
     <CodeBlock title="Python">
@@ -43,7 +43,7 @@ import OpenAI from "openai";
 // ...
 ```
 
-If that doesn’t work, you may need to manually instrument the libraries you’re using. See the [manual instrumentation guide](/open-ll-metry/tracing/manual-implementations-typescript-javascript) for more details.
+If that doesn’t work, you may need to manually instrument the libraries you’re using. See the [manual instrumentation guide](/docs/openllmetry/tracing/manual-implementations-typescript-javascript) for more details.
 
 ```javascript
 import OpenAI from "openai";
@@ -84,7 +84,7 @@ Use the `ConsoleExporter` and check if you see traces in the console.
     </CodeBlock>
 </CodeBlocks>
 
-If you see traces in the console, then you probable haven’t configured the exporter properly. Check the [integration guide](/open-ll-metry/integrations/overview) again, and make sure you’re using the right endpoint and API key.
+If you see traces in the console, then you probable haven’t configured the exporter properly. Check the [integration guide](/docs/openllmetry/integrations/overview) again, and make sure you’re using the right endpoint and API key.
 
 ## Talk to us!
 
