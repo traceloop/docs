@@ -7,11 +7,10 @@ excerpt: Not seeing anything? Here are some things to check.
 </Frame>
 
 We’ve all been there. You followed all the instructions, but you’re not seeing any traces. Let’s fix this.
-<Steps>
 
-### Disable batch sending
+## Disable batch sending
 
-Sending traces in batch is useful in production, but can be confusing if you’re working locally. Make sure you’ve [disabled batch sending](/docs/openllmetry/quick-start/sdk-initialization-options#disable-batch).
+Sending traces in batch is useful in production, but can be confusing if you’re working locally. Make sure you’ve [disabled batch sending](/open-ll-metry/quick-start/sdk-initialization-options#disable-batch).
 
 <CodeBlocks>
     <CodeBlock title="Python">
@@ -26,7 +25,7 @@ Sending traces in batch is useful in production, but can be confusing if you’r
     </CodeBlock>
 </CodeBlocks>
 
-### Check the logs
+## Check the logs
 
 When Traceloop initializes, it logs a message to the console, specifying the endpoint that it uses. If you don’t see that, you might not be initializing the SDK properly.
 
@@ -34,7 +33,7 @@ When Traceloop initializes, it logs a message to the console, specifying the end
 Traceloop exporting traces to `https://api.traceloop.com`
 </Callout>
 
-### (TS/JS only) Fix known instrumentation issues
+## (TS/JS only) Fix known instrumentation issues
 
 If you’re using Typescript or Javascript, make sure to import traceloop before any other LLM libraries. This is because traceloop needs to instrument the libraries you’re using, and it can only do that if it’s imported first.
 
@@ -44,7 +43,7 @@ import OpenAI from "openai";
 // ...
 ```
 
-If that doesn’t work, you may need to manually instrument the libraries you’re using. See the [manual instrumentation guide](/docs/openllmetry/tracing/manual-implementations-typescript-javascript) for more details.
+If that doesn’t work, you may need to manually instrument the libraries you’re using. See the [manual instrumentation guide](/open-ll-metry/tracing/manual-implementations-typescript-javascript) for more details.
 
 ```javascript
 import OpenAI from "openai";
@@ -60,11 +59,11 @@ traceloop.initialize({
 });
 ```
 
-### Is your library supported yet?
+## Is your library supported yet?
 
 Check out [OpenLLMetry](https://github.com/traceloop/openllmetry#readme) or [OpenLLMetry-JS](https://github.com/traceloop/openllmetry-js#readme) README files to see which libraries and versions are currently supported. Contributions are always welcome! If you want to add support for a library, please open a PR.
 
-### Try outputting traces to the console
+## Try outputting traces to the console
 
 Use the `ConsoleExporter` and check if you see traces in the console.
 
@@ -85,10 +84,8 @@ Use the `ConsoleExporter` and check if you see traces in the console.
     </CodeBlock>
 </CodeBlocks>
 
-If you see traces in the console, then you probable haven’t configured the exporter properly. Check the [integration guide](/docs/openllmetry/integrations/overview) again, and make sure you’re using the right endpoint and API key.
+If you see traces in the console, then you probable haven’t configured the exporter properly. Check the [integration guide](/open-ll-metry/integrations/overview) again, and make sure you’re using the right endpoint and API key.
 
-### Talk to us!
+## Talk to us!
 
 We’re here to help. Reach out any time over [Slack](https://traceloop.com/slack?_gl=1*42xay7*_ga*NDc2NTEyODExLjE3MTAzMzg5OTc.*_ga_HPMNWFTJ5B*MTcxMDMzODk5Ni4xLjEuMTcxMDM0OTA2NS4wLjAuMA..), [email](mailto:dev@traceloop.com), and we’d love to assist you.
-
-</Steps>

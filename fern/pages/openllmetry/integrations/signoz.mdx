@@ -8,29 +8,27 @@ excerpt: LLM Observability with SigNoz and OpenLLMetry
 
 SigNoz is an [open-source observability platform](https://github.com/signoz/signoz).
 
-<Tabs>
-    <Tab title="With SigNoz Cloud">
-    Since SigNoz natively supports OpenTelemetry, you just need to route the traces to SigNoz’s endpoint and set the ingestion key (note no `https` in the URL):
+## With SigNoz Cloud
 
-    ```
-    TRACELOOP_BASE_URL=ingest.{region}.signoz.cloud
-    TRACELOOP_HEADERS="signoz-access-token=<SIGNOZ_INGESTION_KEY>"
-    ```
+Since SigNoz natively supports OpenTelemetry, you just need to route the traces to SigNoz’s endpoint and set the ingestion key (note no `https` in the URL):
 
-    Where `region` depends on the choice of your SigNoz cloud region:
+```
+TRACELOOP_BASE_URL=ingest.{region}.signoz.cloud
+TRACELOOP_HEADERS="signoz-access-token=<SIGNOZ_INGESTION_KEY>"
+```
 
-    | Region | Endpoint                     |
-    |--------|------------------------------|
-    | US     | `ingest.us.signoz.cloud:443` |
-    | IN     | `ingest.in.signoz.cloud:443` |
-    | EU     | `ingest.eu.signoz.cloud:443` |
+Where `region` depends on the choice of your SigNoz cloud region:
 
-    </Tab>
-    <Tab title="With Self-Hosted Version">
-    Once you have an up and running instance of SigNoz, use the following environment variables to export your traces:
+| Region | Endpoint                     |
+|--------|------------------------------|
+| US     | `ingest.us.signoz.cloud:443` |
+| IN     | `ingest.in.signoz.cloud:443` |
+| EU     | `ingest.eu.signoz.cloud:443` |
 
-    ```
-    TRACELOOP_BASE_URL="http://localhost:4318"
-    ```
-    </Tab>
-</Tabs>
+## With Self-Hosted Version
+
+Once you have an up and running instance of SigNoz, use the following environment variables to export your traces:
+
+```
+TRACELOOP_BASE_URL="http://localhost:4318"
+```

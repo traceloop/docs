@@ -8,9 +8,8 @@ excerpt: LLM Observability with Instana and OpenLLMetry
 
 With Instana, you can export directly to an Instana Agent in your cluster. The Instana Agent will report back the tracing and metrics to the Instana Backend and display them on the Instana UI.
 
-<Steps>
 
-### Edit the agent config file
+## Edit the agent config file
 
 After an Instana OS agent is installed, edit the agent config file `configuration.yaml` under the `/opt/instana/agent/etc/instana folder`.
 
@@ -19,7 +18,7 @@ cd /opt/instana/agent/etc/instana
 vi configuration.yaml
 ```
 
-### Add the following to the file
+## Add the following to the file
 
 ```yaml
 com.instana.plugin.opentelemetry:
@@ -28,7 +27,7 @@ com.instana.plugin.opentelemetry:
     enabled: true
 ```
 
-### Restart the Instana agent
+## Restart the Instana agent
 
 ```
 systemctl restart instana-agent.service
@@ -36,18 +35,10 @@ systemctl restart instana-agent.service
 
 The Instana agent should be ready for OpenTelemetry data at `port 4317`.
 
-### Set your TRACELOOP_BASE_URL variable
+## Set your TRACELOOP_BASE_URL variable
 
 Finally, set this env var, and you’re done!
 
 ```
 TRACELOOP_BASE_URL=<instana-agent-hostname>:4317
 ```
-</Steps>
-
-
-
-
-
-
-

@@ -8,53 +8,50 @@ excerpt: LLM Observability with Traceloop
 
 [Traceloop](https://app.traceloop.com/) is a platform for observability and evaluation of LLM outputs. It allows you to deploy changes to prompts and model configurations with confidence, without breaking existing functionality.
 
-<Tabs>
-  <Tab title="Connecting OpenLLMetry to Traceloop directly">
-  On Traceloop, API keys can be generated from the [Traceloop Dashboard](https://app.traceloop.com/settings/api-keys), for each of the three supported environments (Development, Staging, Production).
+## Connecting OpenLLMetry to Traceloop directly
 
-  <Steps>
-    ### Go to [Traceloop Environments Management](https://app.traceloop.com/settings/api-keys)
-    
-    You can also reach here by clicking on **Environments** on the left-hand navigation bar.
+On Traceloop, API keys can be generated from the [Traceloop Dashboard](https://app.traceloop.com/settings/api-keys), for each of the three supported environments (Development, Staging, Production).
 
-    ### Click on **Generate API Key**
 
-    ### Click **Copy Key** to copy the API key
+### Go to [Traceloop Environments Management](https://app.traceloop.com/settings/api-keys)
 
-    <Callout intent="info">
-    API Keys are only displayed once, at the time of their creation and are not stored anywhere. If you lose your API key, you will need to revoke the old one and generate a new one.
-    </Callout>
+You can also reach here by clicking on **Environments** on the left-hand navigation bar.
 
-    ### Set the API key as an environment variable named `TRACELOOP_API_KEY`.
-  </Steps>
+### Click on **Generate API Key**
 
-  Done! You’ll get instant visibility into everything that’s happening with your LLM. If you’re calling a vector DB, or any other external service or database, you’ll also see it in the Traceloop dashboard.
+### Click **Copy Key** to copy the API key
+
+<Callout intent="info">
+API Keys are only displayed once, at the time of their creation and are not stored anywhere. If you lose your API key, you will need to revoke the old one and generate a new one.
+</Callout>
+
+### Set the API key as an environment variable named `TRACELOOP_API_KEY`.
+
+Done! You’ll get instant visibility into everything that’s happening with your LLM. If you’re calling a vector DB, or any other external service or database, you’ll also see it in the Traceloop dashboard.
  
- </Tab>
-  <Tab title="Using an OpenTelemetry Collector">
-  If you are using an [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/), you can route metrics and traces to Traceloop by simply adding an OTLP exporter to your collector configuration.
+## Using an OpenTelemetry Collector
+  
+If you are using an [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/), you can route metrics and traces to Traceloop by simply adding an OTLP exporter to your collector configuration.
 
-  ```yaml
-  receivers:
-    otlp:
-      protocols:
-        http:
-          endpoint: 0.0.0.0:4318
-  processors:
-    batch:
-  exporters:
-    otlp/traceloop:
-      endpoint: "api.traceloop.com" # US instance
-      headers:
-        "Authorization": "Bearer <YOUR_API_KEY>"
-  service:
-    pipelines:
-      traces:
-        receivers: [otlp]
-        processors: [batch]
-        exporters: [otlp/traceloop]
-  ```
+```yaml
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+processors:
+  batch:
+exporters:
+  otlp/traceloop:
+    endpoint: "api.traceloop.com" # US instance
+    headers:
+      "Authorization": "Bearer <YOUR_API_KEY>"
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/traceloop]
+```
 
-  You can route OpenLLMetry to your collector by following the [OpenTelemetry Collector](/docs/openllmetry/integrations/open-telemetry-collector) integration instructions.
-  </Tab>
-</Tabs>
+You can route OpenLLMetry to your collector by following the [OpenTelemetry Collector](/open-ll-metry/integrations/open-telemetry-collector) integration instructions.

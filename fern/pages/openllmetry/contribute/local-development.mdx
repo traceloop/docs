@@ -20,48 +20,47 @@ To run a specific command on a specific package, run:
 nx run <package>:<command>
 ```
 
-<Tabs>
-    <Tab title="Python">
-    We use `poetry` to manage packages, and each package is managed independently under its own directory under `/packages`. All instrumentations depends on `opentelemetry-semantic-conventions-ai`, and `traceloop-sdk` depends on all the instrumentations.
+## Python
 
-    If adding a new instrumentation, make sure to use it in `traceloop-sdk`, and write proper tests.
+We use `poetry` to manage packages, and each package is managed independently under its own directory under `/packages`. All instrumentations depends on `opentelemetry-semantic-conventions-ai`, and `traceloop-sdk` depends on all the instrumentations.
 
-    ### Debugging
+If adding a new instrumentation, make sure to use it in `traceloop-sdk`, and write proper tests.
 
-    No matter if you’re working on an instrumentation or on the SDK, we recommend testing the changes by using the SDK in the sample app (`/packages/sample-app`) or the tests under the SDK.
+### Debugging
 
-    ### Running tests
+No matter if you’re working on an instrumentation or on the SDK, we recommend testing the changes by using the SDK in the sample app (`/packages/sample-app`) or the tests under the SDK.
 
-    We record HTTP requests and then replay them in tests to avoid making actual calls to the foundation model providers. See [vcr.py](https://github.com/kevin1024/vcrpy) and [pollyjs](https://github.com/Netflix/pollyjs/) to do that, check out their documentation to understand how to use them and re-record the requests.
+### Running tests
 
-    You can run all tests by running:
+We record HTTP requests and then replay them in tests to avoid making actual calls to the foundation model providers. See [vcr.py](https://github.com/kevin1024/vcrpy) and [pollyjs](https://github.com/Netflix/pollyjs/) to do that, check out their documentation to understand how to use them and re-record the requests.
 
+You can run all tests by running:
+
+```bash
+nx run-many -t test
+```
+
+Or run a specific test by running:
+
+```bash
+nx run <package>:test
+```
+
+For example, to run the tests for the openai instrumentation package, run:
+
+<CodeBlocks>
+    <CodeBlock title="Python">
     ```bash
-    nx run-many -t test
+    nx run opentelemetry-instrumentation-openai:test
     ```
-
-    Or run a specific test by running:
-
+    </CodeBlock>
+    <CodeBlock title="Typescript">
     ```bash
-    nx run <package>:test
+    nx run @traceloop/instrumentation-openai:test
     ```
+    </CodeBlock>
+</CodeBlocks>
 
-    For example, to run the tests for the openai instrumentation package, run:
+## Typescript
 
-    <CodeBlocks>
-        <CodeBlock title="Python">
-        ```bash
-        nx run opentelemetry-instrumentation-openai:test
-        ```
-        </CodeBlock>
-        <CodeBlock title="Typescript">
-        ```bash
-        nx run @traceloop/instrumentation-openai:test
-        ```
-        </CodeBlock>
-    </CodeBlocks>
-    </Tab>
-    <Tab title="Typescript">
-    We use `npm` with workspaces to manage packages in the monorepo. Install by running `npm install` in the root of the project. Each package has its own test suite. You can use the sample app to run and test changes locally.
-    </Tab>
-</Tabs>
+We use `npm` with workspaces to manage packages in the monorepo. Install by running `npm install` in the root of the project. Each package has its own test suite. You can use the sample app to run and test changes locally.

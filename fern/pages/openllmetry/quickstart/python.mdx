@@ -4,9 +4,7 @@ excerpt: Install OpenLLMetry for Python by following these 3 easy steps and get 
 
 You can also check out our full working example of a RAG pipeline with Pinecone [here](https://github.com/traceloop/pinecone-demo).
 
-<Steps>
-
-### Install the SDK
+## Install the SDK
 
 Run the following command in your terminal:
 
@@ -37,7 +35,7 @@ If you’re running this locally, you may want to disable batch sending, so you 
 Traceloop.init(disable_batch=True)
 ```
 
-### Annotate your workflows
+## Annotate your workflows
 
 <Frame>
 ![openllmetry-python](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-python.png)
@@ -45,7 +43,7 @@ Traceloop.init(disable_batch=True)
 
 If you have complex workflows or chains, you can annotate them to get a better understanding of what’s going on. You’ll see the complete trace of your workflow on Traceloop or any other dashboard you’re using.
 
-We have a set of [decorators](/docs/openllmetry/tracing/workflows-tasks-agents-and-tools) to make this easier. Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow` (or for asynchronous methods - `@aworkflow`).
+We have a set of [decorators](/open-ll-metry/tracing/workflows-tasks-agents-and-tools) to make this easier. Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow` (or for asynchronous methods - `@aworkflow`).
 
 <Callout intent="info">
 If you’re using an LLM framework like Haystack, Langchain or LlamaIndex - we’ll do that for you. No need to add any annotations to your code.
@@ -60,16 +58,16 @@ def suggest_answers(question: str):
 ...
 ```
 
-For more information, see the [dedicated section in the docs](/docs/openllmetry/tracing/workflows-tasks-agents-and-tools).
+For more information, see the [dedicated section in the docs](/open-ll-metry/tracing/workflows-tasks-agents-and-tools).
 
-### Configure trace exporting
+## Configure trace exporting
 
 Lastly, you’ll need to configure where to export your traces. The 2 environment variables controlling this are `TRACELOOP_API_KEY` and `TRACELOOP_BASE_URL`.
 
-For Traceloop, read on. For other options, see [Exporting](/docs/openllmetry/integrations/overview).
+For Traceloop, read on. For other options, see [Exporting](/open-ll-metry/integrations/overview).
 
 
-### Using Traceloop Cloud
+## Using Traceloop Cloud
 
 Go to [Traceloop](https://app.traceloop.com/), and create a new account. Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys. Click **Generate API Key** to generate an API key for the developement environment and click **Copy API Key** to copy it over.
 
@@ -83,7 +81,4 @@ Make sure to copy it as it won’t be shown again.
 
 Set the copied Traceloop’s API key as an environment variable in your app named `TRACELOOP_API_KEY`.
 
-</Steps>
-
 You're all set! You’ll get instant visibility into everything that’s happening with your LLM. If you’re calling a vector DB, or any other external service or database, you’ll also see it in the Traceloop dashboard.
-

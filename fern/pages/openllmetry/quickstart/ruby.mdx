@@ -1,92 +1,91 @@
 ---
-excerpt: Install OpenLLMetry for Ruby by following these 3 easy steps and get instant monitoring.
+excerpt: Not seeing anything? Here are some things to check.
 ---
 
-<Callout intent="info">
-This is still in beta. Give us feedback at [dev@traceloop.com](mailto:dev@traceloop.com)
-</Callout>
+<Frame>
+![openllmetry-troubleshooting](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-troubleshooting.png)
+</Frame>
 
-<Steps>
-### Install the SDK
+We’ve all been there. You followed all the instructions, but you’re not seeing any traces. Let’s fix this.
 
-Run the following command in your terminal:
+## Disable batch sending
+
+Sending traces in batch is useful in production, but can be confusing if you’re working locally. Make sure you’ve [disabled batch sending](/open-ll-metry/quick-start/sdk-initialization-options#disable-batch).
 
 <CodeBlocks>
-    <CodeBlock title="gem">
-    ```bash
-    gem install traceloop-sdk
+    <CodeBlock title="Python">
+    ```python
+    Traceloop.init(disable_batch=True)
     ```
     </CodeBlock>
-    <CodeBlock title="bundler">
-    ```bash
-    bundle add traceloop-sdk
+    <CodeBlock title="Javascript / Typescript">
+    ```javascript
+    Traceloop.init({ disableBatch: true });
     ```
     </CodeBlock>
 </CodeBlocks>
 
-In your LLM app, initialize the Traceloop tracer like this:
+## Check the logs
 
-```Ruby
-require "traceloop/sdk"
-
-traceloop = Traceloop::SDK::Traceloop.new
-```
+When Traceloop initializes, it logs a message to the console, specifying the endpoint that it uses. If you don’t see that, you might not be initializing the SDK properly.
 
 <Callout intent="info">
-If you’re using Rails, this needs to be in `config/initializers/traceloop.rb`
+Traceloop exporting traces to `https://api.traceloop.com`
 </Callout>
 
-### Log your prompts
+## (TS/JS only) Fix known instrumentation issues
 
-<Frame>
-![openllmetry-ruby](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-ruby.png)
-</Frame>
+If you’re using Typescript or Javascript, make sure to import traceloop before any other LLM libraries. This is because traceloop needs to instrument the libraries you’re using, and it can only do that if it’s imported first.
 
-For now, we don’t automatically instrument libraries on Ruby (as opposed to Python and Javascript). This will change in later versions.
-
-This means that you’ll need to manually log your prompts and completions.
-
-```ruby
-require "openai"
-
-client = OpenAI::Client.new
-
-# This tracks the latency of the call and the response
-traceloop.llm_call() do |tracer|
-  # Log the prompt
-  tracer.log_prompt(model="gpt-3.5-turbo", user_prompt="Tell me a joke about OpenTelemetry")
-
-  # Call OpenAI like you normally would
-  response = client.chat(
-    parameters: {
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: "Tell me a joke about OpenTelemetry" }]
-    })
-
-  # Pass the response form OpenAI as is to log the completion and token usage
-  tracer.log_response(response)
-end
+```javascript
+import * as traceloop from "@traceloop/traceloop";
+import OpenAI from "openai";
+// ...
 ```
 
-### Configure Trace Exporting
+If that doesn’t work, you may need to manually instrument the libraries you’re using. See the [manual instrumentation guide](/open-ll-metry/tracing/manual-implementations-typescript-javascript) for more details.
 
-Lastly, you’ll need to configure where to export your traces. The 2 environment variables controlling this are `TRACELOOP_API_KEY` and `TRACELOOP_BASE_URL`.
+```javascript
+import OpenAI from "openai";
+import * as LlamaIndex from "llamaindex";
 
-For Traceloop, read on. For other options, see [Exporting](/docs/openllmetry/integrations/overview).
+traceloop.initialize({
+  appName: "app",
+  instrumentModules: {
+    openAI: OpenAI,
+    llamaIndex: LlamaIndex,
+    // Add or omit other modules you'd like to instrument
+  },
+});
+```
 
-### Using Traceloop Cloud
+## Is your library supported yet?
 
-Go to [Traceloop](https://app.traceloop.com/), and create a new account. Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys. Click **Generate API Key** to generate an API key for the development environment and click **Copy API Key** to copy it over.
+Check out [OpenLLMetry](https://github.com/traceloop/openllmetry#readme) or [OpenLLMetry-JS](https://github.com/traceloop/openllmetry-js#readme) README files to see which libraries and versions are currently supported. Contributions are always welcome! If you want to add support for a library, please open a PR.
 
-<Callout intent="warn">
-Make sure to copy it as it won’t be shown again.
-</Callout>
+## Try outputting traces to the console
 
-<Frame>
-![openllmetry-ruby-2](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-ruby-2.png)
-</Frame>
+Use the `ConsoleExporter` and check if you see traces in the console.
 
-Set the copied Traceloop’s API key as an environment variable in your app named `TRACELOOP_API_KEY`.
-</Steps>
+<CodeBlocks>
+    <CodeBlock title="Python">
+    ```python
+    from opentelemetry.sdk.trace.export import ConsoleSpanExporter
 
-You're all set! You’ll get instant visibility into everything that’s happening with your LLM. If you’re calling a vector DB, or any other external service or database, you’ll also see it in the Traceloop dashboard.
+    Traceloop.init(exporter=ConsoleSpanExporter())
+    ```
+    </CodeBlock>
+    <CodeBlock title="Javascript / Typescript">
+    ```javascript
+    import { ConsoleSpanExporter } from "@opentelemetry/sdk-trace-node";
+
+    traceloop.initialize({ exporter: new ConsoleSpanExporter() });
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+If you see traces in the console, then you probable haven’t configured the exporter properly. Check the [integration guide](/open-ll-metry/integrations/overview) again, and make sure you’re using the right endpoint and API key.
+
+## Talk to us!
+
+We’re here to help. Reach out any time over [Slack](https://traceloop.com/slack?_gl=1*42xay7*_ga*NDc2NTEyODExLjE3MTAzMzg5OTc.*_ga_HPMNWFTJ5B*MTcxMDMzODk5Ni4xLjEuMTcxMDM0OTA2NS4wLjAuMA..), [email](mailto:dev@traceloop.com), and we’d love to assist you.

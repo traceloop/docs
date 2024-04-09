@@ -16,8 +16,7 @@ If you’re using a framework like Langchain, Haystack or LlamaIndex - no need t
 
 Sometimes called a “chain”, intended for a multi-step process that can be traced as a single unit.
 
-<Tabs>
-<Tab title="Python">
+### Python
 Use it as `@workflow(name="my_workflow")` or `@task(name="my_task")`.
 
 <Callout intent="info">
@@ -57,8 +56,9 @@ def joke_workflow():
     print(pirate_joke + "\n\n" + signature)
 
 ```
-</Tab>
-<Tab title="Typescript/Javascript">
+
+### Typescript/Javascript
+
 Use it as `withWorkflow("my_workflow", {}, () => ...)` or `withTask(name="my_task", () => ...)`. The function passed to `withWorkflow` or `withTask` will be part of the workflow or task and can be async or sync.
 
 ```Typescript
@@ -103,8 +103,9 @@ async function joke_workflow() {
   );
 }
 ```
-</Tab>
-<Tab title="Typescript with decorators">
+
+### Typescript with decorators
+
 <Callout intent="info">
 This feature is only available in Typescript. Unless you’re on Nest.js, you’ll need to update your `tsconfig.json` to enable decorators.
 </Callout>
@@ -160,13 +161,10 @@ class JokeCreation {
   }
 }
 ```
-</Tab>
-</Tabs>
 
 ## Agents and Tools
 
-<Tabs>
-<Tab title="Python">
+### Python
 
 Similarily, if you use autonomous agents, you can use the `@agent` decorator to trace them as a single unit. Each tool should be marked with `@tool`.
 
@@ -197,9 +195,8 @@ def history_jokes_tool():
 
     return completion.choices[0].message.content
 ```
-</Tab>
 
-<Tab title="Javascript/Typescript">
+### Javascript/Typescript
 
 Similarily, if you use autonomous agents, you can use the `withAgent` to trace them as a single unit. Each tool should be in `withTool`.
 
@@ -230,9 +227,8 @@ async function history_jokes_tool() {
   });
 }
 ```
-</Tab>
 
-<Tab title="Typescript with Decorators">
+### Typescript with Decorators
 Similarily, if you use autonomous agents, you can use the `@agent` decorator to trace them as a single unit. Each tool should be marked with `@tool`.
 
 <Callout intent="info">
@@ -266,8 +262,6 @@ class Agent {
     }
 }
 ```
-</Tab>
-</Tabs>
 
 ## Async methods
 
@@ -275,7 +269,7 @@ In Typescript, you can use the same syntax for async methods.
 
 In Python, you’ll need to switch to an equivalent async decorator. So, if you’re decorating an `async` method, use `@aworkflow`, `@atask` and so forth.
 
-See also a separate section on [using threads in Python with OpenLLMetry](/docs/openllmetry/tracing/usage-with-threads-python).
+See also a separate section on [using threads in Python with OpenLLMetry](/open-ll-metry/tracing/usage-with-threads-python).
 
 ## Decorating Classes (Python only)
 
