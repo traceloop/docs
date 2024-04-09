@@ -9,7 +9,7 @@ service:
       docs: |
         By default, all prompts and responses are logged.
 
-        If you want to disable this behavior by following [this guide](/open-ll-metry/privacy/prompts-completions-and-embeddings), you can selectively enable it for some of your users with this API.
+        If you want to disable this behavior by following [this guide](/docs/openllmetry/privacy/prompts-completions-and-embeddings), you can selectively enable it for some of your users with this API.
       path: "/tracing-allow-list"
       method: POST
       request: EnableLogging
@@ -20,7 +20,7 @@ service:
       docs: |
         By default, all prompts and responses are logged. 
 
-        If you’ve disabled this behavior by following [this guide](/open-ll-metry/privacy/prompts-completions-and-embeddings), and then selectively enabled it for some of your users, then you can use this API to view which users you’ve enabled.
+        If you’ve disabled this behavior by following [this guide](/docs/openllmetry/privacy/prompts-completions-and-embeddings), and then selectively enabled it for some of your users, then you can use this API to view which users you’ve enabled.
       path: "/tracing-allow-list"
       method: GET
       response: GetIdentifiersResponse
@@ -32,7 +32,7 @@ service:
       docs: |
         By default, all prompts and responses are logged. 
 
-        If you’ve disabled this behavior by following [this guide](/open-ll-metry/privacy/prompts-completions-and-embeddings), and then selectively enabled it for some of your users, then you can use this API to disable it for previously enabled ones.
+        If you’ve disabled this behavior by following [this guide](/docs/openllmetry/privacy/prompts-completions-and-embeddings), and then selectively enabled it for some of your users, then you can use this API to disable it for previously enabled ones.
       path: "/tracing-allow-list"
       method: DELETE
       request: DisableLogging

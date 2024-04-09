@@ -41,7 +41,7 @@ This defines the OpenTelemetry endpoint to connect to. It defaults to https://ap
 
 If you prefix it with `http` or `https`, it will use the OTLP/HTTP protocol. Otherwise, it will use the OTLP/GRPC protocol.
 
-For configuring this to different observability platform, check out our [integrations section](/open-ll-metry/integrations/overview).
+For configuring this to different observability platform, check out our [integrations section](/docs/openllmetry/integrations/overview).
 
 <Callout intent="info">
 The OpenTelemetry standard defines that the actual endpoint should always end with `/v1/traces`. Thus, if you specify a base URL, we always append `/v1/traces` to it. This is similar to how `OTLP_EXPORTER_OTLP_ENDPOINT` works in all OpenTelemetry SDKs.
@@ -69,7 +69,7 @@ The OpenTelemetry standard defines that the actual endpoint should always end wi
 
 If set, this is sent as a bearer token on the Authorization header.
 
-[Traceloop](/open-ll-metry/integrations/traceloop), for example, use this to authenticate incoming traces and requests.
+[Traceloop](/docs/openllmetry/integrations/traceloop), for example, use this to authenticate incoming traces and requests.
 
 <Callout intent="info">
 If this is not set, and the base URL is set to `https://api.traceloop.com`, the SDK will generate a new API key automatically with the Traceloop dashboard.

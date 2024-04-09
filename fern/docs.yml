@@ -1,6 +1,6 @@
 instances:
   - url: traceloop.docs.buildwithfern.com/docs
-    custom-domain: traceloop.com/docs
+    custom-domain: fern.traceloop.com/docs
 
 title: Traceloop | Docs
 
