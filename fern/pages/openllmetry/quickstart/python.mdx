@@ -45,7 +45,7 @@ If you have complex workflows or chains, you can annotate them to get a better u
 
 We have a set of [decorators](/docs/openllmetry/tracing/workflows-tasks-agents-and-tools) to make this easier. Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow` (or for asynchronous methods - `@aworkflow`).
 
-<Callout intent="info">
+<Callout intent="note">
 If you’re using an LLM framework like Haystack, Langchain or LlamaIndex - we’ll do that for you. No need to add any annotations to your code.
 </Callout>
 
@@ -71,7 +71,7 @@ For Traceloop, read on. For other options, see [Exporting](/docs/openllmetry/int
 
 Go to [Traceloop](https://app.traceloop.com/), and create a new account. Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys. Click **Generate API Key** to generate an API key for the developement environment and click **Copy API Key** to copy it over.
 
-<Callout intent="warn">
+<Callout intent="warning">
 Make sure to copy it as it won’t be shown again.
 </Callout>
 

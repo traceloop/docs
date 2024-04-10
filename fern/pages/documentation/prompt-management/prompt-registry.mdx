@@ -15,7 +15,7 @@ The prompt configuration is composed of two parts:
 - The prompt template (system and/or user prompts)
 - The model configuration (`temperature`, `top_p`, etc.)
 
-<Callout intent="info">
+<Callout intent="tip">
 Your prompt template can include variables. Variables are defined according to the syntax of the parser specified. For example, if using `jinjia2` the syntax will be `{{ variable_name }}`. You can then pass variable values to the SDK when calling `get_prompt`. See the example on the [SDK Usage](/fetching-prompts) section.
 </Callout>
 
@@ -49,7 +49,7 @@ Choose the `Deploy` Tab to navigate to the deployments page for your prompt.
 
 Here, you can see all recent prompt versions, and which environments they are deployed to. Simply click on the `Deploy` button to deploy a prompt version to an environment. Similarly, click `Rollback` to revert to a previous prompt version for a specific environment.
 
-<Callout intent="info">
+<Callout intent="note">
 As a safeguard, you cannot deploy a prompt to the `Staging` environment before first deploying it to `Development`. Similarly, you cannot deploy to `Production` without first deploying to `Staging`.
 </Callout>
 
@@ -59,6 +59,6 @@ To fetch prompts from a specific environment, you must supply that environmentâ€
 
 If you want to make changes to your prompt after deployment, simply create a new version by clicking on the `New Version` button. New versions will be created in `Draft Mode`.
 
-<Callout intent="warn">
+<Callout intent="warning">
 If you change the names of variables or add/remove existing variables, you will be required to create a new prompt.
 </Callout>

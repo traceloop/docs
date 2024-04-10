@@ -10,15 +10,15 @@ Review how to setup [OpenTelemetry with Python in Azure Application Insights](ht
 ![integrations-azure](https://fern-image-hosting.s3.amazonaws.com/traceloop/integrations-azure.png)
 </Frame>
 
-## Provision an Application Insights instance in the [Azure portal](https://portal.azure.com/).
+1. Provision an Application Insights instance in the [Azure portal](https://portal.azure.com/).
 
-## Get your Connection String from the instance - [details here](https://learn.microsoft.com/en-us/azure/azure-monitor/app/sdk-connection-string?tabs=python).
+2. Get your Connection String from the instance - [details here](https://learn.microsoft.com/en-us/azure/azure-monitor/app/sdk-connection-string?tabs=python).
 
-## Install required packages
+3. Install required packages
 
 `pip install azure-monitor-opentelemetry-exporter traceloop-sdk openai`
 
-## Example implementation
+4. Example implementation
 
 ```python
 import os

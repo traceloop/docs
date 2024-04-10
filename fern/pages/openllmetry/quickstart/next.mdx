@@ -58,7 +58,7 @@ Run the following command in your terminal:
   });
   ```
 
-  <Callout intent="warn">
+  <Callout intent="warning">
   Make sure to explictly pass any LLM modules you want to instrument as otherwise auto-instrumentation won’t work on Next.js. Also make sure to set `disableBatch` to `true`.
   </Callout>
 
@@ -75,7 +75,7 @@ Run the following command in your terminal:
   module.exports = nextConfig;
   ```
 
-  <Callout intent="info">
+  <Callout intent="tip">
   See official Next.js [OpenTelemetry docs](https://nextjs.org/docs/pages/building-your-application/optimizing/open-telemetry) for more information.
   </Callout>
 
@@ -141,7 +141,7 @@ traceloop.initialize({
 });
 ```
 
-<Callout intent="info">
+<Callout intent="tip">
 See official Next.js [OpenTelemetry docs](https://nextjs.org/docs/pages/building-your-application/optimizing/open-telemetry) for more information.
 </Callout>
 
@@ -157,7 +157,7 @@ We have a set of [methods and decorators](/docs/openllmetry/tracing/workflows-ta
 
 We also have compatible Typescript decorators for class methods which are more convenient.
 
-<Callout intent="info">
+<Callout intent="note">
 If you’re using an LLM framework like Haystack, Langchain or LlamaIndex - we’ll do that for you. No need to add any annotations to your code.
 </Callout>
 
@@ -195,12 +195,15 @@ For Traceloop, read on. For other options, see [Exporting](/docs/openllmetry/int
 
 Go to [Traceloop](https://app.traceloop.com/), and create a new account. Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys. Click **Generate API Key** to generate an API key for the development environment and click **Copy API Key** to copy it over.
 
-<Callout intent="warn">
+<Callout intent="warning">
 Make sure to copy it as it won’t be shown again.
 </Callout>
-
-Set the copied Traceloop’s API key as an environment variable in your app named `TRACELOOP_API_KEY`.
 
 <Frame>
 ![openllmetry-next-2](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-next-2.png)
 </Frame>
+
+Set the copied Traceloop’s API key as an environment variable in your app named `TRACELOOP_API_KEY`.
+
+You're all set! You’ll get instant visibility into everything that’s happening with your LLM. If you’re calling a vector DB, or any other external service or database, you’ll also see it in the Traceloop dashboard.
+

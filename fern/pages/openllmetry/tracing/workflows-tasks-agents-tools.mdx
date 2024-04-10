@@ -8,7 +8,7 @@ excerpt: Enrich your traces by annotating chains and workflows in your app
 
 Traceloop SDK supports several ways to annotate workflows, tasks, agents and tools in your code to get a more complete picture of your app structure.
 
-<Callout intent="info">
+<Callout intent="tip">
 If you’re using a framework like Langchain, Haystack or LlamaIndex - no need to do anything! OpenLLMetry will automatically detect the framework and annotate your traces.
 </Callout>
 
@@ -19,7 +19,7 @@ Sometimes called a “chain”, intended for a multi-step process that can be tr
 ### Python
 Use it as `@workflow(name="my_workflow")` or `@task(name="my_task")`.
 
-<Callout intent="info">
+<Callout intent="tip">
 The `name` argument is optional. If you don’t provide it, we will use the function name as the workflow or task name.
 </Callout>
 

@@ -2,7 +2,7 @@
 excerpt: Install OpenLLMetry for Node.js by following these 3 easy steps and get instant monitoring.
 ---
 
-<Callout intent="info">
+<Callout intent="note">
 If you’re on Next.js, follow the [Next.js guide](/next).
 </Callout>
 
@@ -35,7 +35,7 @@ import * as traceloop from "@traceloop/node-server-sdk";
 traceloop.initialize();
 ```
 
-<Callout intent="info">
+<Callout intent="warning">
 Because of the way Javascript works, you must import the Traceloop SDK before importing any LLM module like OpenAI.
 </Callout>
 
@@ -57,7 +57,7 @@ We have a set of [methods and decorators](/docs/openllmetry/tracing/workflows-ta
 
 We also have compatible Typescript decorators for class methods which are more convenient.
 
-<Callout intent="info">
+<Callout intent="launch">
 If you’re using an LLM framework like Haystack, Langchain or LlamaIndex - we’ll do that for you. No need to add any annotations to your code.
 </Callout>
 
@@ -95,7 +95,7 @@ For Traceloop, read on. For other options, see [Exporting](/docs/openllmetry/int
 
 Go to [Traceloop](https://app.traceloop.com/), and create a new account. Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys. Click **Generate API Key** to generate an API key for the development environment and click **Copy API Key** to copy it over.
 
-<Callout intent="warn">
+<Callout intent="warning">
 Make sure to copy it as it won’t be shown again.
 </Callout>
 
