@@ -63,7 +63,7 @@ navigation:
             path: ./pages/openllmetry/tracing/tracking-feedback.mdx
           - page: Manually reporting calls to LLMs and Vector DBs
             path: ./pages/openllmetry/tracing/manually-reporting-calls.mdx
-          - page: Manual Implementations (Typescript / Javascript)
+          - page: Issues with Auto-instrumentation (Typescript / Javascript)
             path: ./pages/openllmetry/tracing/manual-implementations.mdx
           - page: Usage with Threads (Python)
             path: ./pages/openllmetry/tracing/usage-threads.mdx
