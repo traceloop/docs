@@ -2,8 +2,9 @@
 excerpt: Install OpenLLMetry for Go by following these 3 easy steps and get instant monitoring.
 ---
 
+<Steps>
 
-## Install the SDK
+### Install the SDK
 
 Run the following command in your terminal:
 
@@ -27,7 +28,7 @@ func main() {
 }
 ```
 
-## Log your prompts
+### Log your prompts
 
 <Frame>
 ![openllmetry-go](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-go.png)
@@ -95,13 +96,13 @@ func call_llm() {
 
 ```
 
-## Configure Trace Exporting
+### Configure Trace Exporting
 
 Lastly, you’ll need to configure where to export your traces. The 2 environment variables controlling this are `TRACELOOP_API_KEY` and `TRACELOOP_BASE_URL`.
 
-For Traceloop, read on. For other options, see [Exporting](/docs/openllmetry/integrations/overview).
+For Traceloop, read on. For other options, see [Exporting](/openllmetry/integrations/overview).
 
-## Using Traceloop Cloud
+<h3>Using Traceloop Cloud</h3>
 
 Go to [Traceloop](https://app.traceloop.com/), and create a new account. Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys. Click **Generate API Key** to generate an API key for the development environment and click **Copy API Key** to copy it over.
 
@@ -116,3 +117,5 @@ Make sure to copy it as it won’t be shown again.
 Set the copied Traceloop’s API key as an environment variable in your app named `TRACELOOP_API_KEY`.
 
 You're all set! You’ll get instant visibility into everything that’s happening with your LLM. If you’re calling a vector DB, or any other external service or database, you’ll also see it in the Traceloop dashboard.
+
+</Steps>

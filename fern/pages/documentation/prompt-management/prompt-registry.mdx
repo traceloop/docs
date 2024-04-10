@@ -16,7 +16,7 @@ The prompt configuration is composed of two parts:
 - The model configuration (`temperature`, `top_p`, etc.)
 
 <Callout intent="tip">
-Your prompt template can include variables. Variables are defined according to the syntax of the parser specified. For example, if using `jinjia2` the syntax will be `{{ variable_name }}`. You can then pass variable values to the SDK when calling `get_prompt`. See the example on the [SDK Usage](/fetching-prompts) section.
+Your prompt template can include variables. Variables are defined according to the syntax of the parser specified. For example, if using `jinjia2` the syntax will be `{{ variable_name }}`. You can then pass variable values to the SDK when calling `get_prompt`. See the example on the [SDK Usage](/docs/documentation/prompt-management/fetching-prompts) section.
 </Callout>
 
 Initially, prompts are created in `Draft Mode`. In this mode, you can make changes to the prompt and configuration. You can also test your prompt in the playground (see below).
@@ -53,7 +53,7 @@ Here, you can see all recent prompt versions, and which environments they are de
 As a safeguard, you cannot deploy a prompt to the `Staging` environment before first deploying it to `Development`. Similarly, you cannot deploy to `Production` without first deploying to `Staging`.
 </Callout>
 
-To fetch prompts from a specific environment, you must supply that environment’s API key to the Traceloop SDK. See the [SDK Configuration](/docs/openllmetry/integrations/traceloop) for details
+To fetch prompts from a specific environment, you must supply that environment’s API key to the Traceloop SDK. See the [SDK Configuration](/openllmetry/integrations/traceloop) for details
 
 ## Prompt Versions
 

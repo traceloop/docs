@@ -2,11 +2,12 @@
 excerpt: Install OpenLLMetry for Node.js by following these 3 easy steps and get instant monitoring.
 ---
 
-<Callout intent="note">
-If you’re on Next.js, follow the [Next.js guide](/next).
+<Callout intent="warning">
+If you’re on Next.js, follow the [Next.js guide](/docs/openllmetry/quick-start/next-js).
 </Callout>
 
-## Install the SDK
+<Steps>
+### Install the SDK
 Run the following command in your terminal:
 
 <CodeBlocks>
@@ -45,7 +46,7 @@ If you’re running this locally, you may want to disable batch sending, so you 
 traceloop.initialize({ disableBatch: true });
 ```
 
-## Annotate your workflows
+### Annotate your workflows
 
 <Frame>
 ![openllmetry-node](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-node.png)
@@ -83,13 +84,13 @@ If you’re using an LLM framework like Haystack, Langchain or LlamaIndex - we�
     </CodeBlock>
 </CodeBlocks>
 
-For more information, see the [dedicated section in the docs](/docs/openllmetry/tracing/workflows-tasks-agents-and-tools).
+For more information, see the [dedicated section in the docs](/openllmetry/tracing/workflows-tasks-agents-and-tools).
 
-## Configure Trace Exporting
+### Configure Trace Exporting
 
 Lastly, you’ll need to configure where to export your traces. The 2 environment variables controlling this are `TRACELOOP_API_KEY` and `TRACELOOP_BASE_URL`.
 
-For Traceloop, read on. For other options, see [Exporting](/docs/openllmetry/integrations/overview).
+For Traceloop, read on. For other options, see [Exporting](/openllmetry/integrations/overview).
 
 ## Using Traceloop Cloud
 
@@ -106,3 +107,4 @@ Make sure to copy it as it won’t be shown again.
 Set the copied Traceloop’s API key as an environment variable in your app named `TRACELOOP_API_KEY`.
 
 You're all set! You’ll get instant visibility into everything that’s happening with your LLM. If you’re calling a vector DB, or any other external service or database, you’ll also see it in the Traceloop dashboard.
+</Steps>

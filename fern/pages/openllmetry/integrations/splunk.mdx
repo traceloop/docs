@@ -1,5 +1,5 @@
 ---
-excerpt: LLM Observability with Splunk and OpenLLMetr
+excerpt: LLM Observability with Splunk and OpenLLMetry
 ---
 
 <Frame>
@@ -7,8 +7,6 @@ excerpt: LLM Observability with Splunk and OpenLLMetr
 </Frame>
 
 Collecting and analyzing LLM traces in [Splunk Observability Cloud](https://www.splunk.com/en_us/products/observability.html) can be achieved by configuring the `TRACELOOP_BASE_URL` environment variable to point to the [Splunk OpenTelemetry Collector](https://github.com/signalfx/splunk-otel-collector/releases) OTLP endpoint.
-
-## Configure Collector for OTLP Reception
 
 Have the Collector run in agent or gateway mode and ensure the OTLP receiver is configured, see [Get data into Splunk Observability Cloud](https://docs.splunk.com/observability/en/gdi/get-data-in/get-data-in.html).
 
@@ -22,9 +20,7 @@ receivers:
         endpoint: "0.0.0.0:4318"
 ```
 
-## Set Up OTLP Exporter for Splunk Cloud
-
-Ensure the OTLP exporter is configured to send to Splunk Observability Cloud:
+Secondly, ensure the OTLP exporter is configured to send to Splunk Observability Cloud:
 
 ```yaml
 exporters:
@@ -36,9 +32,7 @@ exporters:
       num_consumers: 32
 ```
 
-## Integrate OTLP in Traces Pipeline
-
-Make sure otlp is defined in the traces pipeline:
+Thirdly, make sure otlp is defined in the traces pipeline:
 
 ```yaml
   pipelines:
@@ -51,9 +45,7 @@ Make sure otlp is defined in the traces pipeline:
       exporters: [sapm]
 ```
 
-## Define Endpoint Environment Variable
-
-Define the `TRACELOOP_BASE_URL` environment variable to point to the Splunk OpenTelemetry Collector OTLP endpoint:
+Finally, define the `TRACELOOP_BASE_URL` environment variable to point to the Splunk OpenTelemetry Collector OTLP endpoint:
 
 ```
 TRACELOOP_BASE_URL=http://<splunk-otel-collector>:4318

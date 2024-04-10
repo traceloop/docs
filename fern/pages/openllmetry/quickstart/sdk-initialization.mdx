@@ -8,6 +8,8 @@ Most configuration options can be set via environment variables or via the SDKâ€
 The SDK initialization options always take precedence over the environment variables.
 </Callout>
 
+See below for the list of options.
+
 ## Application Name
 
 You can customize the application name that will be logged with the traces. This is useful to identify if you have multiple services with OpenLLMetry installed.
@@ -238,6 +240,3 @@ from traceloop.sdk.instruments import Instruments
 Traceloop.init(instruments={Instruments.OPENAI, Instruments.PINECONE})
 ```
 </CodeBlock>
-
-
-

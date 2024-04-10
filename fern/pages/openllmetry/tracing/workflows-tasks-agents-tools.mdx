@@ -16,7 +16,8 @@ If you’re using a framework like Langchain, Haystack or LlamaIndex - no need t
 
 Sometimes called a “chain”, intended for a multi-step process that can be traced as a single unit.
 
-### Python
+<Tabs>
+<Tab title="Python">
 Use it as `@workflow(name="my_workflow")` or `@task(name="my_task")`.
 
 <Callout intent="tip">
@@ -56,9 +57,65 @@ def joke_workflow():
     print(pirate_joke + "\n\n" + signature)
 
 ```
+</Tab>
+<Tab title="Typescript">
+<Callout intent="note">
+This feature is only available in Typescript. Unless you’re on Nest.js, you’ll need to update your `tsconfig.json` to enable decorators.
+</Callout>
 
-### Typescript/Javascript
+Update `tsconfig.json` to enable decorators:
 
+```json
+{
+  "compilerOptions": {
+    "experimentalDecorators": true
+  }
+}
+```
+
+Use it in your code `@traceloop.workflow({ name: "my_workflow" })` for class methods only. We will consider every call to OpenAI as a distinct step (or task). You can even annotate the task with a name, using `@traceloop.task("my_task")`.
+
+<Callout intent="success">
+The `name` argument is optional. If you don’t provide it, we will use the function name as the workflow or task name.
+</Callout>
+
+```Typescript
+import * as traceloop from "@traceloop/node-server-sdk";
+
+class JokeCreation {
+  @traceloop.task({ name: "joke_creation" })
+  async create_joke() {
+    completion = await openai.chat.completions({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { role: "user", content: "Tell me a joke about opentelemetry" },
+      ],
+    });
+
+    return completion.choices[0].message.content;
+  }
+
+  @traceloop.task({ name: "signature_generation" })
+  async generate_signature(joke: string) {
+    completion = await openai.completions.create({
+      model: "davinci-002",
+      prompt: "add a signature to the joke:\n\n" + joke,
+    });
+
+    return completion.choices[0].text;
+  }
+
+  @traceloop.workflow({ name: "pirate_joke_generator" })
+  async joke_workflow() {
+    eng_joke = create_joke();
+    pirate_joke = await translate_joke_to_pirate(eng_joke);
+    signature = await generate_signature(pirate_joke);
+    console.log(pirate_joke + "\n\n" + signature);
+  }
+}
+```
+</Tab>
+<Tab title="Javascript - without Decorators">
 Use it as `withWorkflow("my_workflow", {}, () => ...)` or `withTask(name="my_task", () => ...)`. The function passed to `withWorkflow` or `withTask` will be part of the workflow or task and can be async or sync.
 
 ```Typescript
@@ -103,69 +160,13 @@ async function joke_workflow() {
   );
 }
 ```
-
-### Typescript with decorators
-
-<Callout intent="info">
-This feature is only available in Typescript. Unless you’re on Nest.js, you’ll need to update your `tsconfig.json` to enable decorators.
-</Callout>
-
-Update `tsconfig.json` to enable decorators:
-
-```json
-{
-  "compilerOptions": {
-    "experimentalDecorators": true
-  }
-}
-```
-
-Use it in your code `@traceloop.workflow({ name: "my_workflow" })` for class methods only. We will consider every call to OpenAI as a distinct step (or task). You can even annotate the task with a name, using `@traceloop.task("my_task")`.
-
-<Callout intent="info">
-The `name` argument is optional. If you don’t provide it, we will use the function name as the workflow or task name.
-</Callout>
-
-```Typescript
-import * as traceloop from "@traceloop/node-server-sdk";
-
-class JokeCreation {
-  @traceloop.task({ name: "joke_creation" })
-  async create_joke() {
-    completion = await openai.chat.completions({
-      model: "gpt-3.5-turbo",
-      messages: [
-        { role: "user", content: "Tell me a joke about opentelemetry" },
-      ],
-    });
-
-    return completion.choices[0].message.content;
-  }
-
-  @traceloop.task({ name: "signature_generation" })
-  async generate_signature(joke: string) {
-    completion = await openai.completions.create({
-      model: "davinci-002",
-      prompt: "add a signature to the joke:\n\n" + joke,
-    });
-
-    return completion.choices[0].text;
-  }
-
-  @traceloop.workflow({ name: "pirate_joke_generator" })
-  async joke_workflow() {
-    eng_joke = create_joke();
-    pirate_joke = await translate_joke_to_pirate(eng_joke);
-    signature = await generate_signature(pirate_joke);
-    console.log(pirate_joke + "\n\n" + signature);
-  }
-}
-```
+</Tab>
+</Tabs>
 
 ## Agents and Tools
 
-### Python
-
+<Tabs>
+<Tab title="Python">
 Similarily, if you use autonomous agents, you can use the `@agent` decorator to trace them as a single unit. Each tool should be marked with `@tool`.
 
 ```python
@@ -195,43 +196,11 @@ def history_jokes_tool():
 
     return completion.choices[0].message.content
 ```
-
-### Javascript/Typescript
-
-Similarily, if you use autonomous agents, you can use the `withAgent` to trace them as a single unit. Each tool should be in `withTool`.
-
-```typescript
-import * as traceloop from "@traceloop/node-server-sdk";
-
-async function translate_joke_to_pirate(joke: str) {
-  return await withAgent({name: "joke_translation" }, () => {
-    completion = await openai.chat.completions.create({
-      model="gpt-3.5-turbo",
-      messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
-    });
-
-    history_jokes_tool();
-
-    return completion.choices[0].message.content;
-  });
-}
-
-async function history_jokes_tool() {
-  return await withTool({ name: "history_jokes" }, () => {
-    completion = await openai.chat.completions.create({
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": f"get some history jokes"}],
-    });
-
-    return completion.choices[0].message.content;
-  });
-}
-```
-
-### Typescript with Decorators
+</Tab>
+<Tab title="Typescript">
 Similarily, if you use autonomous agents, you can use the `@agent` decorator to trace them as a single unit. Each tool should be marked with `@tool`.
 
-<Callout intent="info">
+<Callout intent="note">
 If you’re not on Nest.js, remember to set `experimentalDecorators` to `true` in your `tsconfig.json`.
 </Callout>
 
@@ -262,6 +231,39 @@ class Agent {
     }
 }
 ```
+</Tab>
+<Tab title="Javascript - without Decorators">
+Similarily, if you use autonomous agents, you can use the `withAgent` to trace them as a single unit. Each tool should be in `withTool`.
+
+```typescript
+import * as traceloop from "@traceloop/node-server-sdk";
+
+async function translate_joke_to_pirate(joke: str) {
+  return await withAgent({name: "joke_translation" }, () => {
+    completion = await openai.chat.completions.create({
+      model="gpt-3.5-turbo",
+      messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
+    });
+
+    history_jokes_tool();
+
+    return completion.choices[0].message.content;
+  });
+}
+
+async function history_jokes_tool() {
+  return await withTool({ name: "history_jokes" }, () => {
+    completion = await openai.chat.completions.create({
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": f"get some history jokes"}],
+    });
+
+    return completion.choices[0].message.content;
+  });
+}
+```
+</Tab>
+</Tabs>
 
 ## Async methods
 

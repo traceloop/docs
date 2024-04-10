@@ -1,5 +1,5 @@
 ---
-excerpt: LLM observability with OpenTelemetry Collector
+title: LLM observability with OpenTelemetry Collector
 ---
 
 Since Traceloop is emitting standard OTLP HTTP (standard OpenTelemetry protocol), you can use any OpenTelemetry Collector, which gives you the flexibility to then connect to any backend you want. First, [deploy an OpenTelemetry Collector](https://opentelemetry.io/docs/kubernetes/operator/automatic/#create-an-opentelemetry-collector-optional) in your cluster. Then, point the output of the Traceloop SDK to the collector by setting:

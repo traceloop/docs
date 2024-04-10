@@ -1,24 +1,8 @@
 ---
-excerpt: LLM Observability with Grafana and OpenLLMetry
+title: LLM Observability with Grafana and OpenLLMetry
 ---
 
-## Access Grafana Cloud Account for Tempo Integration
-
-Go to the Grafana Cloud account page under `https://grafana.com/orgs/<your org name>`, and click on **Send Traces** under Tempo
-
-### Retrieve URL from Grafana Data Source Settings
-
-In **Grafana Data Source settings**, note the **URL** value
-
-### Generate API Key for Tempo Integration
-
-Click **Generate now** to generate an API key and copy it
-
-### Record Stack ID for Integration Configuration
-
-Note also the **Stack ID** value.
-
-You can find it in the URL `https://grafana.com/orgs/<Your Org Name>/stacks/<Stack ID>`.
+First, go to the Grafana Cloud account page under `https://grafana.com/orgs/<your org name>`, and click on **Send Traces** under Tempo. In **Grafana Data Source settings**, note the **URL** value. Click **Generate now** to generate an API key and copy it. Note also the **Stack ID** value. You can find it in the URL `https://grafana.com/orgs/<Your Org Name>/stacks/<Stack ID>`.
 
 ## With Grafana Agent
 
@@ -41,7 +25,7 @@ traces:
             grpc:
 ```
 
-<Callout intent="warning">
+<Callout intent="info">
 Note the endpoint. The URL you need to use is without `https` and the trailing `/`. So `https://tempo-us-central1.grafana.net/tempo` should be used as `tempo-us-central1.grafana.net:443`.
 </Callout>
 
