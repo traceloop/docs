@@ -5,7 +5,6 @@ excerpt: Install OpenLLMetry for Python by following these 3 easy steps and get 
 You can also check out our full working example of a RAG pipeline with Pinecone [here](https://github.com/traceloop/pinecone-demo).
 
 <Steps>
-
 ### Install the SDK
 
 Run the following command in your terminal:
@@ -47,7 +46,7 @@ If you have complex workflows or chains, you can annotate them to get a better u
 
 We have a set of [decorators](/docs/openllmetry/tracing/workflows-tasks-agents-and-tools) to make this easier. Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow` (or for asynchronous methods - `@aworkflow`).
 
-<Callout intent="info">
+<Callout intent="tip">
 If you’re using an LLM framework like Haystack, Langchain or LlamaIndex - we’ll do that for you. No need to add any annotations to your code.
 </Callout>
 
@@ -68,12 +67,11 @@ Lastly, you’ll need to configure where to export your traces. The 2 environmen
 
 For Traceloop, read on. For other options, see [Exporting](/docs/openllmetry/integrations/overview).
 
-
-### Using Traceloop Cloud
+## Using Traceloop Cloud
 
 Go to [Traceloop](https://app.traceloop.com/), and create a new account. Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys. Click **Generate API Key** to generate an API key for the developement environment and click **Copy API Key** to copy it over.
 
-<Callout intent="warn">
+<Callout intent="warning">
 Make sure to copy it as it won’t be shown again.
 </Callout>
 
@@ -83,7 +81,6 @@ Make sure to copy it as it won’t be shown again.
 
 Set the copied Traceloop’s API key as an environment variable in your app named `TRACELOOP_API_KEY`.
 
-</Steps>
-
 You're all set! You’ll get instant visibility into everything that’s happening with your LLM. If you’re calling a vector DB, or any other external service or database, you’ll also see it in the Traceloop dashboard.
 
+</Steps>

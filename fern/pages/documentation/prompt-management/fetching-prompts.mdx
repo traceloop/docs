@@ -12,8 +12,8 @@ To disable polling all together, set the `TRACELOOP_SYNC_ENABLED` environment va
 
 Make sure you’ve configured the SDK with the right environment and API Key. See the [SDK documentation](/docs/openllmetry/integrations/traceloop) for more information.
 
-<Callout intent="info">
-The SDK uses smart caching mechanisms to proide zero latency for fetching prompts.
+<Callout intent="tip">
+The SDK uses smart caching mechanisms to provide zero latency for fetching prompts.
 </Callout>
 
 ## Get Prompt API
@@ -67,6 +67,6 @@ Then, you can retrieve it with in your code using `get_prompt`:
     </CodeBlock>
 </CodeBlocks>
 
-<Callout intent="info">
+<Callout intent="tip">
 The returned variable `prompt_args` is compatible with the API used by the foundation models SDKs (OpenAI, Anthropic, etc.) which means you should directly plug in the response to the appropriate API call.
 </Callout>

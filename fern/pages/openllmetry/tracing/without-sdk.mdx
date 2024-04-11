@@ -4,29 +4,29 @@ All the instrumentations are provided as standard OpenTelemetry instrumentations
 
 Install the appropriate packages for the modules you want to use.
 
-<Tabs>
-    <Tab title="LLM Foundational Models">
-    | Provider | PyPi Package Name                    |
-    |----------|-------------------------------------|
-    | [OpenAI](https://pypi.org/project/opentelemetry-instrumentation-openai/)   | `opentelemetry-instrumentation-openai`|
-    | [Anthropic](https://pypi.org/project/opentelemetry-instrumentation-anthropic/)| `opentelemetry-instrumentation-anthropic`|
-    | [Bedrock](https://pypi.org/project/opentelemetry-instrumentation-bedrock/)  | `opentelemetry-instrumentation-bedrock`|
-    | [Cohere](https://pypi.org/project/opentelemetry-instrumentation-cohere/)   | `opentelemetry-instrumentation-cohere`|
-    </Tab>
-    <Tab title="Vector DBs">
-    | Vector DB | PyPi Package Name                    |
-    |----------|-------------------------------------|
-    | [Chroma](https://pypi.org/project/opentelemetry-instrumentation-chromadb/)   | `opentelemetry-instrumentation-chromadb`|
-    | [Pinecone](https://pypi.org/project/opentelemetry-instrumentation-pinecone/)| `opentelemetry-instrumentation-pinecone`|
-    </Tab>
-    <Tab title="LLM Frameworks">
-    | Framework | PyPi Package Name                    |
-    |----------|-------------------------------------|
-    | [Haystack](https://pypi.org/project/opentelemetry-instrumentation-haystack/)   | `opentelemetry-instrumentation-haystack`|
-    | [Langchain](https://pypi.org/project/opentelemetry-instrumentation-langchain/)| `opentelemetry-instrumentation-langchain`|
-    | [LlamaIndex](https://pypi.org/project/opentelemetry-instrumentation-llamaindex/)  | `opentelemetry-instrumentation-llamaindex`|
-    </Tab>
-</Tabs>
+### LLM Foundational Models
+
+| Provider | PyPi Package Name                    |
+|----------|-------------------------------------|
+| [OpenAI](https://pypi.org/project/opentelemetry-instrumentation-openai/)   | `opentelemetry-instrumentation-openai`|
+| [Anthropic](https://pypi.org/project/opentelemetry-instrumentation-anthropic/)| `opentelemetry-instrumentation-anthropic`|
+| [Bedrock](https://pypi.org/project/opentelemetry-instrumentation-bedrock/)  | `opentelemetry-instrumentation-bedrock`|
+| [Cohere](https://pypi.org/project/opentelemetry-instrumentation-cohere/)   | `opentelemetry-instrumentation-cohere`|
+
+### Vector DBs
+
+| Vector DB | PyPi Package Name                    |
+|----------|-------------------------------------|
+| [Chroma](https://pypi.org/project/opentelemetry-instrumentation-chromadb/)   | `opentelemetry-instrumentation-chromadb`|
+| [Pinecone](https://pypi.org/project/opentelemetry-instrumentation-pinecone/)| `opentelemetry-instrumentation-pinecone`|
+
+### LLM Frameworks
+
+| Framework | PyPi Package Name                    |
+|----------|-------------------------------------|
+| [Haystack](https://pypi.org/project/opentelemetry-instrumentation-haystack/)   | `opentelemetry-instrumentation-haystack`|
+| [Langchain](https://pypi.org/project/opentelemetry-instrumentation-langchain/)| `opentelemetry-instrumentation-langchain`|
+| [LlamaIndex](https://pypi.org/project/opentelemetry-instrumentation-llamaindex/)  | `opentelemetry-instrumentation-llamaindex`|
 
 ## Usage
 
@@ -42,7 +42,6 @@ OpenAIInstrumentor().instrument()
 ```
 </CodeBlock>
 
-<Callout intent="info">
+<Callout intent="tip">
 If you’re setting OpenTelemetry’s `TracerProvider` manually, make sure to do this before calling `instrument()`.
 </Callout>
-

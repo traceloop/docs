@@ -4,9 +4,11 @@ excerpt: Documentation of the initialization options for the SDKs.
 
 Most configuration options can be set via environment variables or via the SDK’s initialization options.
 
-<Callout intent="info">
+<Callout intent="warning">
 The SDK initialization options always take precedence over the environment variables.
 </Callout>
+
+See below for the list of options.
 
 ## Application Name
 
@@ -43,7 +45,7 @@ If you prefix it with `http` or `https`, it will use the OTLP/HTTP protocol. Oth
 
 For configuring this to different observability platform, check out our [integrations section](/docs/openllmetry/integrations/overview).
 
-<Callout intent="info">
+<Callout intent="note">
 The OpenTelemetry standard defines that the actual endpoint should always end with `/v1/traces`. Thus, if you specify a base URL, we always append `/v1/traces` to it. This is similar to how `OTLP_EXPORTER_OTLP_ENDPOINT` works in all OpenTelemetry SDKs.
 </Callout>
 
@@ -71,7 +73,7 @@ If set, this is sent as a bearer token on the Authorization header.
 
 [Traceloop](/docs/openllmetry/integrations/traceloop), for example, use this to authenticate incoming traces and requests.
 
-<Callout intent="info">
+<Callout intent="tip">
 If this is not set, and the base URL is set to `https://api.traceloop.com`, the SDK will generate a new API key automatically with the Traceloop dashboard.
 </Callout>
 
@@ -97,7 +99,7 @@ If this is not set, and the base URL is set to `https://api.traceloop.com`, the 
 
 If set, this is sent as-is as HTTP headers. This is useful for custom authentication protocols that some observability platforms require. The format follows the [W3C Correlation-Context format](https://github.com/w3c/baggage/blob/main/baggage/HTTP_HEADER_FORMAT.md), i.e. `key1=value1, key2=value2`. If you need spaces, use `%20`. This is similar to how `OTEL_EXPORTER_OTLP_HEADERS` works in all OpenTelemetry SDKs.
 
-<Callout intent="info">
+<Callout intent="note">
 If this is set, the API key is ignored.
 </Callout>
 
@@ -123,7 +125,7 @@ If this is set, the API key is ignored.
 
 If, for some reason, you cannot use the OTLP/HTTP or OTLP/GRPC exporter that is provided with the SDK, you can set a custom exporter (for example, to Jaeger, Zipkin, or others)
 
-<Callout intent="info">
+<Callout intent="note">
 If this is set, Base URL, API key and headers configurations are ignored.
 </Callout>
 
@@ -197,7 +199,7 @@ By default, the SDK outputs some debug logs to the console. You can disable this
 
 By default, if you’re sending traces to Traceloop, then the Traceloop SDK’s sync functionality is also active. To disable it or change any defaults, see the example below. The values listed are the default values, so you don’t need to set them unless you want to change the defaults.
 
-<Callout intent="info">
+<Callout intent="note">
 Traceloop Sync must be enabled in order to use the prompt registry.
 </Callout>
 
@@ -238,6 +240,3 @@ from traceloop.sdk.instruments import Instruments
 Traceloop.init(instruments={Instruments.OPENAI, Instruments.PINECONE})
 ```
 </CodeBlock>
-
-
-

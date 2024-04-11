@@ -5,208 +5,207 @@ excerpt: Install OpenLLMetry for Next.js by following these 3 easy steps and get
 You can check out our full working example with Next.js 13 [here](https://github.com/traceloop/openllmetry-nextjs-demo).
 
 <Steps>
-  ### Install the SDK
+### Install the SDK
 
-  Run the following command in your terminal:
+Run the following command in your terminal:
+
+<CodeBlocks>
+    <CodeBlock title="npm">
+    ```bash
+    npm install @traceloop/node-server-sdk
+    ```
+    </CodeBlock>
+    <CodeBlock title="pnpm">
+    ```bash
+    pnpm add @traceloop/node-server-sdk
+    ```
+    </CodeBlock>
+    <CodeBlock title="yarn">
+    ```bash
+    yarn add @traceloop/node-server-sdk
+    ```
+    </CodeBlock>
+</CodeBlocks>
+
+<Tabs>
+<Tab title="With Pages Router">
+  Create a file named `instrumentation.ts` in the root of your project (i.e., outside of the `pages` or `app` directory) and add the following code:
+
+  ```javascript
+  export async function register() {
+    if (process.env.NEXT_RUNTIME === "nodejs") {
+      await import("./instrumentation.node.ts");
+    }
+  }
+  ```
+
+  Create a file named `instrumentation.node.ts` in the root of your project and add the following code:
+
+  ```javascript
+  import * as traceloop from "@traceloop/node-server-sdk";
+  import OpenAI from "openai";
+  // Make sure to import the entire module you want to instrument, like this:
+  // import * as LlamaIndex from "llamaindex";
+
+  traceloop.initialize({
+    appName: "app",
+    disableBatch: true,
+    instrumentModules: {
+      openAI: OpenAI,
+      // Add any other modules you'd like to instrument here
+      // for example:
+      // llamaIndex: LlamaIndex,
+    },
+  });
+  ```
+
+  <Callout intent="warning">
+  Make sure to explictly pass any LLM modules you want to instrument as otherwise auto-instrumentation won’t work on Next.js. Also make sure to set `disableBatch` to `true`.
+  </Callout>
+
+  On Next.js v12 and below, you’ll also need to add the following to your `next.config.js`:
+
+  ```javascript
+  /** @type {import('next').NextConfig} */
+  const nextConfig = {
+    experimental: {
+      instrumentationHook: true,
+    },
+  };
+
+  module.exports = nextConfig;
+  ```
+
+  <Callout intent="tip">
+  See official Next.js [OpenTelemetry docs](https://nextjs.org/docs/pages/building-your-application/optimizing/open-telemetry) for more information.
+  </Callout>
+</Tab>
+<Tab title="With App Router">
+  Install the following packages by running the following commands in your terminal:
 
   <CodeBlocks>
       <CodeBlock title="npm">
       ```bash
-      npm install @traceloop/node-server-sdk
+      npm install --save-dev node-loader
+      npm i supports-color@8.1.1
       ```
       </CodeBlock>
       <CodeBlock title="pnpm">
       ```bash
-      pnpm add @traceloop/node-server-sdk
+      pnpm add -D node-loader
+      pnpm add supports-color@8.1.1
       ```
       </CodeBlock>
       <CodeBlock title="yarn">
       ```bash
-      yarn add @traceloop/node-server-sdk
+      yarn add -D node-loader
+      yarn add supports-color@8.1.1
       ```
       </CodeBlock>
   </CodeBlocks>
 
-  <Tabs>
-    <Tab title='With Pages Router'>
-    Create a file named `instrumentation.ts` in the root of your project (i.e., outside of the `pages` or `app` directory) and add the following code:
+  Edit your `next.config.js` file and add the following webpack configuration:
 
+  ```javascript
+  const nextConfig = {
+  webpack: (config, { isServer }) => {
+    config.module.rules.push({
+      test: /\.node$/,
+      loader: "node-loader",
+    });
+    if (isServer) {
+      config.ignoreWarnings = [{ module: /opentelemetry/ }];
+    }
+    return config;
+  },
+  };
+  ```
+
+  On every app API route you want to instrument, add the following code at the top of the file:
+
+  ```javascript
+  import * as traceloop from "@traceloop/node-server-sdk";
+  import OpenAI from "openai";
+  // Make sure to import the entire module you want to instrument, like this:
+  // import * as LlamaIndex from "llamaindex";
+
+  traceloop.initialize({
+    appName: "app",
+    disableBatch: true,
+    instrumentModules: {
+      openAI: OpenAI,
+      // Add any other modules you'd like to instrument here
+      // for example:
+      // llamaIndex: LlamaIndex,
+    },
+  });
+  ```
+
+  <Callout intent="tip">
+  See official Next.js [OpenTelemetry docs](https://nextjs.org/docs/pages/building-your-application/optimizing/open-telemetry) for more information.
+  </Callout>
+</Tab>
+</Tabs>
+
+### Annotate your workflows
+
+<Frame>
+![openllmetry-next](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-next.png)
+</Frame>
+
+f you have complex workflows or chains, you can annotate them to get a better understanding of what’s going on. You’ll see the complete trace of your workflow on Traceloop or any other dashboard you’re using.
+
+We have a set of [methods and decorators](/docs/openllmetry/tracing/workflows-tasks-agents-and-tools) to make this easier. Assume you have a function that renders a prompt and calls an LLM, simply wrap it in a `withWorkflow()` function call.
+
+We also have compatible Typescript decorators for class methods which are more convenient.
+
+<Callout intent="tip">
+If you’re using an LLM framework like Haystack, Langchain or LlamaIndex - we’ll do that for you. No need to add any annotations to your code.
+</Callout>
+
+<CodeBlocks>
+    <CodeBlock title="Functions (async / sync)">
     ```javascript
-    export async function register() {
-      if (process.env.NEXT_RUNTIME === "nodejs") {
-        await import("./instrumentation.node.ts");
-      }
+    async function suggestAnswers(question: string) {
+        return await withWorkflow({ name: "suggestAnswers" }, () => {
+            // your code here...
+        });
     }
     ```
-
-    Create a file named `instrumentation.node.ts` in the root of your project and add the following code:
-
+    </CodeBlock>
+    <CodeBlock title="Class Methods">
     ```javascript
-    import * as traceloop from "@traceloop/node-server-sdk";
-    import OpenAI from "openai";
-    // Make sure to import the entire module you want to instrument, like this:
-    // import * as LlamaIndex from "llamaindex";
-
-    traceloop.initialize({
-      appName: "app",
-      disableBatch: true,
-      instrumentModules: {
-        openAI: OpenAI,
-        // Add any other modules you'd like to instrument here
-        // for example:
-        // llamaIndex: LlamaIndex,
-      },
-    });
+    class MyLLM {
+        @traceloop.workflow({ name: "suggest_answers" })
+            async suggestAnswers(question: string) {
+                // your code here...
+        }
+    }
     ```
+    </CodeBlock>
+</CodeBlocks>
 
-    <Callout intent="warn">
-    Make sure to explictly pass any LLM modules you want to instrument as otherwise auto-instrumentation won’t work on Next.js. Also make sure to set `disableBatch` to `true`.
-    </Callout>
+For more information, see the [dedicated section in the docs](/openllmetry/tracing/workflows-tasks-agents-and-tools).
 
-    On Next.js v12 and below, you’ll also need to add the following to your `next.config.js`:
+### Configure Trace Exporting
 
-    ```javascript
-    /** @type {import('next').NextConfig} */
-    const nextConfig = {
-      experimental: {
-        instrumentationHook: true,
-      },
-    };
+Lastly, you’ll need to configure where to export your traces. The 2 environment variables controlling this are `TRACELOOP_API_KEY` and `TRACELOOP_BASE_URL`.
 
-    module.exports = nextConfig;
-    ```
+For Traceloop, read on. For other options, see [Exporting](/openllmetry/integrations/overview).
 
-    <Callout intent="info">
-    See official Next.js [OpenTelemetry docs](https://nextjs.org/docs/pages/building-your-application/optimizing/open-telemetry) for more information.
-    </Callout>
-    </Tab>
-    
-    <Tab title="With App Router">
+<h3>Using Traceloop Cloud</h3>
 
-    Install the following packages by running the following commands in your terminal:
+Go to [Traceloop](https://app.traceloop.com/), and create a new account. Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys. Click **Generate API Key** to generate an API key for the development environment and click **Copy API Key** to copy it over.
 
-    <CodeBlocks>
-        <CodeBlock title="npm">
-        ```bash
-        npm install --save-dev node-loader
-        npm i supports-color@8.1.1
-        ```
-        </CodeBlock>
-        <CodeBlock title="pnpm">
-        ```bash
-        pnpm add -D node-loader
-        pnpm add supports-color@8.1.1
-        ```
-        </CodeBlock>
-        <CodeBlock title="yarn">
-        ```bash
-        yarn add -D node-loader
-        yarn add supports-color@8.1.1
-        ```
-        </CodeBlock>
-    </CodeBlocks>
+<Callout intent="warning">
+Make sure to copy it as it won’t be shown again.
+</Callout>
 
-    Edit your `next.config.js` file and add the following webpack configuration:
+<Frame>
+![openllmetry-next-2](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-next-2.png)
+</Frame>
 
-    ```javascript
-    const nextConfig = {
-    webpack: (config, { isServer }) => {
-      config.module.rules.push({
-        test: /\.node$/,
-        loader: "node-loader",
-      });
-      if (isServer) {
-        config.ignoreWarnings = [{ module: /opentelemetry/ }];
-      }
-      return config;
-    },
-    };
-    ```
+Set the copied Traceloop’s API key as an environment variable in your app named `TRACELOOP_API_KEY`.
 
-    On every app API route you want to instrument, add the following code at the top of the file:
-
-    ```javascript
-    import * as traceloop from "@traceloop/node-server-sdk";
-    import OpenAI from "openai";
-    // Make sure to import the entire module you want to instrument, like this:
-    // import * as LlamaIndex from "llamaindex";
-
-    traceloop.initialize({
-      appName: "app",
-      disableBatch: true,
-      instrumentModules: {
-        openAI: OpenAI,
-        // Add any other modules you'd like to instrument here
-        // for example:
-        // llamaIndex: LlamaIndex,
-      },
-    });
-    ```
-
-    <Callout intent="info">
-    See official Next.js [OpenTelemetry docs](https://nextjs.org/docs/pages/building-your-application/optimizing/open-telemetry) for more information.
-    </Callout>
-    </Tab>
-  </Tabs>
-
-
-  ### Annotate your workflows
-
-  <Frame>
-  ![openllmetry-next](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-next.png)
-  </Frame>
-
-  f you have complex workflows or chains, you can annotate them to get a better understanding of what’s going on. You’ll see the complete trace of your workflow on Traceloop or any other dashboard you’re using.
-
-  We have a set of [methods and decorators](/docs/openllmetry/tracing/workflows-tasks-agents-and-tools) to make this easier. Assume you have a function that renders a prompt and calls an LLM, simply wrap it in a `withWorkflow()` function call.
-
-  We also have compatible Typescript decorators for class methods which are more convenient.
-
-  <Callout intent="info">
-  If you’re using an LLM framework like Haystack, Langchain or LlamaIndex - we’ll do that for you. No need to add any annotations to your code.
-  </Callout>
-
-  <CodeBlocks>
-      <CodeBlock title="Functions (async / sync)">
-      ```javascript
-      async function suggestAnswers(question: string) {
-          return await withWorkflow({ name: "suggestAnswers" }, () => {
-              // your code here...
-          });
-      }
-      ```
-      </CodeBlock>
-      <CodeBlock title="Class Methods">
-      ```javascript
-      class MyLLM {
-          @traceloop.workflow({ name: "suggest_answers" })
-              async suggestAnswers(question: string) {
-                  // your code here...
-          }
-      }
-      ```
-      </CodeBlock>
-  </CodeBlocks>
-
-  For more information, see the [dedicated section in the docs](/docs/openllmetry/tracing/workflows-tasks-agents-and-tools).
-
-  ### Configure Trace Exporting
-
-  Lastly, you’ll need to configure where to export your traces. The 2 environment variables controlling this are `TRACELOOP_API_KEY` and `TRACELOOP_BASE_URL`.
-
-  For Traceloop, read on. For other options, see [Exporting](/docs/openllmetry/integrations/overview).
-
-  ### Using Traceloop Cloud
-
-  Go to [Traceloop](https://app.traceloop.com/), and create a new account. Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys. Click **Generate API Key** to generate an API key for the development environment and click **Copy API Key** to copy it over.
-
-  <Callout intent="warn">
-  Make sure to copy it as it won’t be shown again.
-  </Callout>
-
-  Set the copied Traceloop’s API key as an environment variable in your app named `TRACELOOP_API_KEY`.
-
-  <Frame>
-  ![openllmetry-next-2](https://fern-image-hosting.s3.amazonaws.com/traceloop/openllmetry-next-2.png)
-  </Frame>
+You're all set! You’ll get instant visibility into everything that’s happening with your LLM. If you’re calling a vector DB, or any other external service or database, you’ll also see it in the Traceloop dashboard.
 </Steps>
