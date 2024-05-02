@@ -1,0 +1,17 @@
+---
+title: "LLM Observability with KloudMate and OpenLLMetry"
+sidebarTitle: "KloudMate"
+---
+
+<Frame>
+  <img src="/img/integrations/kloudmate.png" />
+</Frame>
+
+KloudMate is an [observability platform](https://kloudmate.com/) that natively supports OpenTelemetry, you just need to route the traces to KloudMate OpenTelemetry Collector endpoint and set Authorization header:
+
+```bash
+TRACELOOP_BASE_URL="https://otel.kloudmate.com:4318"
+TRACELOOP_HEADERS="Authorization=<YOUR_KM_SECRET_KEY>"
+```
+
+For more information check out the [docs](https://docs.kloudmate.com/).
