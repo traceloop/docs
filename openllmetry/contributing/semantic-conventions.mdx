@@ -4,6 +4,9 @@ title: "GenAI Semantic Conventions"
 
 With OpenLLMetry, we aim at defining an extension of the standard
 [OpenTelemetry Semantic Conventions](https://github.com/open-telemetry/semantic-conventions) for gen AI applications.
+We are also [working closely](https://github.com/open-telemetry/community/blob/main/projects/llm-semconv.md) with the otel community
+to standardize these conventions.
+
 It defines additional attributes for spans to so we can log prompts, completions, token usage, etc.
 These attributes are reported on relevant spans when you use the OpenLLMetry SDK or the individual instrumentations.
 
@@ -20,19 +23,20 @@ This is a work in progress, and we welcome your feedback and contributions!
 
 ### LLM Foundation Models
 
-- `llm.vendor` - The vendor of the LLM (e.g. OpenAI, Anthropic, etc.)
-- `llm.request.tyoe` - The type of request (e.g. `completion`, `chat`, etc.)
-- `llm.request.model` - The model requested (e.g. `gpt-4`, `claude`, etc.)
-- `llm.request.functions` - An array of function definitions provided to the model in the request
-- `llm.prompts` - An array of prompts as sent to the LLM model
-- `llm.request.max_tokens` - The maximum number of response tokens requested
-- `llm.response.model` - The model actually used (e.g. `gpt-4-0613`, etc.)
+- `gen_ai.system` - The vendor of the LLM (e.g. OpenAI, Anthropic, etc.)
+- `gen_ai.request.model` - The model requested (e.g. `gpt-4`, `claude`, etc.)
+- `gen_ai.response.model` - The model actually used (e.g. `gpt-4-0613`, etc.)
+- `gen_ai.request.max_tokens` - The maximum number of response tokens requested
+- `gen_ai.request.temperature`
+- `gen_ai.request.top_p`
+- `gen_ai.prompt` - An array of prompts as sent to the LLM model
+- `gen_ai.completion` - An array of completions returned from the LLM model
+- `gen_ai.usage.prompt_tokens` - The number of tokens used for the prompt in the request
+- `gen_ai.usage.completion_tokens` - The number of tokens used for the completion response
+
+- `llm.request.type` - The type of request (e.g. `completion`, `chat`, etc.)
 - `llm.usage.total_tokens` - The total number of tokens used
-- `llm.usage.completion_tokens` - The number of tokens used for the completion response
-- `llm.usage.prompt_tokens` - The number of tokens used for the prompt in the request
-- `llm.completions` - An array of completions returned from the LLM model
-- `llm.temperature`
-- `llm.top_p`
+- `llm.request.functions` - An array of function definitions provided to the model in the request
 - `llm.frequency_penalty`
 - `llm.presence_penalty`
 - `llm.chat.stop_sequences`
