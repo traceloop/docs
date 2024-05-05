@@ -96,6 +96,7 @@
         "openllmetry/integrations/honeycomb",
         "openllmetry/integrations/hyperdx",
         "openllmetry/integrations/instana",
+        "openllmetry/integrations/kloudmate",
         "openllmetry/integrations/newrelic",
         "openllmetry/integrations/otel-collector",
         "openllmetry/integrations/service-now",
