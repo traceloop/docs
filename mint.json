@@ -93,6 +93,7 @@
         "openllmetry/integrations/datadog",
         "openllmetry/integrations/dynatrace",
         "openllmetry/integrations/grafana",
+        "openllmetry/integrations/highlight",
         "openllmetry/integrations/honeycomb",
         "openllmetry/integrations/hyperdx",
         "openllmetry/integrations/instana",
