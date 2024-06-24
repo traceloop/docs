@@ -24,7 +24,6 @@
     }
   ],
   "topbarCtaButton": {
-    "type": "link",
     "name": "Start now",
     "url": "https://app.traceloop.com/"
   },
