@@ -49,9 +49,9 @@ require "openai"
 client = OpenAI::Client.new
 
 # This tracks the latency of the call and the response
-traceloop.llm_call() do |tracer|
+traceloop.llm_call(provider="openai", model="gpt-3.5-turbo") do |tracer|
   # Log the prompt
-  tracer.log_prompt(model="gpt-3.5-turbo", user_prompt="Tell me a joke about OpenTelemetry")
+  tracer.log_prompt(user_prompt="Tell me a joke about OpenTelemetry")
 
   # Call OpenAI like you normally would
   response = client.chat(
