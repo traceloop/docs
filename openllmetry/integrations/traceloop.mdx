@@ -42,7 +42,7 @@ receivers:
 processors:
   batch:
 exporters:
-  otlp/traceloop:
+  otlphttp/traceloop:
     endpoint: "api.traceloop.com" # US instance
     headers:
       "Authorization": "Bearer <YOUR_API_KEY>"
@@ -51,7 +51,7 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp/traceloop]
+      exporters: [otlphttp/traceloop]
 ```
 
 You can route OpenLLMetry to your collector by following the [OpenTelemetry Collector](/openllmetry/integrations/otel-collector) integration instructions.
