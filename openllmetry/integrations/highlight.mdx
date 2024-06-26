@@ -1,0 +1,16 @@
+---
+title: "LLM Observability with Highlight and OpenLLMetry"
+sidebarTitle: "Highlight"
+---
+
+<Frame>
+  <img src="/img/integrations/highlight.png" />
+</Frame>
+
+Since [Highlight](https://www.highlight.io) natively supports OpenTelemetry, you just need to route the traces to Highlights's OTLP endpoint and set the
+highlight project id in the headers:
+
+```bash
+TRACELOOP_BASE_URL=https://otel.highlight.io:4318
+TRACELOOP_HEADERS="x-highlight-project=<YOUR_HIGHLIGHT_PROJECT_ID>"
+```
