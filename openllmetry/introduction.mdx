@@ -39,7 +39,7 @@ def create_joke():
 import * as traceloop from "@traceloop/node-server-sdk";
 import OpenAI from "openai";
 
-Traceloop.init({ app_name="joke_generation_service" })
+traceloop.initialize({ appName: "joke_generation_service" })
 const openai = new OpenAI();
 
 class MyLLM {
