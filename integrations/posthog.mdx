@@ -1,0 +1,36 @@
+---
+title: "Posthog"
+description: "Connect Traceloop to Posthog to combine LLM insights with your product analytics"
+---
+
+Connecting Traceloop to Posthog can be done by following these steps:
+
+<Steps>
+  <Step title="Get the needed data from Posthog">
+  Go to your Posthog instance settings and get the following data:
+    - API URL (should be something like `https://us.i.posthog.com`)
+    - Project API key (should be in the format `phc_-<key>`)
+  </Step>
+    <Step title="Set up the Integration within Traceloop">
+    Go to the [integrations page](https://app.traceloop.com/settings/integrations) within Traceloop and click on the Posthog card. 
+    <Frame>
+    <img src="/img/traceloop_integrations/integrations.png" />
+    </Frame>
+    </Step>
+    <Step title="Fill in the form">
+    Fill in the data you got from Posthog. Choose the environment you want to connect to Posthog and click on "Enable".
+    <Frame>
+    <img src="/img/traceloop_integrations/posthog.png" />
+    </Frame>
+    </Step>
+</Steps>
+
+**That's it!**
+
+Go to your Posthog instance, click "Activity" and search for events named `traceloop span`.
+
+You can then create a new dashboard from the "LLM Metrics - Traceloop" template to visualize the data.
+
+<Frame>
+  <img src="/img/traceloop_integrations/posthog_result.png" />
+</Frame>

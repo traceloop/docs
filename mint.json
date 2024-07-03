@@ -55,6 +55,10 @@
       "pages": ["introduction"]
     },
     {
+      "group": "Integrations",
+      "pages": ["integrations/posthog"]
+    },
+    {
       "group": "Introduction",
       "pages": ["openllmetry/introduction"]
     },
