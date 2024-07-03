@@ -74,6 +74,7 @@
       "group": "Tracing",
       "pages": [
         "openllmetry/tracing/annotations",
+        "openllmetry/tracing/versions",
         "openllmetry/tracing/association",
         "openllmetry/tracing/user-feedback",
         "openllmetry/tracing/manual-reporting",

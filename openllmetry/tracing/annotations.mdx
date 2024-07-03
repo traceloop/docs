@@ -29,6 +29,11 @@ Use it as `@workflow(name="my_workflow")` or `@task(name="my_task")`.
   function name as the workflow or task name.
 </Tip>
 
+<Tip>
+  You can version your workflows and tasks. Just provide the `version` argument
+  to the decorator: `@workflow(name="my_workflow", version=2)`
+</Tip>
+
 ```python
 from openai import OpenAI
 from traceloop.sdk.decorators import workflow, task
@@ -223,27 +228,29 @@ If you're not on Nest.js, remember to set `experimentalDecorators` to `true` in 
 import * as traceloop from "@traceloop/node-server-sdk";
 
 class Agent {
-  @traceloop.agent({ name: "joke_translation" })
-  async translate_joke_to_pirate(joke: str) {
-    completion = await openai.chat.completions.create({
-    model="gpt-3.5-turbo",
-    messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
-    });
+@traceloop.agent({ name: "joke_translation" })
+async translate_joke_to_pirate(joke: str) {
+completion = await openai.chat.completions.create({
+model="gpt-3.5-turbo",
+messages=[{"role": "user", "content": f"Translate the below joke to pirate-like english:\n\n{joke}"}],
+});
 
     history_jokes_tool();
 
     return completion.choices[0].message.content;
-  }
 
-  @traceloop.tool({ name: "history_jokes" })
-    async history_jokes_tool() {
-    completion = await openai.chat.completions.create({
-    model="gpt-3.5-turbo",
-    messages=[{"role": "user", "content": f"get some history jokes"}],
-    });
+}
+
+@traceloop.tool({ name: "history_jokes" })
+async history_jokes_tool() {
+completion = await openai.chat.completions.create({
+model="gpt-3.5-turbo",
+messages=[{"role": "user", "content": f"get some history jokes"}],
+});
 
     return completion.choices[0].message.content;
-  }
+
+}
 
 ````
 </Tab>

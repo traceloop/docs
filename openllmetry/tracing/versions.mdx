@@ -1,0 +1,32 @@
+---
+title: "Versioning"
+description: "Learn how to enrich your traces by versioning your workflows and prompts"
+---
+
+## Workflow Versions
+
+You can version your workflows and tasks. Just provide the `version` argument to the decorator:
+
+<CodeGroup>
+```python Python
+@workflow(name="my_workflow", version=2)
+def my_workflow():
+    ...
+```
+</CodeGroup>
+
+## Prompt Versions
+
+You can enrich your prompt traces by providing data about the prompt's version, specifying the prompt template or the variables:
+
+<CodeGroup>
+```python Python
+Traceloop.set_prompt(
+    "Tell me a joke about {subject}", {"subject": subject}, version=1
+)
+completion = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[{"role": "user", "content": f"Tell me a joke about {subject}"}],
+)
+```
+</CodeGroup>

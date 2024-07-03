@@ -4,7 +4,7 @@ title: "GenAI Semantic Conventions"
 
 With OpenLLMetry, we aim at defining an extension of the standard
 [OpenTelemetry Semantic Conventions](https://github.com/open-telemetry/semantic-conventions) for gen AI applications.
-We are also [working closely](https://github.com/open-telemetry/community/blob/main/projects/llm-semconv.md) with the otel community
+We are also [leading OpenTelemetry's LLM semantic convention WG](https://github.com/open-telemetry/community/blob/main/projects/llm-semconv.md)
 to standardize these conventions.
 
 It defines additional attributes for spans to so we can log prompts, completions, token usage, etc.
@@ -19,7 +19,7 @@ This is a work in progress, and we welcome your feedback and contributions!
 - [Go](https://github.com/traceloop/go-openllmetry/tree/main/semconv-ai)
 - [Ruby](https://github.com/traceloop/openllmetry-ruby/tree/main/semantic_conventions_ai)
 
-## Definitions
+## Traces Definitions
 
 ### LLM Foundation Models
 
@@ -33,6 +33,7 @@ This is a work in progress, and we welcome your feedback and contributions!
 - `gen_ai.completion` - An array of completions returned from the LLM model
 - `gen_ai.usage.prompt_tokens` - The number of tokens used for the prompt in the request
 - `gen_ai.usage.completion_tokens` - The number of tokens used for the completion response
+- `gen_ai.usage.total_tokens` - The total number of tokens used
 
 - `llm.request.type` - The type of request (e.g. `completion`, `chat`, etc.)
 - `llm.usage.total_tokens` - The total number of tokens used
@@ -45,8 +46,25 @@ This is a work in progress, and we welcome your feedback and contributions!
 
 ### Vector DBs
 
-- `vector_db.vendor` - The vendor of the Vector DB (e.g. Chroma, Pinecone, etc.)
-- `vector_db.query.top_k` - The top k used for the query
+- `db.system` - The vendor of the Vector DB (e.g. Chroma, Pinecone, etc.)
+- `db.vector.query.top_k` - The top k used for the query
+- For each vector in the query, an event named `db.query.embeddings` is fired with this attribute:
+  - `db.query.embeddings.vector` - The vector used in the query
+- For each vector in the response, an event named `db.query.result` is fired for each vector in the response with the following attributes:
+  - `db.query.result.id` - The ID of the vector
+  - `db.query.result.score` - The score of the vector in relation to the query
+  - `db.query.result.distance` - The distance of the vector from the query vector
+  - `db.query.result.metadata` - Related metadata that was attached to the result vector in the DB
+  - `db.query.result.vector` - The vector returned
+  - `db.query.result.document` - The document that is represented by the vector
+
+#### Pinecone-specific
+
+- `pinecone.query.id`
+- `pinecone.query.namespace`
+- `pinecone.query.top_k`
+- `pinecone.usage.read_units` - The number of read units used (as reported by Piinecone)
+- `pinecone.usage.write_units` - The number of write units used (as reported by Piinecone)
 
 ### LLM Frameworks
 
@@ -54,3 +72,7 @@ This is a work in progress, and we welcome your feedback and contributions!
 - `traceloop.workflow.name` - The name of the parent workflow/chain associated with this span
 - `traceloop.entity.name` - Framework-related name for the entity (for example, in Langchain, this will be the name of the specific class that defined the chain / subchain).
 - `traceloop.association.properties` - Context on the request (relevant User ID, Chat ID, etc.)
+
+## Metrics Definition
+
+### LLM Foundation Models
