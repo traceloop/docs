@@ -13,6 +13,37 @@ You can version your workflows and tasks. Just provide the `version` argument to
 def my_workflow():
     ...
 ```
+
+```js Typescript
+import * as traceloop from "@traceloop/node-server-sdk";
+
+class JokeCreation {
+  @traceloop.workflow({ name: "pirate_joke_generator", version: 2 })
+  async joke_workflow() {
+    eng_joke = create_joke();
+    pirate_joke = await translate_joke_to_pirate(eng_joke);
+    signature = await generate_signature(pirate_joke);
+    console.log(pirate_joke + "\n\n" + signature);
+  }
+}
+```
+
+```js Javascript - without Decorators
+import * as traceloop from "@traceloop/node-server-sdk";
+
+async function joke_workflow() {
+  return await traceloop.withWorkflow(
+    { name: "pirate_joke_generator", version: 2 },
+    async () => {
+      eng_joke = create_joke();
+      pirate_joke = await translate_joke_to_pirate(eng_joke);
+      signature = await generate_signature(pirate_joke);
+      console.log(pirate_joke + "\n\n" + signature);
+    }
+  );
+}
+```
+
 </CodeGroup>
 
 ## Prompt Versions
