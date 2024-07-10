@@ -37,9 +37,7 @@ enable_tracing=True,
 Sentry.init({
   dsn: <Your DSN>,
   tracesSampleRate: 1.0,
-
-  // set the instrumenter to use OpenTelemetry instead of Sentry
-  instrumenter: "otel",
+  skipOpenTelemetrySetup: true,
 });
 ````
 
@@ -58,9 +56,10 @@ Traceloop.init(processor=SentrySpanProcessor(), propagator=SentryPropagator())
 
 ```javascript Typescript (Node.js)
 import * as traceloop from "@traceloop/node-server-sdk";
-import { SentrySpanProcessor, SentryPropagator } from "@sentry/opentelemetry-node";
+import { SentrySpanProcessor, SentryPropagator, SentrySampler } from "@sentry/opentelemetry";
 
 Traceloop.init({
+  contextManager: new Sentry.SentryContextManager(),
   processor: new SentrySpanProcessor(),
   propagator: new SentryPropagator()
 })
