@@ -52,7 +52,7 @@
   "navigation": [
     {
       "group": "Learn",
-      "pages": ["introduction"]
+      "pages": ["introduction", "demo"]
     },
     {
       "group": "Integrations",
