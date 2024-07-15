@@ -14,6 +14,56 @@ Please open an issue for us as well so we can prioritize adding support for your
 
 Here's how you can do that manually in the meantime:
 
+## Reporting LLM calls
+
+To track a call to an LLM, just wrap that call in your code with the `withLLMCall` function in Typescript or `track_llm_call` in Python.
+These functions passes a parameter you can use to report the request and response from this call.
+
+<CodeGroup>
+```python Python
+from traceloop.sdk.tracing.manual import LLMMessage, track_llm_call
+
+with track_llm_call(vendor="openai", type="chat") as span:
+  span.report_request(
+      model="gpt-3.5-turbo",
+      messages=[
+          LLMMessage(role="user", content="Tell me a joke about opentelemetry")
+      ],
+  )
+
+  res = openai_client.chat.completions.create(
+      model="gpt-3.5-turbo",
+      messages=[
+          {"role": "user", "content": "Tell me a joke about opentelemetry"}
+      ],
+  )
+
+  span.report_response(res.model, [text.message.content for text in res.choices])
+```
+```javascript Typescript
+traceloop.withLLMCall(
+  { vendor: "openai", type: "chat" },
+  async ({ span }) => {
+    const messages: ChatCompletionMessageParam[] = [
+      { role: "user", content: "Tell me a joke about OpenTelemetry" },
+    ];
+    const model = "gpt-3.5-turbo";
+
+    span.reportRequest({ model, messages });
+
+    const response = await openai.chat.completions.create({
+      messages,
+      model,
+    });
+
+    span.reportResponse(response);
+
+    return response;
+
+})
+````
+</CodeGroup>
+
 ## Reporting Vector DB calls
 
 To track a call to a vector DB, just wrap that call in your code with the `withVectorDBCall` function.
@@ -49,5 +99,6 @@ const results = await traceloop.withVectorDBCall(
       return results;
     },
   );
-```
+````
+
 </CodeGroup>
