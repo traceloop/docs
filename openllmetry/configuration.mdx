@@ -205,9 +205,10 @@ This may affect latency on the first request, as it needs to fetch the embedding
 Traceloop.init(should_enrich_metrics=False) 
 ```
 
-```js Typescript / Javascript
-Traceloop.initialize({ shouldEnrichMetrics: false });
+```bash Environment Variable (JS/TS Only)
+TRACELOOP_ENRICH_TOKENS=false
 ```
+
 </CodeGroup>
 
 ## Traceloop Sync
