@@ -55,10 +55,6 @@
       "pages": ["introduction", "demo"]
     },
     {
-      "group": "Integrations",
-      "pages": ["integrations/posthog"]
-    },
-    {
       "group": "Introduction",
       "pages": ["openllmetry/introduction"]
     },
@@ -116,8 +112,16 @@
       "pages": ["openllmetry/privacy/traces", "openllmetry/privacy/telemetry"]
     },
     {
+      "group": "Monitoring",
+      "pages": ["monitoring/introduction"]
+    },
+    {
       "group": "Prompt Management",
       "pages": ["prompts/quick-start", "prompts/registry", "prompts/sdk-usage"]
+    },
+    {
+      "group": "Integrations",
+      "pages": ["integrations/posthog"]
     },
     {
       "group": "Contribute",
