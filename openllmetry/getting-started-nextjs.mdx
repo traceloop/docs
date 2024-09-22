@@ -38,6 +38,12 @@ export async function register() {
 }
 ```
 
+<Warning>
+  Please note that you might see the following warning:
+  `An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled`
+  To resolve it, simply add `"allowImportingTsExtensions": true` to your tsconfig.json
+</Warning>
+
 Create a file named `instrumentation.node.ts` in the root of your project and add the following code:
 
 ```ts
