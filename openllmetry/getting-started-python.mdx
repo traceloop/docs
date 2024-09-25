@@ -45,7 +45,11 @@ If you have complex workflows or chains, you can annotate them to get a better u
 You'll see the complete trace of your workflow on Traceloop or any other dashboard you're using.
 
 We have a set of [decorators](/openllmetry/tracing/annotations) to make this easier.
-Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow` (or for asynchronous methods - `@aworkflow`).
+Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow`.
+
+<Warning>
+  If you're wrapping an async method, you'll need to use `@aworkflow` instead.
+</Warning>
 
 <Tip>
   If you're using an LLM framework like Haystack, Langchain or LlamaIndex -
@@ -57,6 +61,10 @@ from traceloop.sdk.decorators import workflow
 
 @workflow(name="suggest_answers")
 def suggest_answers(question: str):
+  ...
+
+@aworkflow(name="summarize")
+async def summarize(long_text: str):
   ...
 ```
 
