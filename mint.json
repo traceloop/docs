@@ -128,7 +128,8 @@
       "pages": [
         "openllmetry/contributing/overview",
         "openllmetry/contributing/developing",
-        "openllmetry/contributing/semantic-conventions"
+        "openllmetry/contributing/semantic-conventions",
+        "openllmetry/contributing/general-guide"
       ]
     },
     {
