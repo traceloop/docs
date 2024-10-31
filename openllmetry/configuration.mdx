@@ -213,8 +213,9 @@ TRACELOOP_ENRICH_TOKENS=false
 
 ## Traceloop Sync
 
-By default, if you're sending traces to Traceloop, then the Traceloop SDK's sync functionality is also active.
-To disable it or change any defaults, see the example below. The values listed are the default values,
+By default, Traceloop Sync (for prompts and other configurations) is disabled, even if you're sending traces to Traceloop.
+If you're using the prompt registry, you should enable it.
+To enable it or change any defaults, see the example below. The values listed are the default values,
 so you don't need to set them unless you want to change the defaults.
 
 <Note>Traceloop Sync must be enabled in order to use the prompt registry.</Note>
@@ -248,11 +249,17 @@ By default, the SDK automatically detects which models and frameworks you are us
 You can override this and specify specific frameworks and models you want to instrument. This, for example, allow you to
 specify that you want to log calls to OpenAI, but not Anthropic, or vice-versa.
 
+You can either explictly specify the instruments you want to enable, or the ones you want to block.
+
 <CodeGroup>
 ```python Python
 from traceloop.sdk.instruments import Instruments
 
 Traceloop.init(instruments={Instruments.OPENAI, Instruments.PINECONE})
+
+# OR
+
+Traceloop.init(block_instruments={Instruments.ANTHROPIC})
 
 ```
 </CodeGroup>

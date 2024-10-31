@@ -45,20 +45,23 @@ For more information see the [Registry Documentation](/prompts/registry).
 If you haven't done so, make sure to [generate an API key](https://app.traceloop.com/settings/api-keys) and
 set it as an environment variable `TRACELOOP_API_KEY`.
 
-Make sure to initialize the SDK. On Typescript/Javascript, you should also wait for the initialization to complete.
+<Important>
+Make sure to initialize the SDK and enable traceloop sync (see below).
+On Typescript/Javascript, you should also wait for the initialization to complete.
+</Important>
 
 <CodeGroup>
 
 ```python Python
 from traceloop.sdk import Traceloop
 
-Traceloop.init()
+Traceloop.init(traceloop_sync_enabled=True)
 ```
 
 ```js Typescript / Javascript
 import * as traceloop from "@traceloop/node-server-sdk";
 
-traceloop.initialize();
+traceloop.initialize({ traceloopSyncEnabled: true });
 await traceloop.waitForInitialization();
 ```
 
