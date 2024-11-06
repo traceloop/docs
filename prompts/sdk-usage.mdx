@@ -5,13 +5,14 @@ description: "Use your managed prompts with the Traceloop SDKs"
 
 ### Using your prompt
 
+Make sure to set `traceloop_sync_enabled=True` when initializing the SDK or the `TRACELOOP_SYNC_ENABLED` environment variable to `true`,
+to enable the prompt sync.
+
 The SDK fetches your prompts from Traceloop servers. Changes made to a prompt are available in the SDK during runtime.
 The SDK polls the Traceloop servers for changes every every poll interval.
 
 The default poll interval is 60 seconds but can be configured with the `TRACELOOP_SYNC_POLL_INTERVAL` environment variable, or the initialization function.
 When in the `Development` environment, the poll interval is determined by the `TRACELOOP_SYNC_DEV_POLL_INTERVAL` environment variable or appropriate initialization argument, and defaults to 5 seconds.
-
-To disable polling all together, set the `TRACELOOP_SYNC_ENABLED` environment variable to false (its enabled by default).
 
 Make sure you've configured the SDK with the right environment and API Key. See the [SDK documentation](/openllmetry/integrations/traceloop) for more information.
 
