@@ -43,7 +43,7 @@ processors:
   batch:
 exporters:
   otlphttp/traceloop:
-    endpoint: "api.traceloop.com" # US instance
+    endpoint: "https://api.traceloop.com" # US instance
     headers:
       "Authorization": "Bearer <YOUR_API_KEY>"
 service:
