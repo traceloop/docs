@@ -1,0 +1,35 @@
+---
+title: "LLM Observability with Braintrust and OpenLLMetry"
+sidebarTitle: "Braintrust"
+---
+
+To set up Braintrust as an [OpenTelemetry](https://opentelemetry.io/docs/) backend, you'll need to route the traces to Braintrust's OpenTelemetry endpoint, set your API key, and specify a parent project or experiment. Braintrust supports common patterns from [OpenLLLMetry](https://github.com/traceloop/openllmetry). 
+
+For more information, see the [Braintrust documentation](https://www.braintrust.dev/docs/guides/tracing#traceloop).
+
+To export OTel traces from Traceloop OpenLLMetry to Braintrust, set the following environment variables:
+```bash
+TRACELOOP_BASE_URL=https://api.braintrust.dev/otel
+TRACELOOP_HEADERS="Authorization=Bearer <Your API Key>, x-bt-parent=project_id:<Your Project ID>"
+```
+Traces will then appear under the Braintrust project or experiment provided in the `x-bt-parent` header.
+```python
+from openai import OpenAI
+from traceloop.sdk import Traceloop
+from traceloop.sdk.decorators import workflow
+ 
+Traceloop.init(disable_batch=True)
+client = OpenAI()
+ 
+ 
+@workflow(name="story")
+def run_story_stream(client):
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": "Tell me a short story about LLM evals."}],
+    )
+    return completion.choices[0].message.content
+ 
+ 
+print(run_story_stream(client))
+```
