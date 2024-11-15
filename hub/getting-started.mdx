@@ -22,11 +22,11 @@ git clone https://github.com/traceloop/hub
 
 ### With Docker
 
-Traceloop Hub is available as a docker image.
+Traceloop Hub is available as a docker image named `traceloop/hub`. Make sure to create a `config.yaml` file 
+following the [configuration](./configuration) instructions.
 
 ```bash
-docker build . -t hub
-docker run --rm -p 3000:3000 -v $(pwd)/config.yaml:/etc/config.yaml:ro -t hub
+docker run --rm -p 3000:3000 -v $(pwd)/config.yaml:/etc/config.yaml:ro -t traceloop/hub
 ```
 
 ## Connecting to Hub
