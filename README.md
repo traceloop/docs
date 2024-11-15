@@ -1,4 +1,4 @@
-# Traceloop & OpenLLMetry documentation repo
+# Traceloop, Hub and OpenLLMetry documentation repo
 
 This repo contains all the docs we have on [traceloop.com/docs](https://traceloop.com/docs). Feel free to contribute!
 
