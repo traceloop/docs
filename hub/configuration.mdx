@@ -1,0 +1,64 @@
+---
+title: "Hub Configuration"
+description: "How to configure Traceloop Hub and connect it to different LLM providers"
+---
+
+The hub configuration is done through the `config.yaml` file that should be placed in the root directory of the hub.
+
+Here's an example of the configuration file:
+
+```yaml
+providers:
+  - key: azure-openai
+    type: azure
+    api_key: "<your-azure-api-key>"
+    resource_name: "<your-resource-name>"
+    api_version: "<your-api-version>"
+  - key: openai
+    type: openai
+    api_key: "<your-openai-api-key>"
+
+models:
+  - key: gpt-4o-openai
+    type: gpt-4o
+    provider: openai
+  - key: gpt-4o-azure
+    type: gpt-4o
+    provider: azure-openai
+    deployment: "<your-deployment>"
+
+pipelines:
+  - name: default
+    type: chat
+    plugins:
+      - logging:
+          level: info
+      - tracing:
+          endpoint: "https://api.traceloop.com/v1/traces"
+          api_key: "<your-traceloop-api-key>"
+      - model-router:
+          models:
+            - gpt-4o-openai
+            - gpt-4o-azure
+```
+
+## Providers
+
+This is where you list the LLM providers that you want to use with the hub.
+You can have multiple providers of the same type, just give them different keys.
+
+## Models
+
+This is where you list the models that you want to use with the hub. Each model should be associated with a provider.
+You can have multiple models of the same type with different providers - for example, you can use GPT-4o on Azure and on OpenAI.
+Then, you can define a pipeline (see below) that switches between them according to availabilty.
+Each model has a `type` which is how the hub understands that 2 model specifications are actually the same "model",
+
+## Pipelines
+
+A pipeline is something you can execute when calling the hub. It contains a list of plugins that are executed in order.
+Here are the plugins that are available:
+
+- `logging`: Logs the request and response.
+- `tracing`: Enables OpenTelemetry tracing for requests going through the pipeline.
+- `model-router`: Routes the request to a model, according to the list specified in the `models` section.
