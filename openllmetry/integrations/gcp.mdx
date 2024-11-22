@@ -1,0 +1,72 @@
+---
+title: "LLM Observability with Google Cloud Trace and OpenLLMetry"
+sidebarTitle: "Google Cloud"
+---
+
+[Google Cloud](https://cloud.google.com/?hl=en), also known as Google Cloud Platform (GCP), is a cloud
+provider including [over 150+ products and services](https://cloud.google.com/products?hl=en). Among
+these products and services is [Cloud Trace](https://cloud.google.com/trace/docs), which is a part of the
+[Google Cloud Observability](https://cloud.google.com/stackdriver/docs) suite alongside
+[Cloud Monitoring](https://cloud.google.com/monitoring/docs) and [Cloud Logging](https://cloud.google.com/logging/docs).
+
+Traceloop's OpenLLMetry library enables instrumenting LLM frameworks in an OTel-aligned manner and
+supports writing that instrumentation data as distributed traces to Cloud Trace. Traceloop's OpenLLMetry
+library can be additionally configured to also write to Cloud Monitoring and to Cloud Logging.
+
+## Minimal Integration: Cloud Trace only
+
+### Dependencies
+
+- [`opentelemetry-exporter-gcp-trace`](https://pypi.org/project/opentelemetry-exporter-gcp-trace/)
+- [`traceloop-sdk`](https://pypi.org/project/traceloop-sdk/)
+
+### OpenLLMetry Configuration
+
+```python
+
+# ...
+from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
+from traceloop.sdk import Traceloop
+
+# ...
+trace_exporter = CloudTraceSpanExporter()
+Traceloop.init(
+    app_name='your-app-name',
+    exporter=trace_exporter)
+```
+
+## Integration with Cloud Trace and Cloud Monitoring
+
+### Dependencies
+
+- [`opentelemetry-exporter-gcp-trace`](https://pypi.org/project/opentelemetry-exporter-gcp-trace/)
+- [`opentelemetry-exporter-gcp-monitoring`](https://pypi.org/project/opentelemetry-exporter-gcp-monitoring/)
+- [`traceloop-sdk`](https://pypi.org/project/traceloop-sdk/)
+
+### OpenLLMetry Configuration
+
+```python
+
+# ...
+from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
+from opentelemetry.exporter.cloud_monitoring import CloudMonitoringMetricsExporter
+from traceloop.sdk import Traceloop
+
+# ...
+trace_exporter = CloudTraceSpanExporter()
+metrics_exporter = CloudMonitoringMetricsExporter()
+Traceloop.init(
+    app_name='your-app-name',
+    exporter=trace_exporter,
+    metrics_exporter=metrics_exporter)
+```
+
+## Integration with Cloud Trace, Cloud Monitoring, and Cloud Logging
+
+See the example below for how to configure this.
+
+## Example
+
+A complete example of integrating OpenLLMetry with Google Cloud can be found in the
+official Google Cloud code samples repository [`GoogleCloudPlatform/python-docs-samples`](https://github.com/GoogleCloudPlatform/python-docs-samples)
+under [`generative_ai/observability/openllmetry_integration`](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/main/generative_ai/observability/openllmetry_integration).
