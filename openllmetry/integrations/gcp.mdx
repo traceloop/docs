@@ -63,10 +63,72 @@ Traceloop.init(
 
 ## Integration with Cloud Trace, Cloud Monitoring, and Cloud Logging
 
-See the example below for how to configure this.
+As of 2024-12-05, there is no direct Python OTel exporter for Cloud Logging. However,
+it is possible to work around this by routing to the [OTel Collector](https://opentelemetry.io/docs/collector/)
+and using the [`googlecloudexporter`](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/googlecloudexporter/README.md)
+in the OTel Collector to route logs to Google Cloud Logging. Alternatively, you
+can use the Python [`ConsoleLogExporter`](https://github.com/open-telemetry/opentelemetry-python/blob/415c94fb9834ce38459e58d5ee192a98494c4c76/opentelemetry-sdk/src/opentelemetry/sdk/_logs/_internal/export/__init__.py#L86)
+to log to a file in conjunction with automatic file-based log routing such as via
+the [Ops Agent](https://cloud.google.com/stackdriver/docs/solutions/agents/ops-agent),
+direct use of [FluentBit](https://fluentbit.io/), or other routing solutions.
 
-## Example
+### Dependencies
 
-A complete example of integrating OpenLLMetry with Google Cloud can be found in the
-official Google Cloud code samples repository [`GoogleCloudPlatform/python-docs-samples`](https://github.com/GoogleCloudPlatform/python-docs-samples)
-under [`generative_ai/observability/openllmetry_integration`](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/main/generative_ai/observability/openllmetry_integration).
+#### OTel Dependencies
+
+This is assuming that you write to Cloud Logging via the OTel Collector:
+
+ - [`opentelemetry-collector-contrib`](https://hub.docker.com/r/otel/opentelemetry-collector-contrib)
+ - [`googlecloudexporter`](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/googlecloudexporter/README.md)
+
+#### Python Dependencies
+
+- [`opentelemetry-exporter-gcp-trace`](https://pypi.org/project/opentelemetry-exporter-gcp-trace/)
+- [`opentelemetry-exporter-gcp-monitoring`](https://pypi.org/project/opentelemetry-exporter-gcp-monitoring/)
+- [`opentelemetry-exporter-otlp-proto-grpc`](https://pypi.org/project/opentelemetry-exporter-otlp-proto-grpc/)
+- [`traceloop-sdk`](https://pypi.org/project/traceloop-sdk/)
+
+### OpenLLMetry Configuration
+
+```python
+
+# ...
+from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
+from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
+from opentelemetry.exporter.cloud_monitoring import CloudMonitoringMetricsExporter
+from traceloop.sdk import Traceloop
+
+# ...
+trace_exporter = CloudTraceSpanExporter()
+metrics_exporter = CloudMonitoringMetricsExporter()
+
+# Will use the 'OTEL_EXPORTER_OTLP_LOGS_*' environment
+# variables (such as 'OTEL_EXPORTER_OTLP_LOGS_ENDPOINT')
+# to select how to connect to the OTel Collector.   
+logs_exporter = OTLPLogExporter()
+
+Traceloop.init(
+    app_name='your-app-name',
+    exporter=trace_exporter,
+    metrics_exporter=metrics_exporter,
+    logging_exporter=logs_exporter)
+```
+
+## Advanced Topics
+
+### Large Span Attributes
+
+Although [OTel Semantic Conventions](https://opentelemetry.io/docs/concepts/semantic-conventions/)
+[for GenAI](https://opentelemetry.io/docs/specs/semconv/gen-ai/) has been moving
+from prompt/response logging in span attributes to recording prompts/responses in
+events (logs) -- see [related pull request](https://github.com/open-telemetry/semantic-conventions/pull/980)
+--, some versions of OpenLLMetry and related instrumentation packages follow older
+experimental conventions of recording prompts/responses in span attributes which do
+not fit within [Cloud Trace limits](https://cloud.google.com/trace/docs/quotas).
+
+The [`e2e-gen-ai-app-starter-pack`](https://github.com/GoogleCloudPlatform/generative-ai/tree/b96a0c9ccce165908d5e7262fedcafd9f6fde082/gemini/sample-apps/e2e-gen-ai-app-starter-pack)
+code sample provided by Google illustrates a potential workaround; that app, [calls
+`Traceloop.init`](https://github.com/GoogleCloudPlatform/generative-ai/blob/b96a0c9ccce165908d5e7262fedcafd9f6fde082/gemini/sample-apps/e2e-gen-ai-app-starter-pack/app/server.py#L64)
+with a custom [`CloudTraceLoggingSpanExporter`](https://github.com/GoogleCloudPlatform/generative-ai/blob/b96a0c9ccce165908d5e7262fedcafd9f6fde082/gemini/sample-apps/e2e-gen-ai-app-starter-pack/app/utils/tracing.py#L26)
+which inherits from the official `CloudTraceSpanExporter` and adds additional capabilities
+for handling large span attributes.
