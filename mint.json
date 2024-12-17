@@ -107,6 +107,7 @@
         "openllmetry/integrations/hyperdx",
         "openllmetry/integrations/instana",
         "openllmetry/integrations/kloudmate",
+        "openllmetry/integrations/langsmith",
         "openllmetry/integrations/middleware",
         "openllmetry/integrations/newrelic",
         "openllmetry/integrations/otel-collector",
