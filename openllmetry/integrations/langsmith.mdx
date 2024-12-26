@@ -1,0 +1,44 @@
+---
+title: "LLM Observability with LangSmith and OpenLLMetry"
+sidebarTitle: "LangSmith"
+---
+
+<Frame>
+  <img src="/img/integrations/langsmith.png" />
+</Frame>
+
+LangSmith is an [all-in-one developer platform](https://www.langchain.com/langsmith) for every step of the LLM-powered application lifecycle.
+
+LangSmith supports ingesting traces using OpenTelemetry / OpenLLMetry format. For more details, see [LangSmith's OpenTelemetry documentation](https://docs.smith.langchain.com/observability/how_to_guides/tracing/trace_with_opentelemetry).
+
+### To Log Traces to Langsmith
+
+Signup for LangSmith and create an API Key. Then setup your environment variables:
+
+```bash
+TRACELOOP_BASE_URL=https://api.smith.langchain.com/otel
+TRACELOOP_HEADERS="x-api-key=<LANGSMITH_API_KEY>"
+```
+
+You can then log traces with OpenLLMetry to LangSmith, here is an example:
+
+```python
+from openai import OpenAI
+from traceloop.sdk import Traceloop
+
+client = OpenAI()
+Traceloop.init()
+
+completion = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {
+            "role": "user",
+            "content": "Write a haiku about recursion in programming."
+        }
+    ]
+)
+
+print(completion.choices[0].message)
+```
