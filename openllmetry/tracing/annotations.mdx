@@ -294,8 +294,10 @@ async function history_jokes_tool() {
 
 In Typescript, you can use the same syntax for async methods.
 
-In Python, you'll need to switch to an equivalent async decorator.
-So, if you're decorating an `async` method, use `@aworkflow`, `@atask` and so forth.
+In python, the decorators work seamlessly with both synchronous and asynchronous functions.
+Use `@workflow`, `@task`, `@agent`, and so forth for both sync and async methods.
+
+The async-specific decorators (`@aworkflow`, `@atask`, etc.) are deprecated and will be removed in a future version.
 
 See also a [separate section on using threads in Python with OpenLLMetry](/openllmetry/tracing/python-threads).
 
