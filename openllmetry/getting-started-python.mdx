@@ -48,7 +48,8 @@ We have a set of [decorators](/openllmetry/tracing/annotations) to make this eas
 Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow`.
 
 <Warning>
-  If you're wrapping an async method, you'll need to use `@aworkflow` instead.
+  The `@aworkflow` decorator is deprecated and will be removed in a future version.
+  Use `@workflow` for both synchronous and asynchronous operations.
 </Warning>
 
 <Tip>
@@ -63,7 +64,8 @@ from traceloop.sdk.decorators import workflow
 def suggest_answers(question: str):
   ...
 
-@aworkflow(name="summarize")
+# Works seamlessly with async functions too
+@workflow(name="summarize")
 async def summarize(long_text: str):
   ...
 ```
