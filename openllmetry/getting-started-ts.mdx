@@ -48,6 +48,11 @@ If you're running this locally, you may want to disable batch sending, so you ca
 traceloop.initialize({ disableBatch: true });
 ```
 
+<Note>
+  If you're using Sentry, make sure to disable their OpenTelemetry configuration as it overrides
+  OpenLLMetry. When calling `Sentry.init`, pass `skipOpenTelemetrySetup: true`. 
+</Note>
+
 </Step>
 <Step title="Annotate your workflows">
 <Frame>
