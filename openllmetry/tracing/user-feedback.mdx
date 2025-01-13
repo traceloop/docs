@@ -6,24 +6,45 @@ When building LLM applications, it quickly becomes highly useful and important t
 
 Doing that with OpenLLMetry is easy. First, make sure you [associate your LLM workflow with unique identifiers](/openllmetry/tracing/association).
 
-Then, you can simply log a user feedback by calling our Python SDK or Typescript SDK.
-Feedbacks are always between -1 and 1, where -1 is the worst possible feedback and 1 is the best possible feedback.
+Then, [create an Annotation Task](https://app.traceloop.com/annotation-tasks) within Traceloop to collect user feedback as annotations.
+The annotation task should include:
+- The [entity](/openllmetry/tracing/association) you want to collect feedback for (e.g., `chat_id`)
+- Tags you want to track (e.g., `score`, `feedback_text`)
 
-For example, if you provide your users with a thumbs-up / thumbs-down feedback, you should log thumbs-up as 1 and thumbs-down as -1.
+You can log user feedback by calling our Python SDK or TypeScript SDK.
+All feedback must follow the structure defined in your annotation task.
 
-<Note>You can only report feedback for one association property at a time. So this call will throw an exception:
-`traceloop.reportScore({ chat_id: "12345", generation_id: "789", score: 1 });`</Note>
+For example, to implement thumbs-up/thumbs-down feedback, create an annotation task with a tag named `is_helpful` that accepts the values `thumbs-up` and `thumbs-down`.
+
+<Note>
+  The entity you report feedback for must match the one defined in your annotation
+  task and association property.
+</Note>
 
 <CodeGroup>
 
 ```python Python
 from traceloop.sdk import Traceloop
 
-Traceloop.report_score("chat_id", "12345", 1)
-```
+traceloop_client = Traceloop.get()
+traceloop_client.user_feedback.create(
+    "your-annotation-task",
+    "12345",
+    {"is_helpful": "thumbs-up"},
+)
+````
 
-```js Typescript
-traceloop.reportScore({ chat_id: "12345" }, 1);
-```
+````js Typescript
+const client = traceloop.getClient();
+await client.userFeedback.create({
+    annotationTask: "your-annotation-task",
+    entity: {
+        id: "12345",
+    },
+    tags: {
+        is_helpful: "thumbs-up",
+    },
+});
+````
 
 </CodeGroup>
