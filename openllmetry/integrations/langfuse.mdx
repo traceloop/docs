@@ -1,0 +1,74 @@
+---
+title: "Enhance LLM Observability with Langfuse and OpenLLMetry"
+sidebarTitle: "Langfuse"
+---
+
+# OpenLLMetry Integration via OpenTelemetry
+
+Langfuse provides a backend built on OpenTelemetry for ingesting trace data, and you can use different instrumentation libraries to export traces from your applications. 
+
+> **What is Langfuse?** [Langfuse](https://langfuse.com) [(GitHub)](https://github.com/langfuse/langfuse) is an open-source platform for LLM engineering. It provides tracing and monitoring capabilities for AI agents, helping developers debug, analyze, and optimize their products. Langfuse integrates with various tools and frameworks via native integrations, OpenTelemetry, and SDKs.
+
+## Step 1: Install Dependencies
+
+Begin by installing the necessary Python packages. In this example, we need the `openai` library to interact with OpenAI’s API and `traceloop-sdk` for enabling OpenLLMetry instrumentation.
+
+
+```python
+%pip install openai traceloop-sdk
+```
+
+## Step 2: Set Up Environment Variables
+
+Before initiating any requests, configure your environment with the necessary credentials and endpoints. Here, we establish Langfuse authentication by combining your public and secret keys into a Base64-encoded token. Additionally, specify the Langfuse endpoint based on your preferred geographical region (EU or US) and provide your OpenAI API key.
+
+```python
+import os
+import base64
+
+LANGFUSE_PUBLIC_KEY=""
+LANGFUSE_SECRET_KEY=""
+LANGFUSE_AUTH=base64.b64encode(f"{LANGFUSE_PUBLIC_KEY}:{LANGFUSE_SECRET_KEY}".encode()).decode()
+
+os.environ["TRACELOOP_BASE_URL"] = "https://cloud.langfuse.com/api/public/otel" # EU data region
+# os.environ["TRACELOOP_BASE_URL"] = "https://us.cloud.langfuse.com/api/public/otel" # US data region
+os.environ["TRACELOOP_HEADERS"] = f"Authorization=Basic {LANGFUSE_AUTH}"
+
+# your openai key
+os.environ["OPENAI_API_KEY"] = ""
+```
+
+## Step 3: Initialize OpenLLMetry Instrumentation
+
+Proceed to initialize the OpenLLMetry instrumentation using the `traceloop-sdk`. It is advisable to use `disable_batch=True` if you are executing this code in a notebook, as traces are sent immediately without waiting for batching. Once initialized, any action performed using the OpenAI SDK (such as a chat completion request) will be automatically traced and forwarded to Langfuse.
+
+```python
+from openai import OpenAI
+from traceloop.sdk import Traceloop
+
+Traceloop.init(disable_batch=True)
+
+openai_client = OpenAI()
+
+chat_completion = openai_client.chat.completions.create(
+    messages=[
+        {
+          "role": "user",
+          "content": "What is LLM Observability?",
+        }
+    ],
+    model="gpt-4o-mini",
+)
+
+print(chat_completion)
+```
+
+## Step 4: Analyze the Trace in Langfuse
+
+After executing the above code, you can examine the generated trace in your Langfuse dashboard:
+
+[Example Trace in Langfuse](https://cloud.langfuse.com/project/cloramnkj0002jz088vzn1ja4/traces/e417c49b4044725e48aa0e089534fa12?timestamp=2025-02-02T22%3A04%3A04.487Z)
+
+![OpenLLMetry OpenAI Trace](https://langfuse.com/images/cookbook/otel-integration-openllmetry/openllmetry-openai-trace.png)
+
+
