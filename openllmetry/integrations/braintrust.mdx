@@ -12,11 +12,29 @@ For more information, see the [Braintrust documentation](https://www.braintrust.
 </Frame>
 
 To export OTel traces from Traceloop OpenLLMetry to Braintrust, set the following environment variables:
+
 ```bash
 TRACELOOP_BASE_URL=https://api.braintrust.dev/otel
-TRACELOOP_HEADERS="Authorization=Bearer <Your API Key>, x-bt-parent=project_id:<Your Project ID>"
+TRACELOOP_HEADERS="Authorization=Bearer%20<Your API Key>, x-bt-parent=project_id:<Your Project ID>"
 ```
+
+Note: When setting the bearer token, make sure to URL encode the space between "Bearer" and your API key using `%20`. For example:
+
+```bash
+# Incorrect format
+TRACELOOP_HEADERS="Authorization=Bearer sk-RiPodT20anlA1d3ki4T5I0V24WHXFuwvlPivUUoUGOnczOVI, x-bt-parent=project_id:<Your Project ID>"
+
+# Correct format
+TRACELOOP_HEADERS="Authorization=Bearer%20sk-RiPodT20anlA1d3ki4T5I0V24WHXFuwvlPivUUoUGOnczOVI, x-bt-parent=project_id:<Your Project ID>"
+```
+
+Important: The project ID is not the same as your project name. To find your project ID:
+1. Navigate to your project configuration page at: `https://www.braintrust.dev/app/ORG_NAME/p/PROJECT_NAME/configuration`
+2. Scroll to the bottom of the page
+3. Look for the "Copy Project ID" button to get the correct ID for the `x-bt-parent` header
+
 Traces will then appear under the Braintrust project or experiment provided in the `x-bt-parent` header.
+
 ```python
 from openai import OpenAI
 from traceloop.sdk import Traceloop
