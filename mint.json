@@ -118,7 +118,8 @@
         "openllmetry/integrations/service-now",
         "openllmetry/integrations/signoz",
         "openllmetry/integrations/sentry",
-        "openllmetry/integrations/splunk"
+        "openllmetry/integrations/splunk",
+        "openllmetry/integrations/langfuse"
       ]
     },
     {
