@@ -95,7 +95,41 @@ Required for full platform deployment, supporting:
 
 Ensure all required components are properly configured and accessible. Traceloop can integrate with your existing infrastructure, using dedicated schemas and topics to maintain separation.
 
-### 2. Helm Repository Setup
+### 2. Set Up Required Operators and Secrets
+
+First, set up the Doppler operator for secrets management:
+
+```bash
+# Create namespace for Doppler operator
+kubectl create namespace doppler-operator-system
+
+# Add Doppler Helm repository
+helm repo add doppler https://helm.doppler.com
+
+# Install Doppler Kubernetes operator
+helm install --generate-name doppler/doppler-kubernetes-operator
+
+# Create Doppler service token secret
+kubectl create secret generic doppler-token-secret \
+  --namespace doppler-operator-system \
+  --from-literal=serviceToken=<doppler-token-provided-by-traceloop>
+```
+
+Next, create the Traceloop namespace and set up Docker Hub credentials:
+
+```bash
+# Create Traceloop namespace
+kubectl create namespace traceloop
+
+# Create Docker Hub pull secret
+kubectl create secret docker-registry regcred \
+  --namespace traceloop \
+  --docker-server=docker.io \
+  --docker-username=<dockerhub-username-provided-by-traceloop> \
+  --docker-password=<dockerhub-password-provided-by-traceloop>
+```
+
+### 3. Helm Repository Setup
 
 Add the Traceloop Helm repository to your environment:
 
@@ -104,15 +138,31 @@ helm repo add traceloop https://helm.traceloop.com
 helm repo update
 ```
 
-### 3. Platform Installation
+For air-gapped environments, clone the Helm repository and extract OCI dependencies:
+
+```bash
+# Clone Helm repository
+git clone https://github.com/traceloop/helm.git
+cd helm
+
+# Make the dependency extraction script executable
+chmod +x ./extract-oci-deps.sh 
+
+# Extract OCI dependencies
+./extract-oci-deps.sh
+```
+
+### 4. Platform Installation
 
 Deploy Traceloop using Helm:
 
 ```bash
-helm install traceloop traceloop/traceloop \
+# For standard installations
+helm install traceloop \
   --namespace traceloop \
   --create-namespace \
-  --values values.yaml
+  --values values.yaml \
+  --dependency-update
 ```
 
 The `values.yaml` file contains your infrastructure connection details and platform configuration. Below is an example configuration with required values:
