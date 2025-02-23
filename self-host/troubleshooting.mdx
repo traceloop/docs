@@ -1,0 +1,196 @@
+---
+title: "Troubleshooting Guide"
+description: "Solutions to common issues when self-hosting Traceloop"
+---
+
+# Troubleshooting Guide
+
+This guide helps you diagnose and resolve common issues you might encounter when self-hosting Traceloop.
+
+<Info>
+  Need immediate assistance? [Schedule a support
+  call](https://meetings.hubspot.com/ngazit/traceloop-final-qualification-demo?uuid=3b54030a-16c0-4d6b-bc3f-12e42e4b3db7)
+  with our team.
+</Info>
+
+## Connection Issues
+
+### ClickHouse Connection Failures
+
+Common issues and their solutions when connecting to ClickHouse:
+
+- Verify the host and port are correct
+- Ensure the database exists and the user has appropriate permissions
+- For ClickHouse Cloud, set `isCloud: true` in your configuration
+- Check if SSL is required (`secure: true`)
+- Verify network connectivity and firewall rules
+
+### Kafka Connection Issues
+
+If you're having trouble connecting to Kafka:
+
+- Confirm broker addresses are accessible from the Kubernetes cluster
+- For Confluent Cloud:
+  - Ensure SASL authentication is properly configured
+  - Verify SSL is enabled
+- Check topic creation permissions
+- Verify network policies allow Kafka connectivity
+
+### PostgreSQL Connection Problems
+
+Common PostgreSQL connectivity issues:
+
+- Verify database exists and is accessible
+- Check user permissions (needs ability to create schemas and tables)
+- For SSL connections, ensure proper SSL mode is set
+- Verify PostgreSQL version compatibility (9.6 or higher)
+
+## Kubernetes Deployment Issues
+
+### Pod Startup Failures
+
+If pods aren't starting properly:
+
+```bash
+# Check pod status
+kubectl get pods -n traceloop
+
+# Check pod events
+kubectl describe pod -n traceloop <pod-name>
+
+# Check pod logs
+kubectl logs -n traceloop <pod-name>
+```
+
+Common solutions:
+
+- Verify resource requests and limits are appropriate
+- Ensure all secrets are properly created
+- Check container image pull permissions
+
+### Ingress Issues
+
+If you can't access Traceloop through your ingress:
+
+- Verify ingress controller is installed
+- Check TLS secret exists if TLS is enabled
+- Ensure DNS records are properly configured
+- Verify ingress annotations match your environment
+
+```bash
+# Check ingress status
+kubectl get ingress -n traceloop
+
+# Check ingress details
+kubectl describe ingress -n traceloop
+```
+
+## Air-Gapped Environment Issues
+
+### Image Pull Failures
+
+For air-gapped environments:
+
+- Ensure all required images are available in your private registry
+- Configure `imageRegistry` settings correctly:
+  ```yaml
+  platform:
+    imageRegistry:
+      url: "your-private-registry.com"
+      secretName: "registry-credentials"
+  ```
+- Verify registry credentials are properly set
+- Check network connectivity to private registry
+
+## Common Error Messages
+
+### "Error: connection refused"
+
+Check component connectivity:
+
+```bash
+# Test ClickHouse connectivity
+kubectl exec -it -n traceloop deploy/traceloop-api -- nc -vz your-clickhouse-host 9000
+
+# Test Kafka connectivity
+kubectl exec -it -n traceloop deploy/traceloop-api -- nc -vz your-kafka-broker 9092
+
+# Test PostgreSQL connectivity
+kubectl exec -it -n traceloop deploy/traceloop-api -- nc -vz your-postgres-host 5432
+```
+
+### "Error: authentication failed"
+
+Authentication issues:
+
+- Verify credentials in your values.yaml
+- Check if secrets are properly mounted
+- Ensure service accounts have necessary permissions
+- Verify SSL/TLS configuration if required
+
+### "Error: insufficient permissions"
+
+Permission-related problems:
+
+- Check RBAC configuration
+- Verify service account permissions
+- Ensure necessary Kubernetes roles are created
+- Check database user permissions
+
+## Quick Validation Checklist
+
+1. Component Connectivity
+
+   - All infrastructure components are reachable
+   - Proper ports are open
+   - Network policies allow required traffic
+
+2. Authentication & Permissions
+
+   - Database credentials are correct
+   - Kubernetes secrets exist and are mounted
+   - Service accounts have required permissions
+
+3. Infrastructure Health
+
+   - Kubernetes nodes are healthy
+   - Sufficient resources are available
+   - Storage is properly configured
+
+4. Logging & Monitoring
+   - Check pod logs: `kubectl logs -n traceloop -l app=traceloop`
+   - Monitor resource usage
+   - Review infrastructure metrics
+
+## Debug Mode
+
+To enable detailed logging for troubleshooting:
+
+1. Update your values.yaml:
+
+```yaml
+platform:
+  logging:
+    level: debug
+```
+
+2. Upgrade your deployment:
+
+```bash
+helm upgrade traceloop traceloop/traceloop \
+  --namespace traceloop \
+  --values values.yaml
+```
+
+3. Check the debug logs:
+
+```bash
+kubectl logs -n traceloop -l app=traceloop --tail=100
+```
+
+<Note>
+  Still having issues? We're here to help: - [Schedule a support
+  call](https://meetings.hubspot.com/ngazit/traceloop-final-qualification-demo?uuid=3b54030a-16c0-4d6b-bc3f-12e42e4b3db7)
+  for personalized assistance - Join our [community
+  Slack](https://traceloop.com/slack) for discussions and updates
+</Note>

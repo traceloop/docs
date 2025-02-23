@@ -1,0 +1,289 @@
+---
+title: "Get started"
+description: "Set up Traceloop on your own infrastructure"
+---
+
+# Self-Hosting Overview
+
+Traceloop's self-hosting solution is designed to accommodate various deployment scenarios, from partial data sovereignty to complete platform control. We offer two flexible deployment options to meet your organization's specific needs and security requirements.
+
+<Info>
+  Need help with self-hosting? [Schedule a
+  meeting](https://meetings.hubspot.com/ngazit/traceloop-final-qualification-demo?uuid=3b54030a-16c0-4d6b-bc3f-12e42e4b3db7)
+  with our team, and we'll guide you through the process.
+</Info>
+
+## Deployment Options
+
+### Option 1: Self-Hosted Data Storage
+
+Perfect for organizations that want to maintain data sovereignty while leveraging Traceloop's managed platform.
+
+With this option, you:
+
+- Retain complete control over your data storage infrastructure
+- Utilize Traceloop's managed platform for the application layer
+- Maintain compliance with data residency requirements
+- Reduce operational overhead while maintaining data control
+
+### Option 2: Full Platform Self-Hosting
+
+Ideal for organizations requiring complete control or operating in air-gapped environments.
+
+This deployment provides:
+
+- End-to-end control over the entire platform
+- Full support for air-gapped environments
+- Complete customization capabilities
+- Maximum security and compliance adherence
+
+## Infrastructure Requirements
+
+### Core Components
+
+#### 1. ClickHouse Database
+
+Your trace data storage engine, with flexible deployment options:
+
+- [ClickHouse Cloud](https://clickhouse.cloud) for managed service
+- [Self-hosted ClickHouse](https://clickhouse.com/docs/en/install) for complete control
+
+Traceloop creates dedicated tables in your ClickHouse instance, ensuring clean separation from existing data.
+
+#### 2. Kafka Message Queue
+
+Your event streaming platform, supporting:
+
+- [Confluent Cloud](https://confluent.cloud) for fully managed service
+- [Amazon MSK](https://aws.amazon.com/msk/) for AWS environments
+- [Apache Kafka](https://kafka.apache.org/quickstart) for self-hosted deployments
+  Traceloop maintains dedicated topics for operational data, keeping your existing Kafka setup unchanged.
+
+#### 3. PostgreSQL Database
+
+Your metadata store, compatible with:
+
+- [Amazon Aurora PostgreSQL](https://aws.amazon.com/rds/aurora/postgresql-features/) for AWS environments
+- [Azure Database for PostgreSQL](https://azure.microsoft.com/en-us/products/postgresql/) for Azure deployments
+- [PostgreSQL](https://www.postgresql.org/download/) for self-hosted scenarios
+  Traceloop operates within its own schema, ensuring isolation from your existing data.
+
+#### 4. Kubernetes Cluster
+
+Required for full platform deployment, supporting:
+
+- [Amazon EKS](https://aws.amazon.com/eks/)
+- [Google GKE](https://cloud.google.com/kubernetes-engine)
+- [Azure AKS](https://azure.microsoft.com/en-us/products/kubernetes-service)
+- Any Helm-compatible Kubernetes distribution
+
+<Warning>
+  Security First: Ensure all infrastructure components follow your
+  organization's security standards. For air-gapped deployments, prepare by
+  downloading required container images and dependencies in advance.
+</Warning>
+
+<Tip>
+  Infrastructure Access: When using existing infrastructure, ensure you have
+  sufficient privileges to create schemas and topics. Traceloop is designed to
+  work with minimal permissions and maintains strict isolation.
+</Tip>
+
+## Deployment Process
+
+### 1. Infrastructure Preparation
+
+Ensure all required components are properly configured and accessible. Traceloop can integrate with your existing infrastructure, using dedicated schemas and topics to maintain separation.
+
+### 2. Set Up Required Operators and Secrets
+
+First, set up the Doppler operator for secrets management:
+
+```bash
+# Create namespace for Doppler operator
+kubectl create namespace doppler-operator-system
+
+# Add Doppler Helm repository
+helm repo add doppler https://helm.doppler.com
+
+# Install Doppler Kubernetes operator
+helm install --generate-name doppler/doppler-kubernetes-operator
+
+# Create Doppler service token secret
+kubectl create secret generic doppler-token-secret \
+  --namespace doppler-operator-system \
+  --from-literal=serviceToken=<doppler-token-provided-by-traceloop>
+```
+
+Next, create the Traceloop namespace and set up Docker Hub credentials:
+
+```bash
+# Create Traceloop namespace
+kubectl create namespace traceloop
+
+# Create Docker Hub pull secret
+kubectl create secret docker-registry regcred \
+  --namespace traceloop \
+  --docker-server=docker.io \
+  --docker-username=<dockerhub-username-provided-by-traceloop> \
+  --docker-password=<dockerhub-password-provided-by-traceloop>
+```
+
+### 3. Helm Repository Setup
+
+Add the Traceloop Helm repository to your environment:
+
+```bash
+helm repo add traceloop https://helm.traceloop.com
+helm repo update
+```
+
+For air-gapped environments, clone the Helm repository and extract OCI dependencies:
+
+```bash
+# Clone Helm repository
+git clone https://github.com/traceloop/helm.git
+cd helm
+
+# Make the dependency extraction script executable
+chmod +x ./extract-oci-deps.sh 
+
+# Extract OCI dependencies
+./extract-oci-deps.sh
+```
+
+### 4. Platform Installation
+
+Deploy Traceloop using Helm:
+
+```bash
+# For standard installations
+helm install traceloop \
+  --namespace traceloop \
+  --create-namespace \
+  --values values.yaml \
+  --dependency-update
+```
+
+The `values.yaml` file contains your infrastructure connection details and platform configuration. Below is an example configuration with required values:
+
+```yaml
+# Infrastructure Connection Settings
+infrastructure:
+  # ClickHouse Configuration
+  clickhouse:
+    host: "your-clickhouse-host"
+    port: 9000
+    database: "traceloop"
+    user: "your-clickhouse-user"
+    password: "your-clickhouse-password"
+    # Optional SSL configuration
+    secure: true
+    # Optional: set to true if using ClickHouse Cloud
+    isCloud: false
+
+  # Kafka Configuration
+  kafka:
+    # Comma-separated list of brokers
+    brokers: "kafka-broker-1:9092,kafka-broker-2:9092"
+    # Optional: Authentication settings for Confluent Cloud or secured Kafka
+    auth:
+      username: "your-kafka-username"
+      password: "your-kafka-password"
+      mechanism: "PLAIN" # or SCRAM-SHA-256, SCRAM-SHA-512
+    # Optional: SSL configuration
+    ssl:
+      enabled: true
+
+  # PostgreSQL Configuration
+  postgresql:
+    host: "your-postgres-host"
+    port: 5432
+    database: "traceloop"
+    user: "your-postgres-user"
+    password: "your-postgres-password"
+    # Optional: SSL mode (disable, require, verify-ca, verify-full)
+    sslMode: "require"
+
+# Platform Configuration
+platform:
+  # Set to true for air-gapped environments
+  airgapped: false
+
+  # Optional: Configure ingress
+  ingress:
+    enabled: true
+    host: "traceloop.your-domain.com"
+    # Optional: TLS configuration
+    tls:
+      enabled: true
+      secretName: "your-tls-secret"
+
+  # Optional: Resource limits
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "2Gi"
+    limits:
+      cpu: "2000m"
+      memory: "4Gi"
+
+# Security Settings
+security:
+  # Authentication configuration
+  auth:
+    # Required: Generate a secure random string
+    secretKey: "your-secure-random-string"
+    # Optional: Configure SSO
+    sso:
+      enabled: false
+      provider: "google" # or "okta", "azure"
+
+  # Optional: Enable network policies
+  networkPolicies:
+    enabled: true
+```
+
+<Tip>
+  For air-gapped environments, ensure you've pulled all required container
+  images to your private registry and configure the `imageRegistry` settings
+  accordingly.
+</Tip>
+
+<Warning>
+  Never commit sensitive values like passwords and API keys directly in your
+  values.yaml file. Use Kubernetes secrets or a secure secrets management
+  solution.
+</Warning>
+
+### Minimal Configuration
+
+For a basic setup, you can start with this minimal configuration:
+
+```yaml
+infrastructure:
+  clickhouse:
+    host: "your-clickhouse-host"
+    user: "your-clickhouse-user"
+    password: "your-clickhouse-password"
+
+  kafka:
+    brokers: "your-kafka-broker:9092"
+
+  postgresql:
+    host: "your-postgres-host"
+    user: "your-postgres-user"
+    password: "your-postgres-password"
+
+security:
+  auth:
+    secretKey: "your-secure-random-string"
+```
+
+<Note>
+  Need assistance? We're here to help: - Check our [troubleshooting
+  guide](/self-host/troubleshooting) for common issues - [Schedule a support
+  call](https://meetings.hubspot.com/ngazit/traceloop-final-qualification-demo?uuid=3b54030a-16c0-4d6b-bc3f-12e42e4b3db7)
+  for personalized help - Join our [community
+  Slack](https://traceloop.com/slack) for discussions and updates
+</Note>

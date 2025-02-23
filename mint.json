@@ -64,6 +64,10 @@
       "pages": ["introduction", "demo"]
     },
     {
+      "group": "Self-host",
+      "pages": ["self-host/introduction", "self-host/troubleshooting"]
+    },
+    {
       "group": "Introduction",
       "pages": ["openllmetry/introduction"]
     },
