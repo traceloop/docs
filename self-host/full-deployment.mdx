@@ -1,0 +1,139 @@
+---
+title: "Full Platform Self-Hosting"
+description: "Deploy the complete Traceloop platform in your infrastructure"
+---
+
+# Full Platform Self-Hosting
+
+The Full Platform deployment provides complete control over the entire Traceloop stack, perfect for organizations with strict security requirements or air-gapped environments.
+
+## Infrastructure Requirements
+
+### Core Components
+
+1. **ClickHouse Database**
+
+   - [ClickHouse Cloud](https://clickhouse.cloud)
+   - [Self-hosted ClickHouse](https://clickhouse.com/docs/en/install)
+
+2. **Kafka Message Queue**
+
+   - [Confluent Cloud](https://confluent.cloud)
+   - [Amazon MSK](https://aws.amazon.com/msk/)
+   - [Apache Kafka](https://kafka.apache.org/quickstart)
+
+3. **PostgreSQL Database**
+
+   - [Amazon Aurora PostgreSQL](https://aws.amazon.com/rds/aurora/postgresql-features/)
+   - [Azure Database for PostgreSQL](https://azure.microsoft.com/en-us/products/postgresql/)
+   - [PostgreSQL](https://www.postgresql.org/download/)
+
+4. **Kubernetes Cluster**
+   - [Amazon EKS](https://aws.amazon.com/eks/)
+   - [Google GKE](https://cloud.google.com/kubernetes-engine)
+   - [Azure AKS](https://azure.microsoft.com/en-us/products/kubernetes-service)
+   - Any Helm-compatible Kubernetes distribution
+
+## Deployment Process
+
+### 1. Set Up Required Operators
+
+```bash
+# Create namespace for Doppler operator
+kubectl create namespace doppler-operator-system
+
+# Add Doppler Helm repository
+helm repo add doppler https://helm.doppler.com
+
+# Install Doppler Kubernetes operator
+helm install --generate-name doppler/doppler-kubernetes-operator
+
+# Create Doppler service token secret
+kubectl create secret generic doppler-token-secret \
+  --namespace doppler-operator-system \
+  --from-literal=serviceToken=<doppler-token-provided-by-traceloop>
+```
+
+### 2. Configure Namespace and Registry Access
+
+```bash
+# Create Traceloop namespace
+kubectl create namespace traceloop
+
+# Create Docker Hub pull secret
+kubectl create secret docker-registry regcred \
+  --namespace traceloop \
+  --docker-server=docker.io \
+  --docker-username=<dockerhub-username-provided-by-traceloop> \
+  --docker-password=<dockerhub-password-provided-by-traceloop>
+```
+
+### 3. Install Traceloop Platform
+
+```bash
+# Add Traceloop Helm repository
+helm repo add traceloop https://helm.traceloop.com
+helm repo update
+
+# Install Traceloop
+helm install traceloop \
+  --namespace traceloop \
+  --create-namespace \
+  --values values.yaml \
+  --dependency-update
+```
+
+Example `values.yaml`:
+
+```yaml
+infrastructure:
+  clickhouse:
+    host: "your-clickhouse-host"
+    user: "your-clickhouse-user"
+    password: "your-clickhouse-password"
+
+  kafka:
+    brokers: "your-kafka-broker:9092"
+
+  postgresql:
+    host: "your-postgres-host"
+    user: "your-postgres-user"
+    password: "your-postgres-password"
+
+security:
+  auth:
+    secretKey: "your-secure-random-string"
+
+platform:
+  airgapped: false
+  ingress:
+    enabled: true
+    host: "traceloop.your-domain.com"
+```
+
+<Warning>
+  For air-gapped environments: 1. Download all required container images 2. Set
+  `platform.airgapped: true` 3. Configure private registry settings
+</Warning>
+
+## Verification
+
+1. Check all pods are running:
+
+```bash
+kubectl get pods -n traceloop
+```
+
+2. Verify infrastructure connectivity:
+
+```bash
+kubectl logs -n traceloop deployment/traceloop-api
+```
+
+3. Access the dashboard at your configured ingress host
+
+## Troubleshooting
+
+- Check our [troubleshooting guide](/self-host/troubleshooting)
+- [Schedule support](https://meetings.hubspot.com/ngazit/traceloop-final-qualification-demo?uuid=3b54030a-16c0-4d6b-bc3f-12e42e4b3db7)
+- Join our [Slack community](https://traceloop.com/slack)

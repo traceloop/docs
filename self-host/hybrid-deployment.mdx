@@ -1,0 +1,102 @@
+---
+title: "Hybrid Deployment"
+description: "Set up Traceloop with data sovereignty"
+---
+
+# Hybrid Deployment
+
+The Hybrid deployment model allows you to maintain full control over your data storage while leveraging Traceloop's managed services for processing, monitoring, and observability.
+
+## Architecture Overview
+
+- **Your Infrastructure**: Hosts only the ClickHouse database for data storage
+- **Traceloop Managed**: Handles processing pipelines, monitoring, and the dashboard
+- **Data Flow**: Data is processed through Traceloop's infrastructure but stored only in your ClickHouse instance
+
+## Setup Process
+
+<Steps>
+  <Step title="Deploy ClickHouse">
+    Choose one of these deployment methods:
+
+    #### Option A: Using CloudFormation/Terraform (Recommended)
+
+    <Note>
+      Contact Traceloop team for the CloudFormation template or Terraform
+      configuration
+    </Note>
+
+    #### Option B: Using Helm on Kubernetes
+
+    ```bash
+    # Add Altinity Helm repository
+    helm repo add altinity https://altinity.github.io/kubernetes-blueprints-for-clickhouse
+    helm repo update
+
+    # Install ClickHouse
+    helm install ch altinity/clickhouse \
+      --namespace traceloop \
+      --create-namespace \
+      --values clickhouse-values.yaml
+    ```
+
+    Example `clickhouse-values.yaml`:
+
+    ```yaml
+    clickhouse:
+      persistence:
+        enabled: true
+        size: "100Gi"
+
+      service:
+        type: LoadBalancer
+
+      defaultUser:
+        # Make sure to change these values
+        password: "your-secure-password"
+        allowExternalAccess: true
+    ```
+
+  </Step>
+
+  <Step title="Configure Network Access">
+    Provide the following details to the Traceloop team:
+
+    1. **ClickHouse Connection Details**:
+
+       - Endpoint URL
+       - Port number (default: 9000)
+       - Database credentials
+
+    2. **Network Security Requirements**:
+       - IP ranges for whitelisting
+       - VPC peering requirements (if applicable)
+
+    We support multiple security configurations:
+
+    - **IP Whitelisting**: Restrict access to specific IP ranges
+    - **VPC Peering**: Secure private connection between your VPC and Traceloop's environment
+    - **SSL/TLS**: Encrypted communication for all data in transit
+    - **Custom Certificates**: Support for your own SSL certificates
+
+    <Warning>
+      Store your database credentials securely and rotate them periodically.
+    </Warning>
+
+  </Step>
+
+  <Step title="Verify Setup">
+    After setup, the Traceloop team will:
+
+    1. Configure the connection to your ClickHouse instance
+    2. Perform connectivity tests
+    3. Validate data flow and storage
+    4. Provide access to the Traceloop dashboard
+
+  </Step>
+</Steps>
+
+## Need Help?
+
+- [Schedule a support call](https://meetings.hubspot.com/ngazit/traceloop-final-qualification-demo?uuid=3b54030a-16c0-4d6b-bc3f-12e42e4b3db7)
+- Join our [community Slack](https://traceloop.com/slack)
