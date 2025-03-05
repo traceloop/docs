@@ -65,7 +65,12 @@
     },
     {
       "group": "Self-host",
-      "pages": ["self-host/introduction", "self-host/troubleshooting"]
+      "pages": [
+        "self-host/introduction",
+        "self-host/hybrid-deployment",
+        "self-host/full-deployment",
+        "self-host/troubleshooting"
+      ]
     },
     {
       "group": "Introduction",
