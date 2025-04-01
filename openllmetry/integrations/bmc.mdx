@@ -1,0 +1,25 @@
+---
+title: "LLM Observability with BMC and OpenLLMetry"
+sidebarTitle: "BMC Helix"
+---
+
+BMC Helix provides the capability to export observability data directly using the OpenTelemetry Collector. This requires deploying an OpenTelemetry Collector in your cluster.
+
+See also [BMC Helix documentation](https://docs.bmc.com/xwiki/bin/view/IT-Operations-Management/Operations-Management/BMC-Helix-AIOps/aiops244/Administering/Enabling-BMC-Helix-applications-to-collect-service-traces-from-OpenTelemetry/).
+
+Exporting Data to an OpenTelemetry Collector
+
+
+```yaml
+otlp:
+  receiver:
+    protocols:
+      http:
+        enabled: true
+```
+
+Then, set this env var, and you're done!
+
+```bash
+TRACELOOP_BASE_URL=http://<tenantURL>
+```
