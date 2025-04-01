@@ -110,6 +110,7 @@
         "openllmetry/integrations/axiom",
         "openllmetry/integrations/azure",
         "openllmetry/integrations/braintrust",
+        "openllmetry/integrations/bmc",
         "openllmetry/integrations/dash0",
         "openllmetry/integrations/datadog",
         "openllmetry/integrations/dynatrace",
