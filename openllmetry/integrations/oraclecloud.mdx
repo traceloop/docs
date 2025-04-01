@@ -1,0 +1,61 @@
+---
+title: "LLM Observability with Oracle Cloud Infrastructure Application Performance Monitoring(APM) service"
+sidebarTitle: "OCI Application Performance Monitoring"
+---
+
+<Frame>
+  <img src="/img/integrations/ociapm-traceexplorer.png" />
+</Frame>
+
+
+[Oracle Cloud Infrastructure Application Performance Monitoring(APM) service](https://docs.oracle.com/en-us/iaas/application-performance-monitoring/home.htm) natively supports and can ingest OpenTelemetry (OTLP) spans and metrics. Traceloop's OpenLLMetry library enables instrumenting LLM frameworks and applications in Open Telemetry format and can be routed to OCI Application Performance Monitoring for observability and evaluation of LLM applications. 
+
+## Initialize and export directly from application code
+
+```python
+APM_BASE_URL=“<OCI APM dataUploadEndpoint>/20200101/opentelemetry/private"
+APM_DATA_KEY="dataKey <OCI APM Private Data Key>"
+APM_SERVICE_NAME=“My LLM Service”
+ 
+Traceloop.init(
+    disable_batch=True,
+    app_name=APM_SERVICE_NAME,
+    api_endpoint=APM_BASE_URL,
+    headers={
+      "Authorization": APM_DATA_KEY
+      }
+)
+```
+
+## Initialize using environment variables 
+
+```bash
+export TRACELOOP_BASE_URL=<OCI APM dataUploadEndpoint>/20200101/opentelemetry/private
+export TRACELOOP_HEADERS="Authorization=dataKey <OCI APM Private Data Key>"
+```
+
+## Using an OpenTelemetry Collector
+If you are using an OpenTelemetry Collector, you can route metrics and traces to OCI APM by simply adding an OTLP exporter to your collector configuration.
+
+```yaml
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+processors:
+  batch:
+exporters:
+  otlphttp/apm:
+    endpoint: "<OCI APM dataUploadEndpoint>/20200101/opentelemetry/private" 
+    headers:
+      "Authorization": "dataKey <OCI APM Private Data Key>"
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/apm]
+```
+
+For more information check out the [docs link](https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/configure-open-source-tracing-systems.html#GUID-4D941163-F357-4839-8B06-688876D4C61F).
