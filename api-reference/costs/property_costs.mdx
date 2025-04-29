@@ -11,16 +11,16 @@ Query your LLM costs broken down by a specific association property. This helps 
   The name of the association property to group costs by (e.g., "user_id", "session_id").
 </ParamField>
 
-<ParamField query="env" type="string">
-  List of environments to include in the calculation. Separated by comma.
-</ParamField>
-
-<ParamField query="start_time" type="string">
+<ParamField query="start_time" type="string" required>
   The start time in ISO 8601 format (e.g., "2025-04-15T00:00:00Z").
 </ParamField>
 
-<ParamField query="end_time" type="string">
+<ParamField query="end_time" type="string" required>
   The end time in ISO 8601 format (e.g., "2025-04-28T23:00:00Z").
+</ParamField>
+
+<ParamField query="env" type="string">
+  List of environments to include in the calculation. Separated by comma.
 </ParamField>
 
 ## Response
