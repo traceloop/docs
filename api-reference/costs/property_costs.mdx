@@ -1,0 +1,64 @@
+---
+title: "Get costs by property"
+api: "GET https://app.traceloop.com/api/v2/costs/by-association-property"
+---
+
+Query your LLM costs broken down by a specific association property. This helps you understand how costs are distributed across different values of a property (e.g., by user_id, session_id, or any other association property you track).
+
+## Request Parameters
+
+<ParamField query="property_name" type="string" required>
+  The name of the association property to group costs by (e.g., "user_id", "session_id").
+</ParamField>
+
+<ParamField query="env" type="string">
+  List of environments to include in the calculation. Separated by comma.
+</ParamField>
+
+<ParamField query="start_time" type="string">
+  The start time in ISO 8601 format (e.g., "2025-04-15T00:00:00Z").
+</ParamField>
+
+<ParamField query="end_time" type="string">
+  The end time in ISO 8601 format (e.g., "2025-04-28T23:00:00Z").
+</ParamField>
+
+## Response
+
+<ResponseField name="property_name" type="string">
+  The name of the property that was queried.
+</ResponseField>
+
+<ResponseField name="values" type="PropertyValue[]">
+  A list of property values and their associated costs.
+</ResponseField>
+
+<ResponseField name="total_cost" type="number">
+  The total cost across all property values.
+</ResponseField>
+
+```json
+{
+  "property_name": "session_id",
+  "values": [
+    {
+      "value": "session_21",
+      "cost": 1.23
+    },
+    {
+      "value": "session_5",
+      "cost": 4.56
+    },
+    {
+      "value": "No_Value",
+      "cost": 0.78
+    }
+  ],
+  "total_cost": 6.57
+}
+```
+
+The API can return special values:
+- `"No_Association"` as property_name if no spans have the requested association properties
+- `"No_Value"` as a value for spans that don't have a value for the specified property
+- `"Unknown_Value"` for spans where the property exists but has an empty value 
