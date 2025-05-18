@@ -36,7 +36,8 @@ traceloop = Traceloop::SDK::Traceloop.new
 </Step>
 <Step title="Log your prompts">
 <Frame>
-  <img src="/img/single_trace_prompt.png" />
+  <img className="block dark:hidden" src="/img/single-trace-prompt-light.png" />
+  <img className="hidden dark:block" src="/img/single-trace-prompt-dark.png" />
 </Frame>
 For now, we don't automatically instrument libraries on Ruby (as opposed to Python and Javascript).
 This will change in later versions.
@@ -86,7 +87,8 @@ Click **Generate API Key** to generate an API key for the developement environme
 <Warning>Make sure to copy it as it won't be shown again.</Warning>
 
 <Frame>
-  <img src="/img/apikey.png" />
+  <img className="block dark:hidden" src="/img/api-key-light.png" />
+  <img className="hidden dark:block" src="/img/api-key-dark.png" />
 </Frame>
 
 Set the copied Traceloop's API key as an environment variable in your app named `TRACELOOP_API_KEY`.

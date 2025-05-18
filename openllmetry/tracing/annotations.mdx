@@ -4,7 +4,8 @@ description: "Enrich your traces by annotating chains and workflows in your app"
 ---
 
 <Frame>
-  <img src="/img/workflow.png" />
+  <img className="block dark:hidden" src="/img/workflow-light.png" />
+  <img className="hidden dark:block" src="/img/workflow-dark.png" />
 </Frame>
 
 Traceloop SDK supports several ways to annotate workflows, tasks, agents and tools in your code to get a more complete picture of your app structure.
@@ -89,8 +90,8 @@ The function will be called with the `this` parameter and the arguments of the d
 (see [example](https://github.com/traceloop/openllmetry-js/blob/2178f1c5161218ffc7938bfe17fc1ced8190357c/packages/sample-app/src/sample_decorators.ts#L26)).
 
 <Tip>
-  The name is optional. If you don't provide it, we will use the function qualified name
-  as the workflow or task name.
+  The name is optional. If you don't provide it, we will use the function
+  qualified name as the workflow or task name.
 </Tip>
 
 ```js

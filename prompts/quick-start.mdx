@@ -3,7 +3,11 @@ title: "Quick Start"
 ---
 
 <Frame>
-  <img src="/img/prompt_configuration.png" />
+  <img
+    className="block dark:hidden"
+    src="/img/prompt-configuration-light.png"
+  />
+  <img className="hidden dark:block" src="/img/prompt-configuration-dark.png" />
 </Frame>
 
 You can use Traceloop to manage your prompts and model configurations.
@@ -46,8 +50,9 @@ If you haven't done so, make sure to [generate an API key](https://app.traceloop
 set it as an environment variable `TRACELOOP_API_KEY`.
 
 <Important>
-Make sure to initialize the SDK and enable traceloop sync (see below).
-On Typescript/Javascript, you should also wait for the initialization to complete.
+  Make sure to initialize the SDK and enable traceloop sync (see below). On
+  Typescript/Javascript, you should also wait for the initialization to
+  complete.
 </Important>
 
 <CodeGroup>
