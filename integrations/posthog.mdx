@@ -14,13 +14,15 @@ Connecting Traceloop to Posthog can be done by following these steps:
     <Step title="Set up the Integration within Traceloop">
     Go to the [integrations page](https://app.traceloop.com/settings/integrations) within Traceloop and click on the Posthog card. 
     <Frame>
-    <img src="/img/traceloop_integrations/integrations.png" />
+      <img className="block dark:hidden" src="/img/traceloop-integrations/integrations-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/integrations-dark.png" />
     </Frame>
-    </Step>
-    <Step title="Fill in the form">
+  </Step>
+  <Step title="Fill in the form">
     Fill in the data you got from Posthog. Choose the environment you want to connect to Posthog and click on "Enable".
     <Frame>
-    <img src="/img/traceloop_integrations/posthog.png" />
+      <img className="block dark:hidden" src="/img/traceloop-integrations/posthog-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/posthog-dark.png" />
     </Frame>
     </Step>
 </Steps>
@@ -32,5 +34,5 @@ Go to your Posthog instance, click "Activity" and search for events named `trace
 You can then create a new dashboard from the "LLM Metrics - Traceloop" template to visualize the data.
 
 <Frame>
-  <img src="/img/traceloop_integrations/posthog_result.png" />
+  <img src="/img/traceloop-integrations/posthog-result.png" />
 </Frame>

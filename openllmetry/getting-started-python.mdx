@@ -39,7 +39,8 @@ Traceloop.init(disable_batch=True)
 </Step>
 <Step title="Annotate your workflows">
 <Frame>
-  <img src="/img/workflow.png" />
+  <img className="block dark:hidden" src="/img/workflow-light.png" />
+  <img className="hidden dark:block" src="/img/workflow-dark.png" />
 </Frame>
 If you have complex workflows or chains, you can annotate them to get a better understanding of what's going on.
 You'll see the complete trace of your workflow on Traceloop or any other dashboard you're using.
@@ -48,8 +49,8 @@ We have a set of [decorators](/openllmetry/tracing/annotations) to make this eas
 Assume you have a function that renders a prompt and calls an LLM, simply add `@workflow`.
 
 <Warning>
-  The `@aworkflow` decorator is deprecated and will be removed in a future version.
-  Use `@workflow` for both synchronous and asynchronous operations.
+  The `@aworkflow` decorator is deprecated and will be removed in a future
+  version. Use `@workflow` for both synchronous and asynchronous operations.
 </Warning>
 
 <Tip>
@@ -88,7 +89,8 @@ Click **Generate API Key** to generate an API key for the developement environme
 <Warning>Make sure to copy it as it won't be shown again.</Warning>
 
 <Frame>
-  <img src="/img/apikey.png" />
+  <img className="block dark:hidden" src="/img/api-key-light.png" />
+  <img className="hidden dark:block" src="/img/api-key-dark.png" />
 </Frame>
 
 Set the copied Traceloop's API key as an environment variable in your app named `TRACELOOP_API_KEY`.

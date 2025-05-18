@@ -49,14 +49,16 @@ traceloop.initialize({ disableBatch: true });
 ```
 
 <Note>
-  If you're using Sentry, make sure to disable their OpenTelemetry configuration as it overrides
-  OpenLLMetry. When calling `Sentry.init`, pass `skipOpenTelemetrySetup: true`. 
+  If you're using Sentry, make sure to disable their OpenTelemetry configuration
+  as it overrides OpenLLMetry. When calling `Sentry.init`, pass
+  `skipOpenTelemetrySetup: true`.
 </Note>
 
 </Step>
 <Step title="Annotate your workflows">
 <Frame>
-  <img src="/img/workflow.png" />
+  <img className="block dark:hidden" src="/img/workflow-light.png" />
+  <img className="hidden dark:block" src="/img/workflow-dark.png" />
 </Frame>
 If you have complex workflows or chains, you can annotate them to get a better understanding of what's going on.
 You'll see the complete trace of your workflow on Traceloop or any other dashboard you're using.
@@ -107,7 +109,8 @@ Click **Generate API Key** to generate an API key for the development environmen
 <Warning>Make sure to copy it as it won't be shown again.</Warning>
 
 <Frame>
-  <img src="/img/apikey.png" />
+  <img className="block dark:hidden" src="/img/api-key-light.png" />
+  <img className="hidden dark:block" src="/img/api-key-dark.png" />
 </Frame>
 
 Set the copied Traceloop's API key as an environment variable in your app named `TRACELOOP_API_KEY`.
