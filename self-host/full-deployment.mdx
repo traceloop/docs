@@ -7,6 +7,10 @@ The Full Platform deployment provides complete control over the entire Traceloop
 
 ## Infrastructure Requirements
 
+<Note>
+  Contact our team to get the CloudFormation templates and Terraform configurations for deploying the infrastructure components
+</Note>
+
 ### Core Components
 
 1. **ClickHouse Database**
@@ -31,6 +35,10 @@ The Full Platform deployment provides complete control over the entire Traceloop
    - [Google GKE](https://cloud.google.com/kubernetes-engine)
    - [Azure AKS](https://azure.microsoft.com/en-us/products/kubernetes-service)
    - Any Helm-compatible Kubernetes distribution
+   
+5. **S3 Object Storage**
+   - [Amazon S3](https://aws.amazon.com/s3/)
+
 
 ## Deployment Process
 
@@ -91,6 +99,8 @@ chmod +x extract-subcharts.sh
 ```
 
 ### 5. Update `values-customer.yaml` with your domain & auth configuration:
+
+Configure your deployment settings including gateway, authentication, and image support:
 ```yaml
 kong-gateway:
   service:
@@ -112,9 +122,9 @@ kong-gateway:
 helm-api-service:
   app:
     imagesSupport:
-      enabled: false # Can be overridden by customer
-      s3ImagesBucket: "" # Can be overridden by customer
-      eksRegion: "" # Can be overridden by customer
+      enabled: false # Set to true to enable image storage and processing
+      s3ImagesBucket: "" # S3 bucket name where images will be stored
+      eksRegion: "" # AWS region where your EKS cluster and S3 bucket are located
 
 customerConfig:
   propelauth:
