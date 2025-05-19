@@ -52,7 +52,7 @@ kubectl create secret docker-registry regcred \
   --docker-username=<dockerhub-username-provided-by-traceloop> \
   --docker-password=<dockerhub-password-provided-by-traceloop>
 ```
-#### Postges Sccret (if not already present)
+#### Postgres Secret (if not already present)
 ```bash
 kubectl create secret generic traceloop-postgres-secret \
   --namespace traceloop \
