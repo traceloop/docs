@@ -35,18 +35,18 @@ The Full Platform deployment provides complete control over the entire Traceloop
 ## Deployment Process
 
 
-### 1. Configure Namespace
+### 1. Create Traceloop namespace
 
 ```bash
-# Create Traceloop namespace
 kubectl create namespace traceloop
 ```
 
 ### 2. Create required secrets under traceloop namespace
 
-#### Docker Hub image pull secret
+#### Docker Hub images pull secret.
+Credentials will be provided by Traceloop via secure channel
+
 ```bash
-# docker-registry credentials will be provided by Traceloop via secure channel
 kubectl create secret docker-registry regcred \
   --namespace traceloop \
   --docker-server=docker.io \
@@ -80,13 +80,12 @@ kubectl create secret generic traceloop-kafka-secret \
 
 ```bash
 # Add Traceloop Helm repository
-helm pull oci://registry-1.docker.io/traceloop/helm
+helm pull oci://registry-1.docker.io/traceloop/helm --untar
 ```
 
-### 4. Unzip and run subcharts extractions script
+### 4. Run subcharts and dependency extractions script
 
 ```bash
-unzip traceloop-helm-chart.zip
 chmod +x extract-subcharts.sh
 ./extract-subcharts.sh
 ```
@@ -135,8 +134,8 @@ customerSecret:
 
 ### 6. Update the following files with relevant addresses
 
+#### values-external-postgres.yaml
 ```yaml
-# values-external-postgres.yaml
 postgresql:
   enabled: false
   host: ""  # Example: "my-postgres-server.example.com"
@@ -144,9 +143,8 @@ postgresql:
   database: ""  # Example: "traceloop"
 ```
 
-
+#### values-external-clickhouse.yaml
 ```yaml
-# values-external-clickhouse.yaml
 clickhouse:
   enabled: false
   host: ""  # Example: "my-clickhouse-server.example.com"
@@ -157,18 +155,18 @@ clickhouse:
   sslEnabled: ""  # Example: "true" or "false"
 ```
 
+#### values-external-kafka.yaml
 ```yaml
-# values-external-kafka.yaml
 kafka:
   enabled: false
-  bootstrapServer: ""  # Example: "my-kafka-broker.example.com:9092"
+  bootstrapServer: ""  # Example: "kafka-broker.example.com:9092"
   securityProtocol: ""  # Example: "SASL_SSL" or "PLAINTEXT"
   saslMechanisms: ""  # Example: "PLAIN" or "SCRAM-SHA-256"
   apiKey: ""  # Your Kafka API key if required
   apiSecret: ""  # Your Kafka API secret if required
 ```
 
-### 7. Install Traceloop
+### 7. Install Traceloop Helm chart
 ```bash
 helm upgrade --install traceloop . \
   -n traceloop \
@@ -182,11 +180,6 @@ helm upgrade --install traceloop . \
   --create-namespace \
   --dependency-update
 ```
-
-<Warning>
-  For air-gapped environments: 1. Download all required container images 2. Set
-  `platform.airgapped: true` 3. Configure private registry settings
-</Warning>
 
 ## Verification
 
