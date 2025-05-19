@@ -34,79 +34,152 @@ The Full Platform deployment provides complete control over the entire Traceloop
 
 ## Deployment Process
 
-### 1. Set Up Required Operators
 
-```bash
-# Create namespace for Doppler operator
-kubectl create namespace doppler-operator-system
-
-# Add Doppler Helm repository
-helm repo add doppler https://helm.doppler.com
-
-# Install Doppler Kubernetes operator
-helm install --generate-name doppler/doppler-kubernetes-operator
-
-# Create Doppler service token secret
-kubectl create secret generic doppler-token-secret \
-  --namespace doppler-operator-system \
-  --from-literal=serviceToken=<doppler-token-provided-by-traceloop>
-```
-
-### 2. Configure Namespace and Registry Access
+### 1. Configure Namespace
 
 ```bash
 # Create Traceloop namespace
 kubectl create namespace traceloop
+```
 
-# Create Docker Hub pull secret
+### 2. Create required secrets under traceloop namespace
+
+#### Docker Hub image pull secret
+```bash
 kubectl create secret docker-registry regcred \
   --namespace traceloop \
   --docker-server=docker.io \
   --docker-username=<dockerhub-username-provided-by-traceloop> \
   --docker-password=<dockerhub-password-provided-by-traceloop>
 ```
+#### Postges Sccret (if not already present)
+```bash
+kubectl create secret generic traceloop-postgres-secret \
+  --namespace traceloop \
+  --from-literal=POSTGRES_DATABASE_USERNAME=<postgres-username> \
+  --from-literal=POSTGRES_DATABASE_PASSWORD=<postgres-password>
+```
 
-### 3. Install Traceloop Platform
+#### ClickHouse Secret (if not already present)
+```bash
+kubectl create secret generic traceloop-clickhouse-secret \
+  --namespace traceloop \
+  --from-literal=CLICKHOUSE_USERNAME=<clickhouse-username> \
+  --from-literal=CLICKHOUSE_PASSWORD=<clickhouse-password>
+```
+
+#### Kafka Secret (if not already present)
+```bash
+kubectl create secret generic traceloop-kafka-secret \
+  --namespace traceloop \
+  --from-literal=KAFKA_API_KEY=<kafka-api-key> \
+  --from-literal=KAFKA_API_SECRET=<kafka-api-secret>
+```
+### 3. Pull Traceloop helm chart on your desired location
 
 ```bash
 # Add Traceloop Helm repository
-helm repo add traceloop https://helm.traceloop.com
-helm repo update
-
-# Install Traceloop
-helm install traceloop \
-  --namespace traceloop \
-  --create-namespace \
-  --values values.yaml \
-  --dependency-update
+helm pull oci://registry-1.docker.io/traceloop/helm
 ```
 
-Example `values.yaml`:
+### 4. Unzip and run subcharts extractions script
+
+```bash
+unzip traceloop-helm-chart.zip
+chmod +x extract-subcharts.sh
+./extract-subcharts.sh
+```
+
+### 5. Update `values-customer.yaml` with your domain & auth configuration:
 
 ```yaml
-infrastructure:
-  clickhouse:
-    host: "your-clickhouse-host"
-    user: "your-clickhouse-user"
-    password: "your-clickhouse-password"
+kong-gateway:
+  service:
+    type: NodePort # Or ClusterIP
+    proxy:
+      # port: 8000
+      # targetPort: 8000
+      nodePort: 30080
+    status:
+      # port: 8100
+      # targetPort: 8100
+      nodePort: 30081
+  kong:
+    domain: "user-provided"
+    appSubdomain: "app" # Can be overridden by customer
+    apiSubdomain: "api" # Can be overridden by customer
+    realtimeSubdomain: "realtime" # Can be overridden by customer
 
-  kafka:
-    brokers: "your-kafka-broker:9092"
+helm-api-service:
+  app:
+    imagesSupport:
+      enabled: false # Can be overridden by customer
+      s3ImagesBucket: "" # Can be overridden by customer
+      eksRegion: "" # Can be overridden by customer
 
-  postgresql:
-    host: "your-postgres-host"
-    user: "your-postgres-user"
-    password: "your-postgres-password"
+customerConfig:
+  propelauth:
+    authURL: "traceloop-provided"
+  launchDarkly:
+    clientId: "" # OPTIONAL traceloop-provided
 
-security:
-  auth:
-    secretKey: "your-secure-random-string"
+customerSecret:
+  openai:
+    key: "user-provided"
+  launchDarkly:
+    apiKey: "" # OPTIONAL traceloop-provided
+  propelauth:
+    verifierKey: "traceloop-provided"
+    apiKey: "traceloop-provided"
+```
 
-platform:
-  airgapped: false
-  ingress:
-    enabled: true
-    host: "traceloop.your-domain.com"
+### 6. Update `values-external-postgres.yaml`, `values-external-clickhouse.yaml`, `values-external-kafka.yaml` with relevant addresses
+`values-external-postgres.yaml`
+```yaml
+postgresql:
+  enabled: false
+  host: ""  # Example: "my-postgres-server.example.com"
+  port: ""  # Example: "5432"
+  database: ""  # Example: "traceloop"
+```
+
+`values-external-clickhouse.yaml`
+```yaml
+clickhouse:
+  enabled: false
+  host: ""  # Example: "my-clickhouse-server.example.com"
+  port: ""  # Example: "9440"
+  httpPort: ""  # Example: "8443"
+  database: ""  # Example: "default"
+  sslMode: ""  # Example: "strict" or "none"
+  sslEnabled: ""  # Example: "true" or "false"
+```
+
+`values-external-kafka.yaml`
+```yaml
+kafka:
+  enabled: false
+  bootstrapServer: ""  # Example: "my-kafka-broker.example.com:9092"
+  securityProtocol: ""  # Example: "SASL_SSL" or "PLAINTEXT"
+  saslMechanisms: ""  # Example: "PLAIN" or "SCRAM-SHA-256"
+  apiKey: ""  # Your Kafka API key if required
+  apiSecret: ""  # Your Kafka API secret if required
+```
+
+### 7. Install Traceloop
+```bash
+## 5. Helm install
+helm upgrade --install traceloop . \
+  -n traceloop \
+  --values values.yaml \
+  --values values-customer.yaml \
+  --values values-internal-kafka.yaml \
+  --values values-internal-clickhouse.yaml \
+  --values values-internal-postgres.yaml \
+  --values values-temporal.yaml \
+  --values values-centrifugo.yaml \
+  --create-namespace \
+  --dependency-update
 ```
 
 <Warning>
