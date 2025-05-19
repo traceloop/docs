@@ -46,6 +46,7 @@ kubectl create namespace traceloop
 
 #### Docker Hub image pull secret
 ```bash
+# docker-registry credentials will be provided by Traceloop via secure channel
 kubectl create secret docker-registry regcred \
   --namespace traceloop \
   --docker-server=docker.io \
@@ -75,7 +76,7 @@ kubectl create secret generic traceloop-kafka-secret \
   --from-literal=KAFKA_API_KEY=<kafka-api-key> \
   --from-literal=KAFKA_API_SECRET=<kafka-api-secret>
 ```
-### 3. Pull Traceloop helm chart on your desired location
+### 3. Download the Traceloop Helm chart to your local environmen
 
 ```bash
 # Add Traceloop Helm repository
@@ -91,7 +92,6 @@ chmod +x extract-subcharts.sh
 ```
 
 ### 5. Update `values-customer.yaml` with your domain & auth configuration:
-
 ```yaml
 kong-gateway:
   service:
@@ -133,9 +133,10 @@ customerSecret:
     apiKey: "traceloop-provided"
 ```
 
-### 6. Update `values-external-postgres.yaml`, `values-external-clickhouse.yaml`, `values-external-kafka.yaml` with relevant addresses
-`values-external-postgres.yaml`
+### 6. Update the following files with relevant addresses
+
 ```yaml
+# values-external-postgres.yaml
 postgresql:
   enabled: false
   host: ""  # Example: "my-postgres-server.example.com"
@@ -143,8 +144,9 @@ postgresql:
   database: ""  # Example: "traceloop"
 ```
 
-`values-external-clickhouse.yaml`
+
 ```yaml
+# values-external-clickhouse.yaml
 clickhouse:
   enabled: false
   host: ""  # Example: "my-clickhouse-server.example.com"
@@ -155,8 +157,8 @@ clickhouse:
   sslEnabled: ""  # Example: "true" or "false"
 ```
 
-`values-external-kafka.yaml`
 ```yaml
+# values-external-kafka.yaml
 kafka:
   enabled: false
   bootstrapServer: ""  # Example: "my-kafka-broker.example.com:9092"
@@ -168,14 +170,13 @@ kafka:
 
 ### 7. Install Traceloop
 ```bash
-## 5. Helm install
 helm upgrade --install traceloop . \
   -n traceloop \
   --values values.yaml \
   --values values-customer.yaml \
-  --values values-internal-kafka.yaml \
-  --values values-internal-clickhouse.yaml \
-  --values values-internal-postgres.yaml \
+  --values values-external-kafka.yaml \
+  --values values-external-clickhouse.yaml \
+  --values values-external-postgres.yaml \
   --values values-temporal.yaml \
   --values values-centrifugo.yaml \
   --create-namespace \
