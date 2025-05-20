@@ -1,0 +1,43 @@
+---
+title: "Get Spans"
+api: "GET https://api.traceloop.com/api/v2/warehouse/spans"
+---
+
+Get raw spans from the traceloop's datawarehouse, filtered by specific attributes.
+
+
+## Request Parameters
+
+<ParamField query="from_timestamp" type="int64">
+  From timestamp in milliseconds.
+</ParamField>
+
+<ParamField query="limit" type="int">
+  Maximum number of results to return. Default is 50, maximum is 1000.
+</ParamField>
+
+<ParamField query="cursor" type="int">
+  Pagination cursor. Default is 0.
+</ParamField>
+
+<ParamField query="workflow" type="string">
+  Filter spans by workflow name.
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="SpanDto[]">
+  Array of span data objects.
+</ResponseField>
+
+<ResponseField name="page_size" type="int">
+  Number of items returned in the current page.
+</ResponseField>
+
+<ResponseField name="total_results" type="int64">
+  Total number of results available.
+</ResponseField>
+
+<ResponseField name="next_cursor" type="string">
+  Cursor for the next page of results.
+</ResponseField>
