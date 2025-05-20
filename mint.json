@@ -166,6 +166,10 @@
       "pages": ["api-reference/introduction"]
     },
     {
+      "group": "Data Warehouse",
+      "pages": ["api-reference/dwh/get_spans"]
+    },
+    {
       "group": "Tracing",
       "pages": [
         "api-reference/tracing/whitelist_user",
@@ -182,9 +186,7 @@
     },
     {
       "group": "Costs",
-      "pages": [
-        "api-reference/costs/property_costs"
-      ]
+      "pages": ["api-reference/costs/property_costs"]
     }
   ],
   "redirects": [
