@@ -61,3 +61,15 @@ Then, set this env var, and you're done!
 ```bash
 TRACELOOP_BASE_URL=<instana-agent-hostname>:4317
 ```
+
+Instana now supports MCP Observability. The following span attributes are available for MCP traces :
+mcp.method.name
+mcp.request.argument
+mcp.request.id
+mcp.response.value
+mcp.session.init_options
+
+Here is the MCP traces from Instana UI:
+<Frame>
+  <img src="/img/integrations/mcpTraces.png" />
+</Frame>
