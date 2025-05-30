@@ -8,7 +8,8 @@ The Full Platform deployment provides complete control over the entire Traceloop
 ## Infrastructure Requirements
 
 <Note>
-  Contact our team to get the CloudFormation templates and Terraform configurations for deploying the infrastructure components
+  Contact our team to get the CloudFormation templates and Terraform
+  configurations for deploying the infrastructure components
 </Note>
 
 ### Core Components
@@ -35,13 +36,26 @@ The Full Platform deployment provides complete control over the entire Traceloop
    - [Google GKE](https://cloud.google.com/kubernetes-engine)
    - [Azure AKS](https://azure.microsoft.com/en-us/products/kubernetes-service)
    - Any Helm-compatible Kubernetes distribution
-   
 5. **S3 Object Storage**
    - [Amazon S3](https://aws.amazon.com/s3/)
 
+## Compatibility Matrix
+
+| Service                                    | Production version (May 30 2025) | Support & upgrade stance                                      |
+| ------------------------------------------ | -------------------------------- | ------------------------------------------------------------- |
+| **Traceloop (core services & Helm chart)** | **0.3.0**                        | Quarterly releases; 0.3.x receives critical fixes.            |
+| **Aurora PostgreSQL**                      | 15.2                             | Managed patching. Minor versions ≥ 15.2 are _supported_.      |
+| **ClickHouse**                             | 24.12                            | We track the 24.x LTS line; 23.x is **best‑effort**.          |
+| **Kafka (Confluent Platform)**             | 3.8.x (KRaft)                    | Confluent GA releases promoted within 4 weeks.                |
+| **Temporal**                               | 1.27.1                           | 1.27.\* patches supported; major ≥ 1.28 validated on request. |
+| **Centrifugo**                             | 6.1.0                            | API‑stable; 6.x minor upgrades are drop‑in.                   |
+
+### Validation requests
+
+Submit desired versions via dev@traceloop.com.
+Minor‑version certification is typically completed within 2 business days; major‑version certification within 7 business days.
 
 ## Deployment Process
-
 
 ### 1. Create Traceloop namespace
 
@@ -52,6 +66,7 @@ kubectl create namespace traceloop
 ### 2. Create required secrets under traceloop namespace
 
 #### Docker Hub images pull secret.
+
 Credentials will be provided by Traceloop via secure channel
 
 ```bash
@@ -61,7 +76,9 @@ kubectl create secret docker-registry regcred \
   --docker-username=<dockerhub-username-provided-by-traceloop> \
   --docker-password=<dockerhub-password-provided-by-traceloop>
 ```
+
 #### Postgres Secret (if not already present)
+
 ```bash
 kubectl create secret generic traceloop-postgres-secret \
   --namespace traceloop \
@@ -70,6 +87,7 @@ kubectl create secret generic traceloop-postgres-secret \
 ```
 
 #### ClickHouse Secret (if not already present)
+
 ```bash
 kubectl create secret generic traceloop-clickhouse-secret \
   --namespace traceloop \
@@ -78,12 +96,14 @@ kubectl create secret generic traceloop-clickhouse-secret \
 ```
 
 #### Kafka Secret (if not already present)
+
 ```bash
 kubectl create secret generic traceloop-kafka-secret \
   --namespace traceloop \
   --from-literal=KAFKA_API_KEY=<kafka-api-key> \
   --from-literal=KAFKA_API_SECRET=<kafka-api-secret>
 ```
+
 ### 3. Download the Traceloop Helm chart to your local environment
 
 ```bash
@@ -101,6 +121,7 @@ chmod +x extract-subcharts.sh
 ### 5. Update `values-customer.yaml` with your domain & auth configuration:
 
 Configure your deployment settings including gateway, authentication, and image support:
+
 ```yaml
 kong-gateway:
   service:
@@ -145,38 +166,42 @@ customerSecret:
 ### 6. Update the following files with relevant addresses
 
 #### values-external-postgres.yaml
+
 ```yaml
 postgresql:
   enabled: false
-  host: ""  # Example: "my-postgres-server.example.com"
-  port: ""  # Example: "5432"
-  database: ""  # Example: "traceloop"
+  host: "" # Example: "my-postgres-server.example.com"
+  port: "" # Example: "5432"
+  database: "" # Example: "traceloop"
 ```
 
 #### values-external-clickhouse.yaml
+
 ```yaml
 clickhouse:
   enabled: false
-  host: ""  # Example: "my-clickhouse-server.example.com"
-  port: ""  # Example: "9440"
-  httpPort: ""  # Example: "8443"
-  database: ""  # Example: "default"
-  sslMode: ""  # Example: "strict" or "none"
-  sslEnabled: ""  # Example: "true" or "false"
+  host: "" # Example: "my-clickhouse-server.example.com"
+  port: "" # Example: "9440"
+  httpPort: "" # Example: "8443"
+  database: "" # Example: "default"
+  sslMode: "" # Example: "strict" or "none"
+  sslEnabled: "" # Example: "true" or "false"
 ```
 
 #### values-external-kafka.yaml
+
 ```yaml
 kafka:
   enabled: false
-  bootstrapServer: ""  # Example: "kafka-broker.example.com:9092"
-  securityProtocol: ""  # Example: "SASL_SSL" or "PLAINTEXT"
-  saslMechanisms: ""  # Example: "PLAIN" or "SCRAM-SHA-256"
-  apiKey: ""  # Your Kafka API key if required
-  apiSecret: ""  # Your Kafka API secret if required
+  bootstrapServer: "" # Example: "kafka-broker.example.com:9092"
+  securityProtocol: "" # Example: "SASL_SSL" or "PLAINTEXT"
+  saslMechanisms: "" # Example: "PLAIN" or "SCRAM-SHA-256"
+  apiKey: "" # Your Kafka API key if required
+  apiSecret: "" # Your Kafka API secret if required
 ```
 
 ### 7. Install Traceloop Helm chart
+
 ```bash
 helm upgrade --install traceloop . \
   -n traceloop \
