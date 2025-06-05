@@ -16,26 +16,75 @@ This guide helps you diagnose and resolve common issues you might encounter when
 
 ### ClickHouse Connection Failures
 
+The Traceloop Helm chart expects specific configuration for external ClickHouse connections:
+
+**Required Configuration:**
+- Fill out `values-external-clickhouse.yaml` with your ClickHouse host, port, and connection details
+- Ensure `traceloop-clickhouse-secret` exists with required credentials:
+  - `CLICKHOUSE_USERNAME`
+  - `CLICKHOUSE_PASSWORD`
+  - **Note:** This secret is automatically created if using Traceloop Terraform, otherwise create it manually
+
+```bash
+# Verify the ClickHouse secret exists
+kubectl get secret traceloop-clickhouse-secret -n traceloop
+
+# Check secret keys (without exposing values)
+kubectl describe secret traceloop-clickhouse-secret -n traceloop
+```
+
 Common issues and their solutions when connecting to ClickHouse:
 
 - Verify the host and port are correct
 - Ensure the database exists and the user has appropriate permissions
-- For ClickHouse Cloud, set `isCloud: true` in your configuration
 - Check if SSL is required (`secure: true`)
 - Verify network connectivity and firewall rules
+- Ensure `traceloop-clickhouse-secret` contains correct credentials
+- Verify `values-external-clickhouse.yaml` has correct host and configuration
 
 ### Kafka Connection Issues
+
+The Traceloop Helm chart expects specific configuration for external Kafka connections:
+
+**Required Configuration:**
+- Fill out `values-external-kafka.yaml` with your Kafka broker addresses, connection details, and credentials
+- Ensure the following Kafka topics exist: `traces`, `spans`, and `metrics`
+  - **Note:** These topics are automatically created if using Traceloop Terraform, otherwise create them manually
+
+```bash
+# Verify your Kafka configuration is properly applied
+kubectl get configmap -n traceloop | grep kafka
+```
 
 If you're having trouble connecting to Kafka:
 
 - Confirm broker addresses are accessible from the Kubernetes cluster
+- Ensure required topics exist: `traces`, `spans`, and `metrics`
 - For Confluent Cloud:
   - Ensure SASL authentication is properly configured
   - Verify SSL is enabled
 - Check topic creation permissions
 - Verify network policies allow Kafka connectivity
+- Verify `values-external-kafka.yaml` has correct broker addresses, credentials, and configuration
 
 ### PostgreSQL Connection Problems
+
+The Traceloop Helm chart expects specific configuration for external PostgreSQL connections:
+
+**Required Configuration:**
+- Fill out `values-external-postgres.yaml` with your PostgreSQL address and connection details
+- Ensure `traceloop-postgres-secret` exists with required credentials:
+  - `POSTGRES_DATABASE_USERNAME`
+  - `POSTGRES_DATABASE_PASSWORD`
+  - **Note:** This secret is automatically created if using Traceloop Terraform, otherwise create it manually
+
+```bash
+# Verify the PostgreSQL secret exists
+kubectl get secret traceloop-postgres-secret -n traceloop
+
+# Check secret keys (without exposing values)
+kubectl describe secret traceloop-postgres-secret -n traceloop
+```
 
 Common PostgreSQL connectivity issues:
 
@@ -43,6 +92,8 @@ Common PostgreSQL connectivity issues:
 - Check user permissions (needs ability to create schemas and tables)
 - For SSL connections, ensure proper SSL mode is set
 - Verify PostgreSQL version compatibility (9.6 or higher)
+- Ensure `traceloop-postgres-secret` contains correct credentials
+- Verify `values-external-postgres.yaml` has correct database address and configuration
 
 ## Kubernetes Deployment Issues
 
@@ -69,37 +120,57 @@ Common solutions:
 
 ### Ingress Issues
 
-If you can't access Traceloop through your ingress:
+**Our Ingress Architecture:**
+Traceloop uses a custom ingress setup rather than traditional Kubernetes ingress controllers. 
+A load balancer handles SSL termination and forwards HTTP traffic directly to port 30800 on the Kubernetes cluster.
+This port maps to a Kong gateway pod, which serves as the unified ingress point for all HTTP endpoints.
 
-- Verify ingress controller is installed
-- Check TLS secret exists if TLS is enabled
-- Ensure DNS records are properly configured
-- Verify ingress annotations match your environment
+If you can't access Traceloop through your load balancer:
+
+**Load Balancer Configuration:**
+- Verify the load balancer is properly provisioned
+- Check DNS records point to the correct load balancer endpoint
+- Verify SSL certificate is properly attached to load balancer for HTTPS termination
+- Ensure security groups allow traffic from load balancer to Kubernetes cluster on port 30800
+- Check load balancer target group health - targets should be healthy on port 30800
+
+**Kong Gateway Pod Health:**
+- Verify Kong gateway pod is running and healthy
+- Check that Kong is listening on the correct port (default mapped to 30800)
+- Ensure Kong domain configuration is correct in `values-customer.yaml` - verify `kong-gateway.kong.domain` is properly filled
 
 ```bash
-# Check ingress status
-kubectl get ingress -n traceloop
+# Check Kong gateway pod status
+kubectl get pods -n traceloop | grep kong
 
-# Check ingress details
-kubectl describe ingress -n traceloop
+# Check Kong pod logs
+kubectl logs -n traceloop -l app=kong
+
+# Verify port mapping and service
+kubectl get svc -n traceloop
 ```
-
-## Air-Gapped Environment Issues
 
 ### Image Pull Failures
 
-For air-gapped environments:
+Traceloop images are stored on Docker Hub and require authentication. A `regcred` secret is provided by Traceloop and must be manually created in the traceloop namespace.
 
-- Ensure all required images are available in your private registry
-- Configure `imageRegistry` settings correctly:
-  ```yaml
-  platform:
-    imageRegistry:
-      url: "your-private-registry.com"
-      secretName: "registry-credentials"
-  ```
-- Verify registry credentials are properly set
-- Check network connectivity to private registry
+**Setup Requirements:**
+- Create the `regcred` secret in the traceloop namespace using credentials provided by Traceloop
+- Ensure the secret is properly referenced in your Helm values
+
+```bash
+# Verify the regcred secret exists
+kubectl get secret regcred -n traceloop
+
+# Check secret details (without exposing credentials)
+kubectl describe secret regcred -n traceloop
+```
+
+**Common Issues:**
+- `regcred` secret not created in the traceloop namespace
+- Incorrect Docker Hub credentials in the secret
+- Secret not properly referenced in pod specifications
+- Network connectivity issues to Docker Hub
 
 ## Common Error Messages
 
@@ -120,12 +191,27 @@ kubectl exec -it -n traceloop deploy/traceloop-api -- nc -vz your-postgres-host 
 
 ### "Error: authentication failed"
 
+Traceloop uses PropelAuth as the authentication provider. Ensure proper configuration:
+
+**Required Configuration:**
+- Fill out `values-customer.yaml` with PropelAuth settings:
+  ```yaml
+  customerConfig:
+    propelauth:
+      authURL: "traceloop-provided"
+
+  customerSecret:
+    propelauth:
+      verifierKey: "traceloop-provided"
+      apiKey: "traceloop-provided"
+  ```
+
 Authentication issues:
 
-- Verify credentials in your values.yaml
-- Check if secrets are properly mounted
 - Ensure service accounts have necessary permissions
 - Verify SSL/TLS configuration if required
+- Ensure PropelAuth configuration is correct in `values-customer.yaml`
+- Verify PropelAuth secrets contain the correct keys provided by Traceloop
 
 ### "Error: insufficient permissions"
 
@@ -160,32 +246,6 @@ Permission-related problems:
    - Check pod logs: `kubectl logs -n traceloop -l app=traceloop`
    - Monitor resource usage
    - Review infrastructure metrics
-
-## Debug Mode
-
-To enable detailed logging for troubleshooting:
-
-1. Update your values.yaml:
-
-```yaml
-platform:
-  logging:
-    level: debug
-```
-
-2. Upgrade your deployment:
-
-```bash
-helm upgrade traceloop traceloop/traceloop \
-  --namespace traceloop \
-  --values values.yaml
-```
-
-3. Check the debug logs:
-
-```bash
-kubectl logs -n traceloop -l app=traceloop --tail=100
-```
 
 <Note>
   Still having issues? We're here to help: - [Schedule a support
