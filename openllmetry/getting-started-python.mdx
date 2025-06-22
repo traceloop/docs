@@ -10,17 +10,61 @@ You can also check out our full working example of a RAG pipeline with Pinecone 
 
 Run the following command in your terminal:
 
+To install all optional dependencies, use the `all` tag:
 <CodeGroup>
 
 ```bash pip
-pip install traceloop-sdk
+pip install "traceloop-sdk[all]"
 ```
 
 ```bash poetry
-poetry add traceloop-sdk
+poetry add "traceloop-sdk[all]"
 ```
 
 </CodeGroup>
+
+Alternatively, you can install specific extras by listing them as a comma-seperated list:
+<CodeGroup>
+
+```bash pip
+pip install "traceloop-sdk[ollama,langchain]"
+```
+
+```bash poetry
+poetry add "traceloop-sdk[ollama,langchain]"
+```
+
+</CodeGroup>
+
+### Available Extras
+
+- `mistralai` = `opentelemetry-instrumentation-mistralai`
+- `openai` = `opentelemetry-instrumentation-openai`
+- `ollama` = `opentelemetry-instrumentation-ollama`
+- `anthropic` = `opentelemetry-instrumentation-anthropic`
+- `cohere` = `opentelemetry-instrumentation-cohere`
+- `crewai` = `opentelemetry-instrumentation-crewai`
+- `google-generativeai` = `opentelemetry-instrumentation-google-generativeai`
+- `pinecone` = `opentelemetry-instrumentation-pinecone`
+- `qdrant` = `opentelemetry-instrumentation-qdrant`
+- `langchain` = `opentelemetry-instrumentation-langchain`
+- `lancedb` = `opentelemetry-instrumentation-lancedb`
+- `chromadb` = `opentelemetry-instrumentation-chromadb`
+- `transformers` = `opentelemetry-instrumentation-transformers`
+- `together` = `opentelemetry-instrumentation-together`
+- `llamaindex` = `opentelemetry-instrumentation-llamaindex`
+- `milvus` = `opentelemetry-instrumentation-milvus`
+- `haystack` = `opentelemetry-instrumentation-haystack`
+- `bedrock` = `opentelemetry-instrumentation-bedrock`
+- `sagemaker` = `opentelemetry-instrumentation-sagemaker`
+- `replicate` = `opentelemetry-instrumentation-replicate`
+- `vertexai` = `opentelemetry-instrumentation-vertexai`
+- `watsonx` = `opentelemetry-instrumentation-watsonx`
+- `weaviate` = `opentelemetry-instrumentation-weaviate`
+- `alephalpha` = `opentelemetry-instrumentation-alephalpha`
+- `marqo` = `opentelemetry-instrumentation-marqo`
+- `groq` = `opentelemetry-instrumentation-groq`
+- `mcp` = `opentelemetry-instrumentation-mcp`
 
 In your LLM app, initialize the Traceloop tracer like this:
 
