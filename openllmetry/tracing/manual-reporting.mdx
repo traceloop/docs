@@ -21,7 +21,7 @@ These functions passes a parameter you can use to report the request and respons
 
 <CodeGroup>
 ```python Python
-from traceloop.sdk.tracing.manual import LLMMessage, track_llm_call
+from traceloop.sdk.tracing.manual import LLMMessage, LLMUsage, track_llm_call
 
 with track_llm_call(vendor="openai", type="chat") as span:
   span.report_request(
@@ -39,6 +39,16 @@ with track_llm_call(vendor="openai", type="chat") as span:
   )
 
   span.report_response(res.model, [text.message.content for text in res.choices])
+
+  span.report_usage(
+    LLMUsage(
+        prompt_tokens=...,
+        completion_tokens=...,
+        total_tokens=...,
+        cache_creation_input_tokens=...,
+        cache_read_input_tokens=...,
+    )
+  )
 ```
 ```javascript Typescript
 traceloop.withLLMCall(
