@@ -121,6 +121,7 @@
         "openllmetry/integrations/hyperdx",
         "openllmetry/integrations/instana",
         "openllmetry/integrations/kloudmate",
+        "openllmetry/integrations/laminar",
         "openllmetry/integrations/langfuse",
         "openllmetry/integrations/langsmith",
         "openllmetry/integrations/middleware",
