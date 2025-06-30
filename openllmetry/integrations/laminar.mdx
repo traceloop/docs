@@ -1,0 +1,98 @@
+---
+title: "LLM observability with Laminar and OpenLLMetry"
+sidebarTitle: "Laminar"
+---
+
+## Introduction to Laminar
+
+Laminar is an [open-source platform](https://github.com/lmnr-ai/lmnr) for tracing and evaluating AI applications.
+
+Laminar is fully compatible with OpenTelemetry, so you can use OpenLLMetry to trace your applications on Laminar.
+
+Laminar's OpenTelemetry backend supports both gRPC and HTTP trace exporters.
+
+The recommended setup is to use gRPC, as it's more efficient. You will need to create a gRPC exporter and pass it to the Traceloop SDK.
+
+### (Recommended) gRPC setup
+
+<Steps>
+<Step title="Install dependencies">
+
+```bash
+pip install traceloop-sdk openai
+```
+
+</Step>
+<Step title="Set up environment variables">
+
+To get your API key, either sign up on [Laminar](https://lmnr.ai) and get it from the project settings,
+or spin up [Laminar](https://github.com/lmnr-ai/lmnr) locally.
+
+
+```python
+import os
+os.environ["LMNR_PROJECT_API_KEY"] = "<YOUR_LMNR_PROJECT_API_KEY>"
+os.environ["LMNR_BASE_URL"] = "https://api.lmnr.ai:8443"
+```
+</Step>
+<Step title="Initialize the OpenTelemetry gRPC exporter">
+
+```python
+import os
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
+    OTLPSpanExporter,
+)
+
+exporter = OTLPSpanExporter(
+    endpoint=os.environ["LMNR_BASE_URL"],
+    # IMPORTANT: note that "authorization" must be lowercase
+    headers={
+        "authorization": f"Bearer {os.environ['LMNR_PROJECT_API_KEY']}"
+    }
+)
+```
+</Step>
+<Step title="Initialize the Traceloop SDK">
+```python
+from traceloop.sdk import Traceloop
+Traceloop.init(exporter=exporter)
+```
+</Step>
+<Step title="Run your application">
+
+```python
+from openai import OpenAI
+openai_client = OpenAI()
+
+chat_completion = openai_client.chat.completions.create(
+    messages=[
+        {
+          "role": "user",
+          "content": "What is Laminar flow?",
+        }
+    ],
+    model="gpt-4.1-nano",
+)
+
+print(chat_completion)
+```
+</Step>
+<Step title="Example trace in Laminar">
+
+Example trace in Laminar. ([Direct link](https://www.lmnr.ai/shared/traces/af09c6ee-ec63-1cce-674c-86bd43d62683))
+
+</Step>
+</Steps>
+
+### (Alternative) HTTP quick setup
+
+Laminar's backend also supports accepting traces over HTTP, so for a minimal configuration change you can do:
+
+```bash
+TRACELOOP_BASE_URL="https://api.lmnr.ai"
+TRACELOOP_HEADERS="Authorization=<YOUR_LMNR_PROJECT_API_KEY>"
+```
+
+and skip step 3 (exporter setup) above.
+
+For more information check out the [Laminar docs](https://docs.lmnr.ai/).
