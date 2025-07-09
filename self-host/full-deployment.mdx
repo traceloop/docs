@@ -177,6 +177,11 @@ customerSecret:
   propelauth:
     verifierKey: "traceloop-provided"
     apiKey: "traceloop-provided"
+  centrifugo:
+    apiKey: "user-provided"
+    tokenHmacSecret: "user-provided"
+  encryptionSecret:
+    apiKey: "user-provided"
 ```
 
 #### 6. Update the following files with relevant addresses
@@ -215,6 +220,44 @@ kafka:
   apiKey: "" # Your Kafka API key if required
   apiSecret: "" # Your Kafka API secret if required
 ```
+
+##### values-temporal.yaml
+
+Replace only these values to the values you have from postgres.
+
+```yaml
+temporal:
+  ...
+  server:
+    config:
+      persistence:
+        ...
+        default:
+          ...
+          sql:
+            ...
+            host: "" # Example: "my-postgres-server.example.com"
+            ...
+            user: "" # Example: "traceloop"
+            password: ""
+            existingSecret: "" # Example: "traceloop-postgres-secret"
+            existingSecretKey: "" # Example: "POSTGRES_DATABASE_PASSWORD"
+            ...
+      visibility:
+        ...
+        default:
+          ...
+          sql:
+            ...
+            host: "" # Example: "my-postgres-server.example.com"
+            ...
+            user: "" # Example: "traceloop"
+            password: ""
+            existingSecret: "" # Example: "traceloop-postgres-secret"
+            existingSecretKey: "" # Example: "POSTGRES_DATABASE_PASSWORD"
+            ...
+```
+
 
 #### 7. Install Traceloop Helm chart
 
@@ -317,6 +360,11 @@ customerSecret:
   propelauth:
     verifierKey: "traceloop-provided"
     apiKey: "traceloop-provided"
+  centrifugo:
+    apiKey: "user-provided"
+    tokenHmacSecret: "user-provided"
+  encryptionSecret:
+    apiKey: "user-provided"
 ```
 
 #### 6. Install complete Traceloop stack
