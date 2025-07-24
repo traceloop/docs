@@ -128,6 +128,7 @@
         "openllmetry/integrations/newrelic",
         "openllmetry/integrations/otel-collector",
         "openllmetry/integrations/oraclecloud",
+        "openllmetry/integrations/scorecard",
         "openllmetry/integrations/service-now",
         "openllmetry/integrations/signoz",
         "openllmetry/integrations/sentry",
@@ -183,9 +184,7 @@
     },
     {
       "group": "Costs",
-      "pages": [
-        "api-reference/costs/property_costs"
-      ]
+      "pages": ["api-reference/costs/property_costs"]
     }
   ],
   "redirects": [
