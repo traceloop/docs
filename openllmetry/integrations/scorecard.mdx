@@ -1,0 +1,105 @@
+---
+title: "LLM Observability with Scorecard and OpenLLMetry"
+sidebarTitle: "Scorecard"
+---
+
+Scorecard is an [AI evaluation and optimization platform](https://www.scorecard.io/) that helps teams build reliable AI systems with comprehensive testing, evaluation, and continuous monitoring capabilities.
+
+## Setup
+
+To integrate OpenLLMetry with Scorecard, you'll need to configure your tracing endpoint and authentication:
+
+### 1. Get your Scorecard Telemetry Key
+
+1. Visit your [Scorecard Dashboard](https://app.scorecard.io)
+2. Navigate to your project's **Traces** section
+3. Click **"Learn how to setup tracing"** to find your **Telemetry Key**
+
+### 2. Configure Environment Variables
+
+```bash
+TRACELOOP_BASE_URL="https://telemetry.getscorecard.ai:4318"
+TRACELOOP_HEADERS="Authorization=Bearer <YOUR_SCORECARD_TELEMETRY_KEY>"
+```
+
+**For Python users**: If setting environment variables programmatically, make sure to URL encode the headers:
+
+```python
+import os
+from urllib.parse import quote
+
+SCORECARD_TELEMETRY_KEY = "<YOUR_SCORECARD_TELEMETRY_KEY>"
+
+os.environ['TRACELOOP_BASE_URL'] = "https://telemetry.getscorecard.ai:4318"
+# URL encode the entire header value to comply with OpenTelemetry Protocol Exporter specification
+os.environ['TRACELOOP_HEADERS'] = quote(f"Authorization=Bearer {SCORECARD_TELEMETRY_KEY}", safe='=')
+```
+
+### 3. Instrument your code
+
+First, install OpenLLMetry and your LLM library:
+
+```bash
+pip install traceloop-sdk openai
+```
+
+Then initialize OpenLLMetry and structure your application using workflows and tasks:
+
+```python
+from traceloop.sdk import Traceloop
+from traceloop.sdk.decorators import workflow, task
+from traceloop.sdk.instruments import Instruments
+from openai import OpenAI
+
+# Initialize OpenAI client
+openai_client = OpenAI()
+
+# Initialize OpenLLMetry (reads config from environment variables)
+Traceloop.init(disable_batch=True, instruments={Instruments.OPENAI})
+
+@task(name="joke_creation")
+def create_joke():
+    """Create a joke using OpenAI"""
+    completion = openai_client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": "Tell me a joke"}]
+    )
+    return completion.choices[0].message.content
+
+@task(name="author_generation")
+def generate_author(joke: str):
+    """Generate an author for the given joke"""
+    completion = openai_client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": f"add an author to the joke:\n\n{joke}"}
+        ]
+    )
+    return completion.choices[0].message.content
+
+@workflow(name="joke_generator")
+def joke_workflow():
+    """Main workflow that creates a joke and generates an author for it"""
+    joke = create_joke()
+    print(f"Generated joke: {joke}")
+    
+    joke_with_author = generate_author(joke)
+    print(f"Joke with author: {joke_with_author}")
+    
+    return joke_with_author
+
+# Run the workflow - all LLM calls will be automatically traced
+result = joke_workflow()
+```
+
+## Features
+
+Once configured, you'll have access to Scorecard's comprehensive observability features:
+
+- **Automatic LLM instrumentation** for popular libraries (OpenAI, Anthropic, etc.)
+- **Structured tracing** with workflows and tasks using `@workflow` and `@task` decorators
+- **Performance monitoring** including latency, token usage, and cost tracking
+- **Real-time evaluation** with continuous monitoring of AI system performance
+- **Production debugging** with detailed trace analysis
+
+For more detailed setup instructions and examples, check out the [Scorecard Tracing Quickstart](https://docs.scorecard.io/intro/tracing-quickstart). 
