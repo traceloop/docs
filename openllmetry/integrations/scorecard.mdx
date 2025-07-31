@@ -9,43 +9,36 @@ Scorecard is an [AI evaluation and optimization platform](https://www.scorecard.
 
 To integrate OpenLLMetry with Scorecard, you'll need to configure your tracing endpoint and authentication:
 
-### 1. Get your Scorecard Telemetry Key
+### 1. Get your Scorecard API Key
 
-1. Visit your [Scorecard Dashboard](https://app.scorecard.io)
-2. Navigate to your project's **Traces** section
-3. Click **"Learn how to setup tracing"** to find your **Telemetry Key**
+1. Visit your [Settings Page](https://app.scorecard.io/settings)
+2. Copy your API Key
 
 ### 2. Configure Environment Variables
 
 ```bash
-TRACELOOP_BASE_URL="https://telemetry.getscorecard.ai:4318"
-TRACELOOP_HEADERS="Authorization=Bearer <YOUR_SCORECARD_TELEMETRY_KEY>"
-```
-
-**For Python users**: If setting environment variables programmatically, make sure to URL encode the headers:
-
-```python
-import os
-from urllib.parse import quote
-
-SCORECARD_TELEMETRY_KEY = "<YOUR_SCORECARD_TELEMETRY_KEY>"
-
-os.environ['TRACELOOP_BASE_URL'] = "https://telemetry.getscorecard.ai:4318"
-# URL encode the entire header value to comply with OpenTelemetry Protocol Exporter specification
-os.environ['TRACELOOP_HEADERS'] = quote(f"Authorization=Bearer {SCORECARD_TELEMETRY_KEY}", safe='=')
+TRACELOOP_BASE_URL="https://tracing.scorecard.io/otel"
+TRACELOOP_HEADERS="Authorization=Bearer <YOUR_SCORECARD_API_KEY>"
 ```
 
 ### 3. Instrument your code
 
 First, install OpenLLMetry and your LLM library:
 
-```bash
+<CodeGroup>
+```sh Python
 pip install traceloop-sdk openai
 ```
 
+```sh JavaScript
+npm install @traceloop/node-server-sdk openai
+```
+</CodeGroup>
+
 Then initialize OpenLLMetry and structure your application using workflows and tasks:
 
-```python
+<CodeGroup>
+```py Python
 from traceloop.sdk import Traceloop
 from traceloop.sdk.decorators import workflow, task
 from traceloop.sdk.instruments import Instruments
@@ -57,40 +50,47 @@ openai_client = OpenAI()
 # Initialize OpenLLMetry (reads config from environment variables)
 Traceloop.init(disable_batch=True, instruments={Instruments.OPENAI})
 
-@task(name="joke_creation")
-def create_joke():
-    """Create a joke using OpenAI"""
+@workflow(name="simple_chat")
+def simple_workflow():
     completion = openai_client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": "Tell me a joke"}]
     )
     return completion.choices[0].message.content
 
-@task(name="author_generation")
-def generate_author(joke: str):
-    """Generate an author for the given joke"""
-    completion = openai_client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": f"add an author to the joke:\n\n{joke}"}
-        ]
-    )
-    return completion.choices[0].message.content
+# Run the workflow - all LLM calls will be automatically traced
+simple_workflow()
+print("Check Scorecard for traces!")
+```
 
-@workflow(name="joke_generator")
-def joke_workflow():
-    """Main workflow that creates a joke and generates an author for it"""
-    joke = create_joke()
-    print(f"Generated joke: {joke}")
-    
-    joke_with_author = generate_author(joke)
-    print(f"Joke with author: {joke_with_author}")
-    
-    return joke_with_author
+```js JavaScript
+import * as traceloop from "@traceloop/node-server-sdk";
+import OpenAI from "openai";
+
+// Initialize OpenAI client
+const openai = new OpenAI();
+
+// Initialize OpenLLMetry with automatic instrumentation
+traceloop.initialize({ 
+    disableBatch: true,  // Ensures immediate trace sending
+    instrumentModules: { openAI: OpenAI },
+});
+
+async function simpleWorkflow() {
+return await traceloop.withWorkflow({ name: "simple_chat" }, async () => {
+    const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: "Tell me a joke" }],
+    });
+    return completion.choices[0].message.content;
+});
+}
 
 # Run the workflow - all LLM calls will be automatically traced
-result = joke_workflow()
+simpleWorkflow();
+console.log("Check Scorecard for traces!");
 ```
+</CodeGroup>
 
 ## Features
 
