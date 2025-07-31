@@ -1,0 +1,105 @@
+---
+title: "LLM Observability with Scorecard and OpenLLMetry"
+sidebarTitle: "Scorecard"
+---
+
+Scorecard is an [AI evaluation and optimization platform](https://www.scorecard.io/) that helps teams build reliable AI systems with comprehensive testing, evaluation, and continuous monitoring capabilities.
+
+## Setup
+
+To integrate OpenLLMetry with Scorecard, you'll need to configure your tracing endpoint and authentication:
+
+### 1. Get your Scorecard API Key
+
+1. Visit your [Settings Page](https://app.scorecard.io/settings)
+2. Copy your API Key
+
+### 2. Configure Environment Variables
+
+```bash
+TRACELOOP_BASE_URL="https://tracing.scorecard.io/otel"
+TRACELOOP_HEADERS="Authorization=Bearer <YOUR_SCORECARD_API_KEY>"
+```
+
+### 3. Instrument your code
+
+First, install OpenLLMetry and your LLM library:
+
+<CodeGroup>
+```sh Python
+pip install traceloop-sdk openai
+```
+
+```sh JavaScript
+npm install @traceloop/node-server-sdk openai
+```
+</CodeGroup>
+
+Then initialize OpenLLMetry and structure your application using workflows and tasks:
+
+<CodeGroup>
+```py Python
+from traceloop.sdk import Traceloop
+from traceloop.sdk.decorators import workflow, task
+from traceloop.sdk.instruments import Instruments
+from openai import OpenAI
+
+# Initialize OpenAI client
+openai_client = OpenAI()
+
+# Initialize OpenLLMetry (reads config from environment variables)
+Traceloop.init(disable_batch=True, instruments={Instruments.OPENAI})
+
+@workflow(name="simple_chat")
+def simple_workflow():
+    completion = openai_client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": "Tell me a joke"}]
+    )
+    return completion.choices[0].message.content
+
+# Run the workflow - all LLM calls will be automatically traced
+simple_workflow()
+print("Check Scorecard for traces!")
+```
+
+```js JavaScript
+import * as traceloop from "@traceloop/node-server-sdk";
+import OpenAI from "openai";
+
+// Initialize OpenAI client
+const openai = new OpenAI();
+
+// Initialize OpenLLMetry with automatic instrumentation
+traceloop.initialize({ 
+    disableBatch: true,  // Ensures immediate trace sending
+    instrumentModules: { openAI: OpenAI },
+});
+
+async function simpleWorkflow() {
+return await traceloop.withWorkflow({ name: "simple_chat" }, async () => {
+    const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: "Tell me a joke" }],
+    });
+    return completion.choices[0].message.content;
+});
+}
+
+# Run the workflow - all LLM calls will be automatically traced
+simpleWorkflow();
+console.log("Check Scorecard for traces!");
+```
+</CodeGroup>
+
+## Features
+
+Once configured, you'll have access to Scorecard's comprehensive observability features:
+
+- **Automatic LLM instrumentation** for popular libraries (OpenAI, Anthropic, etc.)
+- **Structured tracing** with workflows and tasks using `@workflow` and `@task` decorators
+- **Performance monitoring** including latency, token usage, and cost tracking
+- **Real-time evaluation** with continuous monitoring of AI system performance
+- **Production debugging** with detailed trace analysis
+
+For more detailed setup instructions and examples, check out the [Scorecard Tracing Quickstart](https://docs.scorecard.io/intro/tracing-quickstart). 
