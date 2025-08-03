@@ -17,6 +17,8 @@ providers:
   - key: openai
     type: openai
     api_key: "<your-openai-api-key>"
+    # or use an environment variable
+    api_key: ${OPENAI_API_KEY}
 
 models:
   - key: gpt-4o-openai
