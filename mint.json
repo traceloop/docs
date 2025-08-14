@@ -168,6 +168,10 @@
       "pages": ["api-reference/introduction"]
     },
     {
+      "group": "Data Warehouse",
+      "pages": ["api-reference/dwh/get_spans"]
+    },
+    {
       "group": "Tracing",
       "pages": [
         "api-reference/tracing/whitelist_user",
