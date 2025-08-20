@@ -34,6 +34,10 @@ This is a work in progress, and we welcome your feedback and contributions!
 - `gen_ai.usage.prompt_tokens` - The number of tokens used for the prompt in the request
 - `gen_ai.usage.completion_tokens` - The number of tokens used for the completion response
 - `gen_ai.usage.total_tokens` - The total number of tokens used
+- `gen_ai.usage.reasoning_tokens` (OpenAI) - The total number of reasoning tokens used as a part of `completion_tokens`
+- `gen_ai.request.reasoning_effort` (OpenAI) - Reasoning effort mentioned in the request (e.g. `minimal`, `low`, `medium`, or `high`)
+- `gen_ai.request.reasoning_summary` (OpenAI) - Level of reasoning summary mentioned in the request (e.g. `auto`, `concise`, or `detailed`)
+- `gen_ai.response.reasoning_effort` (OpenAI) - Actual reasoning effort used
 
 - `llm.request.type` - The type of request (e.g. `completion`, `chat`, etc.)
 - `llm.usage.total_tokens` - The total number of tokens used
