@@ -48,6 +48,10 @@ The SDK fetches your datasets from Traceloop servers. Changes made to a draft da
 
 ### Create a dataset
 
+You can create datasets in different ways depending on your data source:
+- **Python**: Import from CSV file or pandas DataFrame
+- **TypeScript**: Import from CSV data or create manually
+
 <CodeGroup>
 
 ```python Python
@@ -59,81 +63,52 @@ client = Traceloop.init()
 # Create dataset from CSV file
 dataset = client.datasets.from_csv(
     file_path="path/to/your/data.csv",
-    slug="my-dataset-slug",
-    name="My Dataset Name",
-    description="Description of the dataset contents"
+    slug="medical-questions",
+    name="Medical Questions",
+    description="Dataset with patients medical questions"
 )
 
-print(f"Created dataset: {dataset.slug}")
-```
-
-```js Typescript / Javascript
-
-// Create a new dataset
-const dataset = await client.datasets.create({
-  name: `Medical Qustions}`,
-  slug: `medical-questions`,
-  description: "Dataset with patients medical questions"
-});
-
-console.log(`Created dataset: ${dataset.name} (ID: ${dataset.id})`);
-```
-
-</CodeGroup>
-
-### Importing from CSV
-
-<CodeGroup>
-
-```python Python
-# Python CSV import example above
-```
-
-```js Typescript / Javascript
-// Import data from CSV string
-const csvData = `user_id,prompt,response,model,satisfaction_score
-user_001,"What is React?","React is a JavaScript library...","gpt-3.5-turbo",4
-user_002,"Explain Docker","Docker is a containerization platform...","gpt-3.5-turbo",5`;
-
-await dataset.fromCSV(csvData, { hasHeader: true });
-console.log("Imported data from CSV");
-```
-
-</CodeGroup>
-
-### From DataFrames
-
-<CodeGroup>
-
-```python Python
-import pandas as pd
-from traceloop.sdk import Traceloop
-
-client = Traceloop.init()
-
-# Create sample DataFrame
+# Create dataset from pandas DataFrame
 data = {
-    "user_input": ["How do I reset my password?", "What's your refund policy?"],
-    "ai_response": ["Click 'Forgot Password' on the login page.", "We offer 30-day returns."],
-    "category": ["authentication", "billing"],
-    "resolved": [True, True]
+    "product": ["Laptop", "Mouse", "Keyboard", "Monitor"],
+    "price": [999.99, 29.99, 79.99, 299.99],
+    "in_stock": [True, True, False, True],
+    "category": ["Electronics", "Accessories", "Accessories", "Electronics"],
 }
 df = pd.DataFrame(data)
 
 # Create dataset from DataFrame
 dataset = client.datasets.from_dataframe(
     df=df,
-    slug="support-interactions",
-    name="Customer Support Dataset",
-    description="Customer queries and AI responses"
+    slug="product-inventory",
+    name="Product Inventory",
+    description="Sample product inventory data",
 )
+```
+
+```js Typescript
+const client = traceloop.getClient();
+
+// Option 1: Create dataset manually
+const dataset = await client.datasets.create({
+  name: "Medical Questions",
+  slug: "medical-questions",
+  description: "Dataset with patients medical questions"
+});
+
+// Option 2: Create and import from CSV data
+const csvData = `user_id,prompt,response,model,satisfaction_score
+user_001,"What is React?","React is a JavaScript library...","gpt-3.5-turbo",4
+user_002,"Explain Docker","Docker is a containerization platform...","gpt-3.5-turbo",5`;
+
+await dataset.fromCSV(csvData, { hasHeader: true });
 ```
 
 </CodeGroup>
 
-## Managing Dataset Structure
+## Columns
 
-### Adding Columns
+### Adding a Column
 
 <CodeGroup>
 
@@ -152,33 +127,15 @@ new_column = dataset.add_column(
 // Define schema by adding multiple columns
 const columnsToAdd = [
   {
-    name: "user_id",
+    name: "User ID",
+    slug: "user-id"
     type: "string" as const,
-    required: true,
     description: "Unique identifier for the user"
   },
   {
-    name: "prompt", 
-    type: "string" as const,
-    required: true,
-    description: "The user's input prompt"
-  },
-  {
-    name: "response",
-    type: "string" as const,
-    required: true,
-    description: "The AI model's response"
-  },
-  {
-    name: "tokens_used",
+    name: "Satisfaction score",
+    slug: "satisfaction-score",
     type: "number" as const,
-    required: false,
-    description: "Total tokens consumed"
-  },
-  {
-    name: "satisfaction_score",
-    type: "number" as const,
-    required: false,
     description: "User satisfaction rating (1-5)"
   }
 ];
@@ -189,96 +146,40 @@ console.log("Schema defined with multiple columns");
 
 </CodeGroup>
 
-### Updating Columns
-
-<CodeGroup>
-
-```python Python
-# Update column properties
-column.update(
-    name="Updated Column Name",
-    type=ColumnType.STRING
-)
-```
-
-</CodeGroup>
-
-### Deleting Columns
-
-<CodeGroup>
-
-```python Python
-# Delete a column
-column.delete()
-```
-
-</CodeGroup>
-
-## Managing Dataset Data
+## Rows
 
 ### Adding Rows
 
+Map the column slug to its relevant value
 <CodeGroup>
 
 ```python Python
 # Add new rows to your dataset
 row_data = {
-    "user_input": "New customer question",
-    "ai_response": "Generated response",
-    "category": "general",
-    "resolved": True
+    "product": "TV Screen",
+    "price": 1500.0,
+    "in_stock": True,
+    "category": "Electronics"
 }
 
 dataset.add_rows([row_data])
 ```
 
-```js Typescript / Javascript
+```js Typescript
 // Add individual rows to dataset
-const interaction = {
-  user_id: "user_001",
-  prompt: "Explain machine learning in simple terms",
-  response: "Machine learning is a subset of AI that enables computers to learn...",
+const userId = "user_001";
+const prompt = "Explain machine learning in simple terms";
+const startTime = Date.now();
+
+const errorInteraction = {
+  user_id: userId,
+  prompt: prompt,
+  response: `Error: ${error instanceof Error ? error.message : String(error)}`,
   model: "gpt-3.5-turbo",
-  tokens_used: 150,
-  response_time_ms: 1200,
-  satisfaction_score: 4,
-  timestamp: new Date().toISOString()
+  satisfaction_score: 1,
 };
 
-await dataset.addRow(interaction);
-console.log("Added interaction record");
-```
-
-</CodeGroup>
-
-### Updating Rows  
-
-<CodeGroup>
-
-```python Python
-# Update existing row data
-if dataset.rows:
-    row = dataset.rows[0]  # Get first row
-    
-    updates = {
-        "ai_response": "Updated response text",
-        "resolved": True
-    }
-    
-    row.update(updates)
-```
-
-</CodeGroup>
-
-### Deleting Rows
-
-<CodeGroup>
-
-```python Python
-# Delete a row
-if dataset.rows:
-    row = dataset.rows[0]
-    row.delete()
+await dataset.addRow(errorInteraction);
 ```
 
 </CodeGroup>
