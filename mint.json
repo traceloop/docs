@@ -144,6 +144,10 @@
       "pages": ["hub/getting-started", "hub/configuration"]
     },
     {
+      "group": "Experiments",
+      "pages": ["experiments/running-from-code"]
+    },
+    {
       "group": "Monitoring",
       "pages": ["monitoring/introduction"]
     },

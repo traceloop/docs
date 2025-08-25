@@ -1,0 +1,235 @@
+---
+title: "Running Experiments from Code"
+description: "Learn how to run experiments programmatically using the Traceloop SDK"
+---
+
+You can run experiments programmatically using the Traceloop SDK. This allows you to systematically evaluate different AI model configurations, prompts, and approaches with your datasets.
+
+## Setup
+
+First, initialize the Traceloop client in your code:
+
+```python
+from traceloop.sdk import Traceloop
+
+# Initialize Traceloop
+Traceloop.init()
+client = Traceloop.client()
+```
+
+## Basic Experiment Structure
+
+An experiment consists of:
+- A **dataset** to test against
+- A **task function** that defines what your AI system should do
+- **evaluators** to measure performance
+- An **experiment slug** to identify the experiment
+
+## Task Functions
+
+Create task functions that define how your AI system processes each dataset item:
+
+```python
+async def my_task_function(input_data):
+    # Your AI processing logic here
+    # This could involve calling OpenAI, Anthropic, etc.
+    
+    response = await openai.ChatCompletion.acreate(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": input_data["question"]}
+        ]
+    )
+    
+    return {
+        "response": response.choices[0].message.content,
+        "model": "gpt-4"
+    }
+```
+
+## Running Experiments
+
+Use the `experiment.run()` method to execute your experiment:
+
+```python
+async def run_my_experiment():
+    results, errors = await client.experiment.run(
+        dataset_slug="my-dataset",
+        dataset_version="v1",
+        task=my_task_function,
+        evaluators=["accuracy", "relevance"],
+        experiment_slug="my-experiment-v1"
+    )
+    
+    print(f"Experiment completed with {len(results)} results and {len(errors)} errors")
+    return results, errors
+```
+
+## Comparing Different Approaches
+
+You can run multiple experiments to compare different approaches:
+
+```python
+# Task function with conservative prompting
+async def conservative_task(input_data):
+    response = await openai.ChatCompletion.acreate(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "Be very careful and conservative in your response."},
+            {"role": "user", "content": input_data["question"]}
+        ]
+    )
+    return {"response": response.choices[0].message.content}
+
+# Task function with creative prompting
+async def creative_task(input_data):
+    response = await openai.ChatCompletion.acreate(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "Be creative and think outside the box."},
+            {"role": "user", "content": input_data["question"]}
+        ]
+    )
+    return {"response": response.choices[0].message.content}
+
+# Run both experiments
+async def compare_approaches():
+    # Conservative approach
+    conservative_results, _ = await client.experiment.run(
+        dataset_slug="my-dataset",
+        dataset_version="v1",
+        task=conservative_task,
+        evaluators=["accuracy"],
+        experiment_slug="conservative-approach"
+    )
+    
+    # Creative approach
+    creative_results, _ = await client.experiment.run(
+        dataset_slug="my-dataset",
+        dataset_version="v1",
+        task=creative_task,
+        evaluators=["accuracy"],
+        experiment_slug="creative-approach"
+    )
+    
+    return conservative_results, creative_results
+```
+
+## Complete Example
+
+Here's a full example that tests different email generation strategies for customer support:
+
+```python
+import asyncio
+from traceloop.sdk import Traceloop
+import openai
+
+# Initialize Traceloop
+Traceloop.init()
+client = Traceloop.client()
+
+async def generate_support_email(customer_issue, tone="professional"):
+    tone_prompts = {
+        "professional": "You are a professional customer support agent. Write clear, formal responses that solve the customer's issue.",
+        "friendly": "You are a friendly customer support agent. Write warm, conversational responses that make the customer feel valued.",
+        "concise": "You are an efficient customer support agent. Write brief, direct responses that quickly address the customer's issue."
+    }
+    
+    response = await openai.ChatCompletion.acreate(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": tone_prompts[tone]},
+            {"role": "user", "content": f"Customer issue: {customer_issue}"}
+        ]
+    )
+    
+    return response.choices[0].message.content
+
+# Task function for professional tone
+async def professional_support_task(input_data):
+    email = await generate_support_email(input_data["issue"], tone="professional")
+    return {
+        "email_response": email,
+        "tone": "professional"
+    }
+
+# Task function for friendly tone
+async def friendly_support_task(input_data):
+    email = await generate_support_email(input_data["issue"], tone="friendly")
+    return {
+        "email_response": email,
+        "tone": "friendly"
+    }
+
+# Task function for concise tone
+async def concise_support_task(input_data):
+    email = await generate_support_email(input_data["issue"], tone="concise")
+    return {
+        "email_response": email,
+        "tone": "concise"
+    }
+
+async def run_support_experiment():
+    dataset_config = {
+        "dataset_slug": "customer-support-issues",
+        "dataset_version": "v2",
+        "evaluators": ["helpfulness", "clarity", "customer_satisfaction"]
+    }
+    
+    # Test professional tone
+    professional_results, prof_errors = await client.experiment.run(
+        **dataset_config,
+        task=professional_support_task,
+        experiment_slug="support-professional-tone"
+    )
+    
+    # Test friendly tone
+    friendly_results, friendly_errors = await client.experiment.run(
+        **dataset_config,
+        task=friendly_support_task,
+        experiment_slug="support-friendly-tone"
+    )
+    
+    # Test concise tone
+    concise_results, concise_errors = await client.experiment.run(
+        **dataset_config,
+        task=concise_support_task,
+        experiment_slug="support-concise-tone"
+    )
+    
+    print(f"Professional tone: {len(professional_results)} results, {len(prof_errors)} errors")
+    print(f"Friendly tone: {len(friendly_results)} results, {len(friendly_errors)} errors")
+    print(f"Concise tone: {len(concise_results)} results, {len(concise_errors)} errors")
+    
+    return professional_results, friendly_results, concise_results
+
+if __name__ == "__main__":
+    asyncio.run(run_support_experiment())
+```
+
+## Parameters
+
+### `experiment.run()` Parameters
+
+- `dataset_slug` (str): Identifier for your dataset
+- `dataset_version` (str): Version of the dataset to use
+- `task` (function): Async function that processes each dataset item
+- `evaluators` (list): List of evaluator names to measure performance
+- `experiment_slug` (str): Unique identifier for this experiment
+
+### Task Function Requirements
+
+Your task function should:
+- Be async (`async def`)
+- Accept one parameter (the input data from your dataset)
+- Return a dictionary with your results
+- Handle errors gracefully
+
+## Best Practices
+
+1. **Use descriptive experiment slugs** to easily identify different runs
+2. **Version your datasets** to ensure reproducible results
+3. **Handle errors** in your task functions to avoid experiment failures
+4. **Use appropriate evaluators** that match your use case
+5. **Compare multiple approaches** systematically to find the best solution
