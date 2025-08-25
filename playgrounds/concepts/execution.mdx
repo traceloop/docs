@@ -1,0 +1,254 @@
+---
+title: "Execution Model"
+description: "Understanding how playgrounds execute asynchronously with real-time updates"
+---
+
+# Execution Model
+
+Playgrounds use an **asynchronous execution system** that allows you to run computations across multiple cells while providing real-time updates on progress and status. Understanding this execution model is crucial for effective playground usage.
+
+## Core Execution Concepts
+
+### Asynchronous Processing
+Unlike traditional spreadsheets that block during calculations, playgrounds execute cells asynchronously:
+- Multiple cells can run simultaneously
+- Long-running operations don't freeze the interface
+- Real-time progress updates keep you informed
+- Failed cells don't prevent others from completing
+
+### Distributed Execution
+Playground execution leverages distributed computing:
+- **Temporal Workflows**: Orchestrate complex execution patterns
+- **Background Processing**: Heavy computations run on dedicated workers
+- **Scalability**: Handle hundreds of cells executing concurrently
+- **Reliability**: Automatic retries and error recovery
+
+## Cell Status Lifecycle
+
+Every cell progresses through a well-defined status lifecycle:
+
+### 1. **Empty** (Initial State)
+- No data present in the cell
+- Input columns remain empty until data is entered
+- Computed columns show as empty before first execution
+
+### 2. **Pending** (Queued)
+- Cell is queued for execution
+- Dependencies are being resolved
+- Waiting for available execution capacity
+- Shows in execution queue with estimated wait time
+
+### 3. **Running** (In Progress)
+- Cell is actively being processed
+- Shows animated spinner indicator
+- Execution time is tracked and displayed
+- Can be cancelled if needed
+
+### 4. **Completed** (Success)
+- Execution finished successfully
+- Shows green checkmark indicator
+- Result data is available and displayed
+- Cell can be re-executed if needed
+
+### 5. **Failed** (Error)
+- Execution encountered an error
+- Shows red X indicator with error details
+- Error message explains what went wrong
+- Can be retried after fixing the issue
+
+### 6. **Outdated** (Needs Update)
+- Source data changed since last execution
+- Shows orange warning indicator
+- Results may no longer be accurate
+- Requires re-execution to update
+
+## Execution Strategies
+
+### Individual Cell Execution
+Execute a single cell independently:
+```
+→ Click execute button on specific cell
+→ Cell enters "Running" state
+→ Dependencies resolved automatically
+→ Result populates when complete
+```
+
+**When to Use:**
+- Testing individual prompts or code
+- Debugging specific computations
+- Iterating on single cell logic
+
+### Row-Level Execution
+Execute all cells in a specific row:
+```
+Row 1: [Input] → [Prompt] → [Evaluation] → [Analysis]
+       Static    Running     Pending       Pending
+```
+
+**When to Use:**
+- Testing with specific data points
+- Processing individual test cases
+- Debugging row-specific issues
+
+### Column-Level Execution
+Execute all cells in a specific column:
+```
+Column: Customer Greeting
+Row 1: "Hello Alice!" ✅
+Row 2: Running... 🔄
+Row 3: Pending... ⏳
+Row 4: Pending... ⏳
+```
+
+**When to Use:**
+- Batch processing similar operations
+- Testing column logic across all data
+- Updating results after column changes
+
+### Full Playground Execution
+Execute the entire playground systematically:
+```
+Stage 1: All Input Columns (immediate)
+Stage 2: First-level Computations (prompts, code, APIs)
+Stage 3: Dependent Computations (using Stage 2 results)
+Stage 4: Evaluations (assessing computation results)
+```
+
+**When to Use:**
+- Complete workflow execution
+- End-to-end testing
+- Production-ready processing
+
+## Dependency Resolution
+
+### Automatic Dependency Detection
+The system automatically detects dependencies based on variable references:
+```
+Column A: "Customer Name" (no dependencies)
+Column B: "Hello {{Customer Name}}" (depends on Column A)
+Column C: Evaluation of Column B (depends on Column B)
+```
+
+### Execution Order
+Cells execute in **topological order** based on dependencies:
+1. **Independent columns** execute first (inputs, constants)
+2. **First-level dependents** execute next (using independent results)
+3. **Higher-level dependents** execute in sequence
+4. **Circular dependencies** are detected and prevented
+
+### Dependency Updates
+When a cell changes, dependent cells are marked as **outdated**:
+```
+Customer Name: "Alice" → "Bob"
+    ↓ (automatically marks as outdated)
+Greeting: "Hello Alice!" (outdated ⚠️)
+    ↓ (automatically marks as outdated)  
+Evaluation: Score: 8.5 (outdated ⚠️)
+```
+
+## Real-Time Updates
+
+### Live Progress Tracking
+Monitor execution progress in real-time:
+- **Progress Bar**: Shows overall completion percentage
+- **Cell Indicators**: Individual cell status updates
+- **Time Estimates**: Remaining execution time
+- **Throughput Metrics**: Cells processed per minute
+
+### Collaborative Updates
+Multiple users can work simultaneously:
+- **Live Cursors**: See where team members are working
+- **Real-time Sync**: Changes appear instantly for all users  
+- **Conflict Resolution**: Automatic handling of simultaneous edits
+- **Activity Feed**: Track who changed what and when
+
+### WebSocket Connection
+Playgrounds maintain persistent connections for updates:
+- **Connection Status**: Indicator shows online/offline state
+- **Auto-Reconnection**: Automatic recovery from network issues
+- **Offline Mode**: Continue working during connectivity issues
+- **Sync on Reconnect**: Changes sync when connection restores
+
+## Error Handling & Recovery
+
+### Error Types
+
+**Execution Errors**
+- LLM API failures (rate limits, timeouts)
+- Code execution errors (syntax, runtime)
+- API call failures (network, authentication)
+- Data validation errors (type mismatches)
+
+**System Errors**
+- Network connectivity issues
+- Service unavailability  
+- Resource exhaustion
+- Permission/authorization failures
+
+### Recovery Strategies
+
+**Automatic Retries**
+- Transient failures retry automatically (up to 3 times)
+- Exponential backoff prevents overwhelming services
+- Different retry policies for different error types
+- Manual retry option for failed attempts
+
+**Graceful Degradation**
+- Failed cells don't prevent others from executing
+- Partial results are preserved and displayed
+- Clear error messages explain failure reasons
+- Suggested fixes for common error patterns
+
+**State Preservation**
+- Execution state persists across browser sessions
+- Work-in-progress is saved automatically
+- Resume interrupted executions after reconnection
+- Export/import preserves execution history
+
+## Performance Optimization
+
+### Execution Efficiency
+- **Parallel Processing**: Multiple cells execute simultaneously
+- **Resource Pooling**: Shared compute resources across users
+- **Caching**: Results cached to avoid redundant computations
+- **Batching**: Similar operations grouped for efficiency
+
+### Memory Management
+- **Streaming Results**: Large outputs stream to prevent memory issues
+- **Lazy Loading**: Results load on-demand when viewing
+- **Automatic Cleanup**: Old execution data cleaned up periodically
+- **Size Limits**: Reasonable limits on cell output sizes
+
+### Network Optimization
+- **Compression**: Results compressed for faster transmission
+- **Delta Updates**: Only changed data sent over network
+- **Connection Pooling**: Efficient WebSocket connection management
+- **CDN Integration**: Static assets served from edge locations
+
+## Best Practices
+
+### Execution Planning
+- **Start Small**: Test with few rows before scaling up
+- **Staged Execution**: Execute column by column during development
+- **Error Handling**: Design columns to handle edge cases gracefully
+- **Resource Awareness**: Monitor execution costs and timeouts
+
+### Performance Tips
+- **Selective Updates**: Only re-execute changed dependencies
+- **Batch Operations**: Group similar operations when possible
+- **Parallel Design**: Minimize sequential dependencies
+- **Error Recovery**: Build resilience into column logic
+
+### Monitoring & Debugging
+- **Status Monitoring**: Watch cell status indicators during execution
+- **Error Analysis**: Read error messages carefully for debugging
+- **Execution Logs**: Review execution history for patterns
+- **Performance Metrics**: Monitor execution times and success rates
+
+## Next Steps
+
+Now that you understand execution fundamentals, explore:
+- [Variables System](./variables) - How variables work during execution
+- [Dependencies](./dependencies) - Managing complex dependency chains
+- [Column Types](../columns/) - Execution behavior for each column type
+- [Advanced Features](../advanced/) - Performance tuning and analytics

@@ -1,0 +1,281 @@
+---
+title: "Custom Text Column"
+description: "Free-form text input with multiline support and rich editing features"
+---
+
+# Custom Text Column
+
+The Custom Text column is the most flexible input column type, allowing you to enter and store free-form text data. It supports multiline content, rich text formatting, and serves as the foundation for many playground workflows.
+
+## Overview
+
+Custom Text columns are perfect for:
+- **User inputs**: Customer messages, feedback, questions
+- **Content creation**: Articles, descriptions, prompts
+- **Data entry**: Names, addresses, notes, comments
+- **Templates**: Base content for further processing
+- **Documentation**: Context, instructions, metadata
+
+## Configuration Options
+
+### Basic Settings
+- **Column Name**: Identifier used for variable references
+- **Description**: Optional documentation for team collaboration
+- **Required**: Make this column mandatory for all rows
+- **Default Value**: Pre-fill new rows with default text
+
+### Display Options
+- **Multiline Support**: Enable multi-paragraph text entry
+- **Text Wrapping**: Control how long text displays in cells
+- **Column Width**: Adjust column width for content visibility
+- **Character Limit**: Set maximum length (optional)
+
+### Validation
+- **Format Validation**: Basic text format requirements
+- **Custom Patterns**: Regular expression validation (advanced)
+- **Required Fields**: Ensure important data is not left blank
+
+## Usage Examples
+
+### Basic Text Entry
+```
+Column: "Customer Name"
+Rows:
+- Alice Johnson
+- Bob Smith  
+- Carol Davis
+```
+
+### Multiline Content
+```
+Column: "Customer Feedback"
+Rows:
+Row 1: "The product works well overall.
+        However, the setup process was confusing.
+        Would recommend clearer instructions."
+
+Row 2: "Excellent customer service!
+        Fast response times and helpful staff.
+        Will definitely use again."
+```
+
+### Template Content
+```
+Column: "Email Template"
+Content: "Dear {{Customer Name}},
+
+Thank you for your recent purchase of {{Product Name}}.
+
+We hope you're enjoying your new product. If you have any questions or concerns, please don't hesitate to reach out to our support team.
+
+Best regards,
+The {{Company Name}} Team"
+```
+
+## Working with Variables
+
+Custom Text columns excel at creating templates that reference other columns:
+
+### Variable Substitution
+```
+Template Column: "Hello {{First Name}} {{Last Name}}, welcome to our {{Service Type}} service!"
+
+With data:
+First Name: "Alice"
+Last Name: "Johnson"
+Service Type: "Premium"
+
+When referenced: "Hello Alice Johnson, welcome to our Premium service!"
+```
+
+### Complex Templates
+```
+Column: "Personalized Message"
+Content: "Hi {{Customer Name}},
+
+Based on your profile:
+- Location: {{Customer Location}}
+- Interests: {{Customer Interests}}
+- Purchase History: {{Recent Purchases}}
+
+Here are some recommendations...
+
+{{Recommendation Details}}
+
+Best regards,
+{{Agent Name}}"
+```
+
+## Best Practices
+
+### Content Organization
+**Clear Structure**
+- Use consistent formatting across rows
+- Break long content into logical paragraphs
+- Use bullet points or numbered lists when appropriate
+
+**Template Design**
+- Create reusable templates with variable placeholders
+- Use descriptive variable names: `{{Customer_First_Name}}` vs `{{Name1}}`
+- Include fallback text for optional variables
+
+### Data Quality
+**Consistent Format**
+- Establish format standards for similar content types
+- Use validation rules to enforce consistency
+- Provide examples for team members
+
+**Content Guidelines**
+- Keep content relevant and focused
+- Avoid including sensitive information in templates
+- Use appropriate tone and language for context
+
+### Performance Considerations
+**Content Length**
+- Be mindful of very long text content
+- Consider splitting extremely long content across multiple columns
+- Use external references for very large documents
+
+**Variable Usage**
+- Limit the number of variables in complex templates
+- Test variable resolution with sample data
+- Monitor performance with large datasets
+
+## Common Patterns
+
+### Customer Communication
+```
+Column: "Support Response Template"
+Template: "Dear {{Customer Name}},
+
+Thank you for contacting us about {{Issue Category}}.
+
+Issue Details: {{Customer Message}}
+
+Resolution: {{Solution Details}}
+
+If you need further assistance, please reply to this email or call us at {{Support Phone}}.
+
+Best regards,
+{{Agent Name}}
+{{Company Name}} Support Team"
+```
+
+### Content Generation
+```
+Column: "Blog Post Outline"
+Content: "Title: {{Post Title}}
+
+Introduction:
+- Hook: {{Opening Hook}}
+- Problem: {{Problem Statement}}
+- Solution Preview: {{Solution Teaser}}
+
+Main Content:
+{{Main Points}}
+
+Conclusion:
+{{Key Takeaways}}
+
+Call to Action:
+{{CTA Text}}"
+```
+
+### Data Collection
+```
+Column: "Interview Notes"
+Content: "Participant: {{Participant Name}}
+Date: {{Interview Date}}
+Duration: {{Duration}}
+
+Key Insights:
+{{Main Insights}}
+
+Quotes:
+{{Notable Quotes}}
+
+Follow-up Actions:
+{{Action Items}}"
+```
+
+## Integration with Other Columns
+
+### As Input for Prompts
+Custom Text columns often feed into Prompt columns:
+```
+Text Column: "Customer Query" → "How do I reset my password?"
+Prompt Column: "Respond to this customer query: {{Customer Query}}"
+```
+
+### As Templates for Code
+Use text templates in Code columns:
+```
+Text Column: "SQL Template" → "SELECT * FROM {{Table}} WHERE {{Condition}}"
+Code Column: Execute the SQL using the template
+```
+
+### For Evaluation Context
+Provide context for evaluation columns:
+```
+Text Column: "Evaluation Criteria" → "Rate based on clarity, accuracy, and helpfulness"
+Evaluation Column: Use criteria for assessment
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Variable Resolution Problems**
+```
+Issue: Variables not resolving correctly
+Solutions:
+- Check column name spelling (exact match required)
+- Verify referenced columns exist
+- Ensure no circular references
+```
+
+**Formatting Issues**
+```
+Issue: Text not displaying as expected
+Solutions:
+- Check multiline settings
+- Adjust column width
+- Review text wrapping options
+```
+
+**Performance Problems**
+```
+Issue: Slow loading with large text content
+Solutions:
+- Reduce content length where possible
+- Split content across multiple columns
+- Use external file references for large documents
+```
+
+## Advanced Features
+
+### Rich Text Support
+- **Markdown**: Basic markdown formatting support
+- **HTML**: Limited HTML support for advanced formatting
+- **Links**: Clickable links in text content
+- **Formatting**: Bold, italic, and other text styling
+
+### Batch Operations
+- **Bulk Edit**: Edit multiple cells simultaneously
+- **Find and Replace**: Replace text across multiple rows
+- **Template Application**: Apply templates to multiple rows
+- **Import/Export**: Bulk import text data from files
+
+### Collaboration Features
+- **Comments**: Add comments to specific text entries
+- **Version History**: Track changes to text content
+- **Collaborative Editing**: Multiple users can edit simultaneously
+- **Change Notifications**: Get notified when text content changes
+
+## Next Steps
+
+Now that you understand Custom Text columns, explore:
+- **[Prompt Columns](../computation/prompt)** - Use text as input for LLM prompts
+- **[Code Columns](../computation/code)** - Process text with Python code
+- **[JSON Columns](./json)** - Structured data alternative
+- **[Variables System](../../concepts/variables)** - Master variable usage in templates

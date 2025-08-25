@@ -1,0 +1,279 @@
+---
+title: "Helpfulness Evaluator"
+description: "Assess how helpful and useful responses are to users"
+---
+
+# Helpfulness Evaluator
+
+The Helpfulness evaluator assesses how helpful, useful, and valuable a response is to the user who asked the question or made the request. This is one of the most commonly used evaluators for general-purpose content quality assessment.
+
+## Overview
+
+The Helpfulness evaluator analyzes responses across multiple dimensions:
+- **Usefulness**: Does the response provide valuable information?
+- **Completeness**: Does it address all aspects of the request?
+- **Actionability**: Can the user take concrete steps based on the response?
+- **Clarity**: Is the information presented in a clear, understandable way?
+- **Relevance**: Does the response stay focused on what was asked?
+
+## Configuration Options
+
+### Scoring Scale
+- **1-5 Scale**: Quick assessment (1=Not helpful, 5=Very helpful)
+- **1-10 Scale**: Detailed scoring for fine-grained analysis
+- **Binary**: Simple helpful/not helpful classification
+- **Custom Scale**: Define your own scoring criteria
+
+### Evaluation Context
+- **Input Column**: The original question or request
+- **Output Column**: The response to evaluate
+- **Additional Context**: Optional background information or requirements
+- **Evaluation Criteria**: Custom guidelines for what constitutes "helpful"
+
+### Advanced Settings
+- **Confidence Threshold**: Minimum confidence score for valid evaluations
+- **Explanation Detail**: Level of detail in evaluation explanations
+- **Bias Mitigation**: Options to reduce evaluation bias
+- **Language Support**: Evaluation in multiple languages
+
+## Usage Examples
+
+### Customer Support Evaluation
+```
+Setup:
+Input Column: "Customer Question"
+Output Column: "Support Response" 
+Scale: 1-10
+
+Example:
+Customer Question: "How do I reset my password?"
+Support Response: "To reset your password, go to the login page and click 'Forgot Password'. Enter your email address and check your inbox for a reset link. The link expires in 24 hours. If you don't receive the email within 10 minutes, check your spam folder or contact support."
+
+Helpfulness Score: 9/10
+Explanation: "Response provides clear step-by-step instructions, includes important details like expiration time, addresses common issues (spam folder), and offers alternative help. Very helpful and complete."
+```
+
+### Content Quality Assessment  
+```
+Setup:
+Input Column: "Blog Topic"
+Output Column: "Blog Post Content"
+Scale: 1-5
+
+Example:
+Blog Topic: "How to improve team productivity"
+Blog Post Content: "Teams can be more productive by having meetings. Regular meetings help coordination."
+
+Helpfulness Score: 2/5
+Explanation: "Response is too generic and brief. Lacks specific strategies, actionable advice, and practical examples. Not helpful for readers seeking concrete productivity improvements."
+```
+
+### Educational Content Evaluation
+```
+Setup:
+Input Column: "Learning Objective"
+Output Column: "Explanation"
+Scale: 1-10
+
+Example:
+Learning Objective: "Explain photosynthesis to a 5th grader"
+Explanation: "Photosynthesis is how plants make their own food! Just like you eat food to get energy, plants use sunlight, water, and air to make sugar (their food). The green parts of plants (chlorophyll) capture sunlight like tiny solar panels. They mix the sunlight with water from their roots and carbon dioxide from the air to create sugar and oxygen. That's why plants need sunlight to grow, and why they give us fresh oxygen to breathe!"
+
+Helpfulness Score: 9/10
+Explanation: "Excellent explanation appropriate for the target age. Uses simple language, relatable analogies (solar panels, eating food), covers key concepts, and explains practical relevance. Very helpful for learning."
+```
+
+## Evaluation Criteria
+
+### High Helpfulness (8-10 or 4-5)
+**Characteristics:**
+- Directly addresses the user's question or need
+- Provides complete, accurate information
+- Offers actionable steps or concrete guidance
+- Anticipates follow-up questions or concerns
+- Uses appropriate tone and complexity for the audience
+
+**Examples:**
+- Step-by-step tutorials with clear instructions
+- Comprehensive answers that cover edge cases
+- Responses that provide context and reasoning
+- Solutions that include troubleshooting tips
+
+### Moderate Helpfulness (5-7 or 3)
+**Characteristics:**
+- Addresses the main question but may lack detail
+- Provides some useful information but could be more complete
+- Offers general guidance but may not be specific enough
+- Contains mostly correct information with minor gaps
+
+**Examples:**
+- Partial answers that cover the basics
+- Generic advice that applies broadly
+- Responses that need additional clarification
+- Information that's accurate but not comprehensive
+
+### Low Helpfulness (1-4 or 1-2)
+**Characteristics:**
+- Doesn't directly address the user's question
+- Provides incorrect or misleading information
+- Too vague or generic to be actionable
+- Misses key aspects of the request
+- Uses inappropriate tone or complexity
+
+**Examples:**
+- Off-topic responses
+- Incorrect instructions or information
+- Overly complex explanations for simple questions
+- Responses that ignore the user's specific context
+
+## Best Practices
+
+### Evaluation Setup
+**Clear Context**
+- Provide both the original request and the response
+- Include relevant background information when available
+- Define what "helpful" means for your specific use case
+- Consider the intended audience and their needs
+
+**Appropriate Scaling**
+- Use 1-10 for detailed analysis and research
+- Use 1-5 for quick operational assessments
+- Use binary for simple pass/fail decisions
+- Customize scales for specific domain requirements
+
+### Quality Assurance
+**Calibration**
+- Test the evaluator with known good/bad examples
+- Compare results with human judgments
+- Adjust criteria based on evaluation patterns
+- Regular validation with fresh examples
+
+**Consistency Checks**
+- Monitor score distributions over time
+- Flag unusual scoring patterns for review
+- Compare with other quality metrics
+- Validate against user feedback when available
+
+### Performance Optimization
+**Efficient Processing**
+- Batch similar evaluations together
+- Use appropriate context lengths
+- Monitor token usage and costs
+- Implement result caching for repeated evaluations
+
+## Common Patterns
+
+### Multi-Dimensional Assessment
+Combine helpfulness with other evaluators:
+```
+Response → Helpfulness (How helpful?)
+        → Accuracy (How correct?)
+        → Clarity (How clear?)
+        → Completeness (How thorough?)
+```
+
+### Comparative Evaluation
+Compare multiple responses:
+```
+Question → Response A → Helpfulness Score A
+        → Response B → Helpfulness Score B
+        → Response C → Helpfulness Score C
+```
+
+### Threshold Filtering
+Use helpfulness scores for quality gates:
+```
+All Responses → Helpfulness Evaluation → Filter (Score ≥ 7) → High-Quality Responses
+```
+
+### Continuous Improvement
+Track helpfulness over time:
+```
+Week 1 Responses → Helpfulness Scores → Identify Issues → Improve System
+Week 2 Responses → Helpfulness Scores → Measure Improvement → Iterate
+```
+
+## Integration Examples
+
+### With Prompt Columns
+```
+Column 1: "Customer Question" (Input)
+Column 2: "AI Response" (Prompt Column)
+Column 3: "Response Helpfulness" (Helpfulness Evaluator on Column 2)
+```
+
+### With Custom Evaluators
+```
+Column 1: "Built-in Helpfulness" (Helpfulness Evaluator)
+Column 2: "Domain-Specific Helpfulness" (Custom Evaluator)
+Column 3: "Combined Score" (Code Column combining both scores)
+```
+
+### With Human Annotation
+```
+Column 1: "AI Helpfulness Score" (Helpfulness Evaluator)
+Column 2: "Human Helpfulness Rating" (Label Column)
+Column 3: "Agreement Analysis" (Code Column comparing scores)
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Inconsistent Scoring**
+```
+Issue: Similar responses getting very different scores
+Solutions:
+- Review evaluation criteria clarity
+- Add more specific context information
+- Check for input data quality issues
+- Consider using custom evaluation prompts
+```
+
+**Bias in Evaluation**
+```
+Issue: Systematic bias toward certain response types
+Solutions:
+- Test with diverse examples
+- Monitor score distributions
+- Compare with human judgments
+- Adjust evaluation criteria if needed
+```
+
+**Low Confidence Scores**
+```
+Issue: Evaluator expressing low confidence
+Solutions:
+- Provide more context information
+- Clarify evaluation criteria
+- Check for ambiguous or edge case inputs
+- Consider human review for unclear cases
+```
+
+## Advanced Features
+
+### Context-Aware Evaluation
+- Consider user expertise level
+- Account for cultural and domain context
+- Adapt criteria based on use case
+- Incorporate user feedback patterns
+
+### Multi-Language Support
+- Evaluate helpfulness across languages
+- Consider cultural differences in helpfulness
+- Use language-appropriate evaluation criteria
+- Account for translation quality effects
+
+### Dynamic Criteria
+- Adjust evaluation criteria based on context
+- Use different standards for different domains
+- Incorporate user preference learning
+- Adapt to changing quality requirements
+
+## Next Steps
+
+Master helpfulness evaluation by exploring:
+- **[Custom Evaluators](../custom/creating-evaluators)** - Create domain-specific helpfulness criteria
+- **[Other Quality Evaluators](./relevancy)** - Combine with relevancy and correctness
+- **[Annotation System](../annotation/)** - Add human validation for helpfulness scores
+- **[Evaluation Best Practices](../custom/templates)** - Advanced evaluation patterns and techniques

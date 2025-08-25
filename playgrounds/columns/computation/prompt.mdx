@@ -1,0 +1,381 @@
+---
+title: "Prompt Column"
+description: "Execute LLM prompts with full model configuration and variable support"
+---
+
+# Prompt Column
+
+The Prompt column is one of the most powerful column types in playgrounds, allowing you to execute prompts against various LLM models with sophisticated configuration options. It's the primary way to integrate AI capabilities into your workflows.
+
+## Overview
+
+Prompt columns enable you to:
+- **Execute LLM prompts** with any supported model (GPT-4, Claude, etc.)
+- **Use dynamic variables** from other columns in your prompts
+- **Configure model parameters** like temperature, max tokens, and system messages
+- **Handle complex prompt patterns** including few-shot examples and structured outputs
+- **Scale prompt execution** across hundreds of rows simultaneously
+
+## Configuration Options
+
+### Model Selection
+Choose from supported LLM providers and models:
+- **OpenAI**: GPT-4, GPT-4 Turbo, GPT-3.5 Turbo
+- **Anthropic**: Claude 3 Opus, Claude 3 Sonnet, Claude 3 Haiku
+- **Azure OpenAI**: Enterprise-grade OpenAI models
+- **Custom Endpoints**: Self-hosted or other provider models
+
+### Model Parameters
+Fine-tune model behavior:
+- **Temperature** (0.0-2.0): Control randomness and creativity
+- **Max Tokens**: Limit output length (1-8000+ depending on model)
+- **Top P**: Nucleus sampling parameter (0.0-1.0)
+- **Frequency Penalty**: Reduce repetition (-2.0 to 2.0)
+- **Presence Penalty**: Encourage topic diversity (-2.0 to 2.0)
+
+### System Configuration
+- **System Message**: Set AI behavior and personality
+- **Response Format**: JSON, text, or structured outputs
+- **Timeout**: Maximum execution time (default: 60 seconds)
+- **Retry Logic**: Automatic retries for transient failures
+
+## Prompt Design
+
+### Basic Prompt Structure
+```
+You are a helpful customer service representative.
+
+Customer Query: {{Customer Message}}
+Customer Tier: {{Customer Tier}}
+Purchase History: {{Recent Purchases}}
+
+Provide a personalized, helpful response that addresses the customer's concern.
+```
+
+### Advanced Prompt Patterns
+
+**Few-Shot Examples**
+```
+You are an expert at categorizing customer feedback. Here are some examples:
+
+Feedback: "The product is amazing but shipping was slow"
+Category: Mixed - Product Positive, Shipping Negative
+
+Feedback: "Love everything about my purchase!"
+Category: Positive - Overall Satisfaction
+
+Feedback: "The website is confusing and checkout failed"
+Category: Negative - Technical Issues
+
+Now categorize this feedback:
+Feedback: {{Customer Feedback}}
+Category:
+```
+
+**Chain-of-Thought Reasoning**
+```
+Analyze the customer's sentiment step by step:
+
+Customer Message: {{Customer Message}}
+
+Step 1: Identify key topics mentioned
+Step 2: Determine sentiment for each topic (positive/negative/neutral)
+Step 3: Consider overall context and tone
+Step 4: Assign final sentiment score (1-10) with explanation
+
+Analysis:
+```
+
+**Structured Output Requests**
+```
+Extract key information from this customer message and return as JSON:
+
+Message: {{Customer Message}}
+
+Return format:
+{
+  "intent": "main customer intent",
+  "urgency": "low/medium/high",
+  "topics": ["array", "of", "topics"],
+  "sentiment": "positive/negative/neutral",
+  "action_required": true/false
+}
+```
+
+## Variable Integration
+
+### Using Variables in Prompts
+Reference other columns using double curly braces:
+```
+Personalize this email for {{Customer Name}} who purchased {{Product Name}} on {{Purchase Date}}.
+
+Customer preferences: {{Customer Preferences}}
+Order details: {{Order Details}}
+
+Write a follow-up email that feels personal and relevant.
+```
+
+### Complex Variable Patterns
+```
+You are writing a {{Content Type}} for a {{Target Audience}} audience.
+
+Context Information:
+- Topic: {{Topic}}
+- Key Points: {{Key Points}}
+- Tone: {{Desired Tone}}
+- Length: {{Target Length}}
+- Special Requirements: {{Special Requirements}}
+
+Additional Context:
+{{Background Information}}
+
+Create the {{Content Type}} following these guidelines:
+{{Content Guidelines}}
+```
+
+### Conditional Logic in Prompts
+```
+Analyze this customer interaction:
+
+Customer: {{Customer Name}}
+Tier: {{Customer Tier}}
+Message: {{Customer Message}}
+
+{% if Customer Tier == "Premium" %}
+As a premium customer, provide white-glove service and offer additional benefits.
+{% elif Customer Tier == "Enterprise" %}
+Escalate to enterprise support team and provide detailed technical assistance.
+{% else %}
+Provide standard support response with helpful self-service options.
+{% endif %}
+
+Response:
+```
+
+## Execution and Results
+
+### Execution Process
+1. **Variable Resolution**: Replace all `{{Variable}}` references with actual data
+2. **Prompt Validation**: Check for required fields and format
+3. **Model Call**: Send prompt to configured LLM with parameters
+4. **Response Processing**: Parse and format the model response
+5. **Result Storage**: Save result in the cell with execution metadata
+
+### Result Format
+Prompt columns store:
+- **Generated Text**: The main LLM response
+- **Metadata**: Token usage, execution time, model used
+- **Status**: Success, failure, or partial completion
+- **Error Details**: If execution failed, detailed error information
+
+### Status Indicators
+- **🔄 Running**: Prompt is being executed
+- **✅ Completed**: Execution successful
+- **❌ Failed**: Execution failed (hover for error details)
+- **⚠️ Outdated**: Input variables changed, needs re-execution
+
+## Best Practices
+
+### Prompt Engineering
+**Clear Instructions**
+- Be specific about desired output format
+- Provide examples when possible
+- Set clear expectations for tone and style
+- Include relevant context and constraints
+
+**Variable Usage**
+- Use descriptive variable names: `{{Customer_First_Name}}` vs `{{Name}}`
+- Handle missing or empty variables gracefully
+- Test prompts with various data scenarios
+- Consider edge cases in your prompt design
+
+**Model Selection**
+- Choose appropriate models for your use case:
+  - **GPT-4**: Complex reasoning, analysis, creative tasks
+  - **GPT-3.5 Turbo**: Fast, cost-effective for simpler tasks
+  - **Claude**: Long context, careful reasoning, safety-focused
+- Balance quality, speed, and cost for your specific needs
+
+### Performance Optimization
+**Efficient Execution**
+- Use appropriate max token limits to avoid unnecessary costs
+- Set reasonable timeouts based on expected response times
+- Leverage parallel execution for batch processing
+- Monitor token usage across large datasets
+
+**Cost Management**
+- Track token consumption and costs
+- Use cheaper models for simpler tasks
+- Implement smart caching for repeated prompts
+- Set usage limits and alerts
+
+### Error Handling
+**Robust Prompts**
+- Handle edge cases and unexpected inputs
+- Provide fallback instructions for unclear scenarios
+- Use structured outputs when possible for reliability
+- Test with diverse input data
+
+**Monitoring and Debugging**
+- Review failed executions and error patterns
+- Monitor response quality and consistency
+- Set up alerts for high failure rates
+- Keep execution logs for troubleshooting
+
+## Common Use Cases
+
+### Content Generation
+```
+Column: "Blog Post Generator"
+Prompt: "Write a {{Post Length}} blog post about {{Topic}} for {{Target Audience}}.
+
+Key points to cover:
+{{Key Points}}
+
+Tone: {{Tone}}
+Include: {{Special Requirements}}
+
+Blog post:"
+```
+
+### Data Analysis
+```
+Column: "Sentiment Analysis"
+Prompt: "Analyze the sentiment of this customer feedback:
+
+Feedback: {{Customer Feedback}}
+
+Provide:
+1. Overall sentiment (positive/negative/neutral)
+2. Confidence score (1-10)  
+3. Key emotion indicators
+4. Suggested response approach
+
+Analysis:"
+```
+
+### Classification
+```
+Column: "Support Ticket Classifier"
+Prompt: "Classify this support ticket:
+
+Subject: {{Ticket Subject}}
+Description: {{Ticket Description}}
+Customer Tier: {{Customer Tier}}
+
+Categories: Technical, Billing, Feature Request, Bug Report, General Inquiry
+
+Classification: [Category]
+Priority: [Low/Medium/High]
+Estimated Resolution Time: [Time]
+Reasoning: [Brief explanation]"
+```
+
+### Personalization
+```
+Column: "Personalized Recommendation"
+Prompt: "Create personalized product recommendations:
+
+Customer: {{Customer Name}}
+Purchase History: {{Purchase History}}
+Browsing Behavior: {{Recent Views}}
+Preferences: {{Stated Preferences}}
+
+Generate 3 specific product recommendations with reasoning for each."
+```
+
+## Integration Patterns
+
+### Prompt Chaining
+Connect multiple prompt columns in sequence:
+```
+Column 1: "Initial Analysis" → Analyze customer message
+Column 2: "Detailed Response" → "Based on this analysis: {{Initial Analysis}}, write response"
+Column 3: "Quality Check" → "Review this response: {{Detailed Response}} for quality"
+```
+
+### Multi-Model Comparison
+Compare outputs from different models:
+```
+Column 1: "GPT-4 Response" (Model: GPT-4)
+Column 2: "Claude Response" (Model: Claude 3)
+Column 3: "Response Comparison" → "Compare these responses: {{GPT-4 Response}} vs {{Claude Response}}"
+```
+
+### Dynamic Prompt Generation
+Use code columns to generate prompts:
+```
+Code Column: Generate dynamic prompt based on data
+Prompt Column: Execute the generated prompt
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Variable Resolution Errors**
+```
+Error: "Variable 'Customer_Name' not found"
+Solutions:
+- Check exact column name spelling
+- Ensure referenced column exists
+- Verify no typos in variable syntax
+```
+
+**Model Errors**
+```
+Error: "Model timeout" or "Rate limit exceeded"
+Solutions:
+- Increase timeout setting
+- Implement rate limiting and retries
+- Switch to less congested model endpoints
+- Stagger execution timing
+```
+
+**Response Quality Issues**
+```
+Issue: Inconsistent or poor quality responses
+Solutions:
+- Refine prompt instructions
+- Add more specific examples
+- Adjust model parameters (temperature, etc.)
+- Use higher-capability models for complex tasks
+```
+
+**Token Limit Errors**
+```
+Error: "Maximum token limit exceeded"
+Solutions:
+- Reduce prompt length
+- Increase max tokens setting
+- Split complex prompts into smaller parts
+- Use models with larger context windows
+```
+
+## Advanced Features
+
+### Custom Model Endpoints
+- Configure custom API endpoints
+- Use organization-specific fine-tuned models
+- Implement custom authentication
+- Support for specialized model providers
+
+### Response Streaming
+- Real-time streaming of model responses
+- Progressive result display during execution
+- Better user experience for long responses
+- Reduced perceived latency
+
+### Batch Processing
+- Execute multiple prompts simultaneously
+- Intelligent batching for efficiency
+- Progress tracking across large datasets
+- Automatic error recovery and retry
+
+## Next Steps
+
+Master prompt columns by exploring:
+- **[Variables System](../../concepts/variables)** - Advanced variable usage patterns
+- **[Code Columns](./code)** - Combine prompts with custom Python logic
+- **[Evaluation Columns](../../evaluation/columns/evaluation)** - Evaluate prompt outputs
+- **[Custom Evaluators](../../evaluation/columns/custom-evaluator)** - Create LLM-powered evaluations

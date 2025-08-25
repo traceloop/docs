@@ -1,0 +1,224 @@
+---
+title: "Playground Quick Start"
+description: "Get up and running with Traceloop Playgrounds in minutes"
+---
+
+# Playground Quick Start
+
+Get started with Traceloop Playgrounds in just a few minutes. This quick start guide will have you creating, executing, and evaluating your first playground workflow.
+
+## What You'll Build
+
+In this quick start, you'll create a playground that:
+1. Takes customer feedback as input
+2. Generates personalized responses using AI
+3. Evaluates the quality of those responses
+4. Analyzes the results
+
+## Step 1: Create Your First Playground
+
+1. Navigate to **Playgrounds** in your Traceloop project
+2. Click **"Create Playground"**
+3. Choose **"Start Fresh"** for this tutorial
+4. Name your playground "Customer Response Generator"
+
+## Step 2: Add Input Data
+
+Let's start with some customer feedback data:
+
+1. Click **"Add Column"**
+2. Select **"Custom Text"**
+3. Name it "Customer Feedback"
+4. Click **"Create Column"**
+
+Add some sample data by clicking in the cells:
+```
+Row 1: "The product is great but delivery was slow"
+Row 2: "Excellent customer service, very helpful staff"
+Row 3: "The interface is confusing and hard to navigate"
+```
+
+## Step 3: Add Customer Information
+
+1. Click **"Add Column"** again
+2. Select **"Custom Text"**
+3. Name it "Customer Name"
+4. Add sample names:
+```
+Row 1: "Alice Johnson"
+Row 2: "Bob Smith"  
+Row 3: "Carol Davis"
+```
+
+## Step 4: Generate AI Responses
+
+Now let's create AI-powered responses:
+
+1. Click **"Add Column"**
+2. Select **"Prompt"**
+3. Name it "Response Generator"
+4. In the prompt field, enter:
+```
+You are a helpful customer service representative. 
+
+Customer: {{Customer Name}}
+Feedback: {{Customer Feedback}}
+
+Write a personalized, empathetic response that:
+- Acknowledges their specific feedback
+- Addresses any concerns mentioned
+- Thanks them for their input
+- Offers concrete next steps if needed
+
+Response:
+```
+
+5. Configure the model:
+   - **Model**: GPT-4 (recommended for quality)
+   - **Temperature**: 0.7 (balance creativity and consistency)
+   - **Max Tokens**: 200
+
+6. Click **"Create Column"**
+
+## Step 5: Evaluate Response Quality
+
+Let's add automatic evaluation:
+
+1. Click **"Add Column"**
+2. Select **"Evaluation"**
+3. Name it "Response Helpfulness"
+4. Configure:
+   - **Evaluator**: Helpfulness
+   - **Target Column**: Response Generator
+   - **Scale**: 1-10
+5. Click **"Create Column"**
+
+## Step 6: Execute Your Playground
+
+Now let's run everything:
+
+1. Click **"Execute All"** in the playground header
+2. Watch the progress:
+   - Input columns are already filled 
+   - Response Generator starts processing =
+   - Helpfulness evaluation follows =
+
+You'll see real-time status updates as each cell processes.
+
+## Step 7: Review Results
+
+Once execution completes, you should see:
+
+**Response Generator Column**: Personalized AI responses for each customer
+```
+Example for Alice: "Hi Alice, thank you for your feedback about our product and delivery service. I'm glad to hear you're happy with the product quality! I sincerely apologize for the slow delivery experience..."
+```
+
+**Response Helpfulness Column**: Scores from 1-10 evaluating each response
+```
+Example scores: 8.5, 9.2, 7.8
+```
+
+## Step 8: Add More Evaluation
+
+Let's add another evaluation dimension:
+
+1. Click **"Add Column"**
+2. Select **"Evaluation"** 
+3. Name it "Response Relevancy"
+4. Configure:
+   - **Evaluator**: Relevancy
+   - **Target Column**: Response Generator
+   - **Context Column**: Customer Feedback
+5. Click **"Create Column"**
+6. Click **"Execute All"** to run the new evaluation
+
+## Step 9: Analyze Results
+
+Now you have a complete analysis pipeline! You can:
+
+**View Individual Results**: Click on any cell to see detailed results
+**Compare Across Rows**: See how responses vary by customer and feedback type
+**Identify Patterns**: Look for feedback types that generate better/worse responses
+**Export Data**: Use the Actions menu to export results as CSV or JSON
+
+## Next Steps: Expand Your Playground
+
+### Add More Sophisticated Logic
+```
+1. Add a "Sentiment Analysis" prompt column to categorize feedback
+2. Create conditional responses based on sentiment
+3. Add multiple response variations for A/B testing
+```
+
+### Enhance Evaluation
+```
+1. Add custom evaluators for your specific criteria
+2. Include human annotation for subjective assessment
+3. Set up multi-dimensional evaluation scorecards
+```
+
+### Scale Your Operation
+```
+1. Import larger datasets from CSV files
+2. Connect to production data sources
+3. Export results to datasets for reuse
+```
+
+## What You've Learned
+
+In this quick start, you've:
+-  Created a playground with multiple column types
+-  Used variables to connect data between columns
+-  Executed AI prompts with real data
+-  Applied automated evaluation to assess quality
+-  Built a complete analysis workflow
+
+## Common Next Steps
+
+### For Content Teams
+- **Blog Post Generation**: Create content variations and evaluate quality
+- **Social Media**: Generate posts and evaluate engagement potential
+- **Email Campaigns**: Personalize messages and test effectiveness
+
+### For Customer Success
+- **Support Response Training**: Generate and evaluate support responses
+- **Feedback Analysis**: Analyze customer feedback at scale
+- **Satisfaction Prediction**: Predict customer satisfaction from interactions
+
+### For Product Teams  
+- **Feature Feedback Analysis**: Categorize and analyze product feedback
+- **User Experience Evaluation**: Assess UI/UX descriptions and recommendations
+- **A/B Testing**: Compare different product descriptions or features
+
+### For Research & Development
+- **Model Comparison**: Test different AI models on the same tasks
+- **Prompt Engineering**: Iterate on prompt designs systematically
+- **Evaluation Development**: Create custom evaluation criteria for your domain
+
+## Troubleshooting Quick Fixes
+
+**Variables Not Working?**
+- Check column name spelling (exact match required)
+- Ensure referenced columns exist
+- Use `{{Column Name}}` format with double curly braces
+
+**Execution Stuck?**
+- Check for failed dependencies (red X indicators)
+- Verify API keys and model access
+- Try executing columns individually to isolate issues
+
+**Poor AI Results?**
+- Add more context in your prompts
+- Include specific examples of desired outputs
+- Adjust temperature settings (lower for consistency, higher for creativity)
+
+## Get Help
+
+- =Ú **[Full Documentation](./index)** - Comprehensive playground guides
+- <¯ **[Core Concepts](./concepts/)** - Understand the fundamentals
+- =' **[Column Types](./columns/)** - Learn about all 15 column types
+- =Ê **[Evaluation System](./evaluation/)** - Master quality assessment
+- =¬ **Community Support** - Join our Discord for questions and tips
+
+Ready to build more sophisticated playgrounds? Dive into the [complete documentation](./index) or explore specific [column types](./columns/) to unlock the full power of Traceloop Playgrounds!

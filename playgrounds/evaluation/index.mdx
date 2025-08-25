@@ -1,0 +1,277 @@
+---
+title: "Evaluation System"
+description: "Comprehensive guide to evaluating LLM outputs and data quality in playgrounds"
+---
+
+# Evaluation System
+
+The evaluation system is a core feature of Traceloop playgrounds, providing comprehensive tools to assess LLM outputs, data quality, and performance across various dimensions. Whether you need automated scoring or human judgment, the evaluation system has you covered.
+
+## Overview
+
+The evaluation system consists of:
+- **[Built-in Evaluators](./built-in/)** - 13+ pre-configured evaluators for common assessment tasks
+- **[Evaluation Columns](./columns/)** - Column types that perform evaluation operations  
+- **[Custom Evaluators](./custom/)** - User-defined LLM-powered evaluation logic
+- **[Annotation System](./annotation/)** - Manual labeling and human judgment workflows
+
+## Evaluation Categories
+
+### 🎯 **Quality Evaluators**
+Assess the overall quality and effectiveness of outputs:
+- **[Helpfulness](./built-in/helpfulness)** - How helpful is the response to the user?
+- **[Coherence](./built-in/coherence)** - Is the response logically consistent?
+- **[Correctness](./built-in/correctness)** - Factual accuracy and reliability
+- **[Relevancy](./built-in/relevancy)** - How relevant is the response to the input?
+
+### 🛡️ **Safety Evaluators**
+Identify potentially harmful or inappropriate content:
+- **[Toxicity](./built-in/toxicity)** - Detect toxic or offensive language
+- **[Harmfulness](./built-in/harmfulness)** - Identify potentially harmful content
+- **[Maliciousness](./built-in/maliciousness)** - Detect malicious intent
+- **[Criminality](./built-in/criminality)** - Flag content promoting illegal activities
+
+### 🔒 **Privacy & Compliance**
+Ensure data privacy and regulatory compliance:
+- **[PII Detection](./built-in/pii-detection)** - Identify personally identifiable information
+- **[Insensitivity](./built-in/insensitivity)** - Detect culturally insensitive content
+
+### 📊 **Content Analysis**
+Analyze specific aspects of content quality:
+- **[Faithfulness](./built-in/faithfulness)** - How faithful is the response to source material?
+- **[Controversiality](./built-in/controversiality)** - Identify controversial topics
+- **[Misogyny](./built-in/misogyny)** - Detect misogynistic content
+
+## Evaluation Workflows
+
+### Automated Evaluation Pipeline
+```
+Input Data → LLM Generation → Automated Evaluation → Results Analysis
+     ↓              ↓                    ↓               ↓
+Customer Query → GPT Response → Helpfulness Score → Quality Report
+```
+
+### Human-in-the-Loop Evaluation
+```
+Automated Scoring → Human Review → Final Assessment → Training Data
+       ↓               ↓               ↓              ↓
+   Initial Score → Manual Label → Verified Score → Model Improvement
+```
+
+### Multi-Dimensional Assessment
+```
+Single Output → Multiple Evaluators → Comprehensive Score
+     ↓                   ↓                    ↓
+Response Text → [Helpfulness, Toxicity, → Overall Quality
+                 Relevancy, Correctness]     Assessment
+```
+
+## Evaluation Column Types
+
+### [Evaluation Column](./columns/evaluation)
+Uses built-in evaluators to automatically score content:
+- Select from 13+ pre-configured evaluators
+- Configurable scoring scales and criteria
+- Batch evaluation across multiple rows
+- Confidence scores and explanations
+
+### [Custom Evaluator Column](./columns/custom-evaluator)
+Create your own LLM-powered evaluation logic:
+- Design custom evaluation criteria
+- Use flexible prompt templates
+- Incorporate domain-specific knowledge
+- Generate detailed evaluation explanations
+
+### [Label Column](./columns/label)
+Manual annotation and human judgment:
+- Various question types (rating, multiple choice, text)
+- Collaborative annotation workflows
+- Inter-annotator agreement tracking
+- Integration with automated evaluations
+
+## Getting Started with Evaluation
+
+### Step 1: Choose Your Evaluation Approach
+
+**For Standard Metrics**
+Use built-in evaluators for common assessment tasks:
+```
+Add Evaluation Column → Select "Helpfulness" → Configure target column
+```
+
+**For Custom Criteria**
+Create custom evaluators for specific needs:
+```
+Add Custom Evaluator → Define evaluation prompt → Set scoring criteria
+```
+
+**For Human Judgment**
+Use manual annotation for subjective assessments:
+```
+Add Label Column → Design annotation interface → Assign to reviewers
+```
+
+### Step 2: Configure Evaluation Parameters
+
+**Scoring Scale**
+- 1-5 scale for quick assessments
+- 1-10 scale for detailed scoring
+- Binary (pass/fail) for threshold decisions
+- Custom scales for specific needs
+
+**Evaluation Criteria**
+- Define what you're measuring
+- Provide clear guidelines for consistency
+- Include examples of good/bad outputs
+- Set expectations for edge cases
+
+### Step 3: Execute and Analyze
+
+**Batch Execution**
+- Run evaluations across all rows simultaneously
+- Monitor progress with real-time updates
+- Handle failures and retries automatically
+- Export results for further analysis
+
+**Results Analysis**
+- View score distributions and patterns
+- Identify outliers and edge cases
+- Generate summary statistics
+- Create evaluation reports
+
+## Best Practices
+
+### Evaluation Design
+**Clear Criteria**
+- Define evaluation dimensions precisely
+- Provide concrete examples and guidelines
+- Ensure criteria are measurable and consistent
+- Document the evaluation rationale
+
+**Appropriate Metrics**
+- Choose evaluators that match your goals
+- Use multiple dimensions for comprehensive assessment
+- Balance automated and human evaluation
+- Consider context and use case specifics
+
+**Quality Assurance**
+- Validate evaluator performance with known examples
+- Monitor inter-evaluator agreement for consistency
+- Calibrate human annotators regularly
+- Review and refine evaluation criteria over time
+
+### Performance Optimization
+**Efficient Execution**
+- Batch similar evaluations together
+- Use appropriate models for evaluation complexity
+- Monitor evaluation costs and token usage
+- Implement caching for repeated assessments
+
+**Scalability**
+- Design evaluations that scale with data volume
+- Use sampling strategies for large datasets
+- Implement quality checks and validation
+- Plan for growing evaluation needs
+
+### Data Quality
+**Representative Samples**
+- Ensure evaluation data represents real use cases
+- Include edge cases and challenging examples
+- Balance positive and negative examples
+- Update evaluation datasets regularly
+
+**Bias Mitigation**
+- Watch for systematic biases in evaluations
+- Use diverse evaluation criteria and perspectives
+- Validate results across different data segments
+- Implement fairness checks and audits
+
+## Advanced Evaluation Patterns
+
+### Multi-Stage Evaluation
+```
+Stage 1: Automated Screening (Fast, cheap filtering)
+Stage 2: Detailed Assessment (Comprehensive scoring)  
+Stage 3: Human Review (Final validation for edge cases)
+```
+
+### Comparative Evaluation
+```
+Response A → Evaluator → Score A ┐
+                                  ├→ Comparison → Winner
+Response B → Evaluator → Score B ┘
+```
+
+### Threshold-Based Filtering
+```
+All Responses → Evaluation → Filter by Score → High-Quality Subset
+```
+
+### Evaluation Benchmarking
+```
+Test Set → Multiple Evaluators → Compare Performance → Best Evaluator
+```
+
+## Integration with Other Features
+
+### Experiments
+- Use evaluation results to compare experiment variants
+- Track evaluation metrics across experiment runs
+- Optimize model parameters based on evaluation scores
+
+### Datasets
+- Export evaluated data to datasets for training
+- Import evaluation benchmarks from datasets
+- Version control evaluation criteria and results
+
+### Analytics
+- Generate insights from evaluation patterns
+- Identify improvement opportunities
+- Track evaluation trends over time
+
+## Common Use Cases
+
+### Content Quality Assessment
+- Blog post quality evaluation
+- Customer support response scoring
+- Marketing copy effectiveness assessment
+- Documentation clarity and completeness
+
+### Model Performance Monitoring
+- Production model output quality tracking
+- A/B testing between different models
+- Performance regression detection
+- Continuous improvement monitoring
+
+### Safety and Compliance
+- Content moderation and safety screening
+- Regulatory compliance checking
+- Brand safety assessment
+- Privacy protection validation
+
+### Research and Development
+- Benchmarking model capabilities
+- Evaluation methodology development
+- Human-AI collaboration studies
+- Quality metric validation
+
+## Next Steps
+
+Ready to start evaluating? Begin with:
+
+### For Beginners
+1. **[Built-in Evaluators](./built-in/)** - Start with pre-configured evaluators
+2. **[Evaluation Column](./columns/evaluation)** - Learn the basic evaluation column
+3. **[Helpfulness Evaluator](./built-in/helpfulness)** - Try a common quality metric
+
+### For Advanced Users
+1. **[Custom Evaluators](./custom/)** - Create domain-specific evaluation logic
+2. **[Annotation System](./annotation/)** - Design human evaluation workflows
+3. **[Multi-dimensional Assessment](./custom/creating-evaluators)** - Combine multiple evaluation criteria
+
+### For Specific Use Cases
+1. **[Safety Evaluation](./built-in/toxicity)** - Content safety and moderation
+2. **[Privacy Protection](./built-in/pii-detection)** - PII detection and compliance
+3. **[Quality Assurance](./built-in/correctness)** - Accuracy and reliability assessment
+
+Explore the detailed documentation for each evaluator and column type to master the evaluation system and improve your AI application quality.

@@ -1,0 +1,191 @@
+---
+title: "Getting Started with Playgrounds"
+description: "Create your first playground and learn the basics"
+---
+
+# Getting Started with Playgrounds
+
+This guide will walk you through creating your first playground and understanding the basic concepts. By the end, you'll have a working playground with multiple column types and understand how to execute and evaluate data.
+
+## Creating Your First Playground
+
+### Step 1: Navigate to Playgrounds
+
+1. Go to your project dashboard
+2. Click on **"Playgrounds"** in the navigation menu
+3. Click **"Create Playground"** button
+
+### Step 2: Choose Your Starting Point
+
+You have several options to start your playground:
+
+**Start Fresh**
+- Creates an empty playground where you can add columns manually
+- Best for custom workflows and experimentation
+
+**Import from File**
+- Upload a JSON or CSV file
+- Automatically maps columns based on your data
+- Great for analyzing existing datasets
+
+**Import from Dataset**
+- Use an existing Traceloop dataset
+- Select specific versions for analysis
+- Maintains data lineage and versioning
+
+**Import from Production**
+- Import traces and spans from your production environment
+- Analyze real user interactions and model performance
+- Perfect for debugging and optimization
+
+For this guide, we'll **start fresh** to understand the core concepts.
+
+## Understanding the Interface
+
+Once you create a playground, you'll see:
+
+### Header Section
+- **Playground name**: Click to rename your playground
+- **Progress indicator**: Shows execution progress when running operations
+- **Execute All**: Runs all executable columns in the playground  
+- **Add Column**: Creates new columns of different types
+- **Analytics**: View AI-generated insights (if enabled)
+- **Actions**: Additional options like export, duplicate, delete
+
+### Main Table
+- **Rows**: Horizontal entries representing your data points
+- **Columns**: Vertical sections with different data types and functionality
+- **Cells**: Individual intersections containing your data
+- **Status indicators**: Show execution state (pending, running, completed, failed)
+
+## Building Your First Playground
+
+Let's create a simple playground for testing different greeting prompts:
+
+### Step 3: Add Input Data
+
+1. Click **"Add Column"** 
+2. Select **"Custom Text"** column type
+3. Name it "Customer Name"
+4. Click **"Create Column"**
+
+Now add some sample data:
+- Click the first cell under "Customer Name"
+- Enter: "Alice Johnson"
+- Press Enter and add: "Bob Smith"  
+- Add: "Carol Davis"
+
+### Step 4: Add a Prompt Column
+
+1. Click **"Add Column"** again
+2. Select **"Prompt"** column type
+3. Name it "Greeting Prompt"
+4. Configure the prompt:
+   ```
+   Write a personalized greeting for {{Customer Name}}. 
+   Make it warm and professional.
+   ```
+5. Select your preferred model (e.g., GPT-4)
+6. Set temperature to 0.7 for creative but consistent results
+7. Click **"Create Column"**
+
+### Step 5: Add Evaluation
+
+1. Click **"Add Column"**
+2. Select **"Evaluation"** column type  
+3. Name it "Helpfulness Score"
+4. Choose **"Helpfulness"** as the evaluator
+5. Configure it to evaluate the "Greeting Prompt" column
+6. Click **"Create Column"**
+
+### Step 6: Execute Your Playground
+
+1. Click **"Execute All"** in the header
+2. Watch as each column executes in order:
+   - Input columns (already filled) ✅
+   - Prompt column generates greetings 🔄
+   - Evaluation column scores the results 🔄
+
+You'll see real-time status updates as each cell processes.
+
+## Understanding Execution
+
+### Execution Order
+Columns execute based on their dependencies:
+1. **Input columns** (Custom Text, Numeric, etc.) - No execution needed
+2. **Computation columns** (Prompts, Code, API) - Execute based on inputs
+3. **Evaluation columns** - Execute after the columns they evaluate
+
+### Cell Status States
+Each cell shows its current state:
+- **Empty**: No data or pending execution
+- **Running**: Currently being processed (animated spinner)  
+- **Completed**: Successfully executed (green checkmark)
+- **Failed**: Execution failed (red X with error details)
+- **Outdated**: Input changed, needs re-execution (orange indicator)
+
+### Selective Execution
+You don't always need to execute everything:
+- **Single cell**: Click the execute button in any cell
+- **Entire row**: Click the row execute button
+- **Specific columns**: Use column-level execution options
+
+## Working with Variables
+
+Notice how we used `{{Customer Name}}` in our prompt. This is Traceloop's variable system:
+
+- Variables reference other columns by name
+- Use double curly braces: `{{Column Name}}`
+- Variables update automatically when source data changes
+- You can reference multiple columns in a single prompt
+
+Example advanced prompt:
+```
+Hello {{Customer Name}}, 
+
+Based on your profile: {{Customer Profile}}
+And recent activity: {{Recent Activity}}
+
+Here's a personalized recommendation...
+```
+
+## Next Steps
+
+Congratulations! You've created your first playground. Here's what to explore next:
+
+### Immediate Next Steps
+1. **Add more data**: Try adding more customer names and see how results vary
+2. **Experiment with prompts**: Modify your prompt and re-execute
+3. **Try different evaluators**: Add columns for "Relevancy" or "Coherence"
+4. **Export your results**: Use the Actions menu to export as CSV or JSON
+
+### Learn More Features
+- [Core Concepts](./concepts/) - Deep dive into execution, variables, and dependencies
+- [Column Types](./columns/) - Explore all 15 column types available
+- [Evaluation System](./evaluation/) - Master built-in and custom evaluators  
+- [Data Management](./data/) - Import/export and dataset integration
+
+### Common Patterns
+- **A/B Testing**: Create multiple prompt columns to compare approaches
+- **Batch Processing**: Import large datasets and process them systematically
+- **Quality Assurance**: Set up evaluation pipelines for model outputs
+- **Data Analysis**: Use code columns for complex data transformations
+
+## Tips for Success
+
+### Performance
+- Start small and scale up gradually
+- Use selective execution during development
+- Monitor execution progress for long-running operations
+
+### Organization  
+- Use descriptive column names that indicate their purpose
+- Group related columns together
+- Document complex prompts and code in column descriptions
+
+### Collaboration
+- Playgrounds support real-time collaboration
+- Use comments and descriptions to communicate with team members
+- Export results for sharing with stakeholders
+
+Ready to explore more advanced features? Check out our [Core Concepts](./concepts/) guide or dive into specific [Column Types](./columns/).

@@ -1,0 +1,211 @@
+---
+title: "Columns"
+description: "Complete guide to all 15 column types in playgrounds"
+---
+
+# Columns
+
+Columns are the building blocks of playgrounds, defining what kind of data you can store, process, and analyze. Traceloop supports **15 different column types** organized into four main categories, each designed for specific use cases and workflows.
+
+## Column Categories
+
+### 📝 [Data Input Columns](./data-input/)
+Store and manage static data entered manually or imported from external sources.
+
+- **[Custom Text](./data-input/custom-text)** - Free-form text input with multiline support
+- **[Numeric](./data-input/numeric)** - Numbers, integers, and floating-point values  
+- **[Boolean](./data-input/boolean)** - True/false values with various display options
+- **[Select](./data-input/select)** - Single choice from predefined options
+- **[Multi-Select](./data-input/multi-select)** - Multiple choices from predefined options
+- **[JSON](./data-input/json)** - Structured JSON data with syntax highlighting
+
+### ⚙️ [Computation Columns](./computation/)
+Perform operations and computations using data from other columns.
+
+- **[Prompt](./computation/prompt)** - Execute LLM prompts with full model configuration
+- **[Code](./computation/code)** - Run Python code with variable mapping
+- **[API](./computation/api)** - Make HTTP requests to external services
+- **[Metadata Extractor](./computation/metadata-extractor)** - Extract structured data from other columns
+
+### 📊 [Import Columns](./import/)
+Bring in data from external Traceloop sources and production systems.
+
+- **[Source](./import/source)** - Import traces and spans from production
+- **[Imported](./import/imported)** - Data imported from files and datasets
+
+### 🔍 Evaluation Columns
+Assess and score data using built-in evaluators, custom logic, or manual annotation. *(Evaluation columns are documented in the [Evaluation section](../evaluation/) due to their complexity.)*
+
+- **Evaluation** - Built-in evaluators for common assessment tasks
+- **Custom Evaluator** - User-defined LLM-powered evaluation logic
+- **Label** - Manual annotation and labeling interface
+
+## Choosing Column Types
+
+### For Data Input
+**When you have static data to enter or import:**
+- **Text data** → Custom Text
+- **Numbers** → Numeric  
+- **Yes/No values** → Boolean
+- **Pick from list** → Select or Multi-Select
+- **Complex data** → JSON
+
+### For Processing  
+**When you need to compute or transform data:**
+- **LLM operations** → Prompt
+- **Custom logic** → Code
+- **External services** → API
+- **Data extraction** → Metadata Extractor
+
+### For Evaluation
+**When you need to assess quality or performance:**
+- **Standard metrics** → Evaluation (built-in evaluators)
+- **Custom criteria** → Custom Evaluator
+- **Human judgment** → Label
+
+### For Integration
+**When you need to import external data:**
+- **Production data** → Source
+- **File/dataset data** → Imported
+
+## Column Configuration
+
+### Common Settings
+All columns share these basic configuration options:
+
+**Basic Properties**
+- **Name**: Column identifier (used for variable references)
+- **Description**: Optional documentation for team collaboration
+- **Required**: Whether cells must have values
+- **Default Value**: Value used for new rows
+
+**Display Options**
+- **Width**: Column width in the table view
+- **Alignment**: Text alignment (left, center, right)
+- **Formatting**: Type-specific display formatting
+
+### Type-Specific Settings
+Each column type has additional configuration options:
+
+**Input Columns**
+- Data validation rules
+- Input format requirements
+- Display preferences
+
+**Computation Columns**  
+- Model/service configuration
+- Execution parameters
+- Retry and timeout settings
+
+**Evaluation Columns**
+- Evaluator selection and configuration
+- Scoring criteria and scales
+- Evaluation prompts and templates
+
+## Working with Columns
+
+### Creating Columns
+1. Click **"Add Column"** in the playground header
+2. Select the appropriate column type
+3. Configure the column settings
+4. Choose placement in the column order
+5. Click **"Create Column"**
+
+### Managing Columns
+**Reordering**
+- Drag column headers to reposition
+- Consider dependency order when reordering
+- Update variable references if needed
+
+**Editing**
+- Click column header settings icon
+- Modify configuration without losing data
+- Some changes may require re-execution
+
+**Deleting**
+- Use column header menu to delete
+- Check for dependent columns before deletion
+- Consider archiving instead of permanent deletion
+
+### Column Dependencies
+Columns can reference each other using variables:
+```
+{{Column Name}} - References another column's value
+```
+
+**Dependency Rules**
+- Variables create automatic dependencies
+- Execution follows dependency order
+- Circular references are prevented
+- Changes propagate to dependent columns
+
+## Best Practices
+
+### Column Design
+**Naming Conventions**
+- Use descriptive, clear names
+- Maintain consistent naming style
+- Avoid special characters that complicate variables
+- Consider column purpose in the name
+
+**Organization**
+- Arrange columns in logical order (inputs → processing → outputs)
+- Group related columns together
+- Separate concerns (data, computation, evaluation)
+- Plan for future expansion
+
+### Performance Optimization
+**Execution Efficiency**
+- Minimize unnecessary dependencies
+- Use appropriate column types for data
+- Consider caching for expensive operations
+- Plan for parallel execution where possible
+
+**Resource Management**
+- Monitor API usage in computation columns
+- Set appropriate timeouts and limits
+- Use selective execution during development
+- Plan for scale when designing workflows
+
+### Data Quality
+**Validation**
+- Use appropriate input validation
+- Handle edge cases in computation logic
+- Provide meaningful error messages
+- Test with representative data
+
+**Documentation**
+- Document complex column logic
+- Explain variable relationships
+- Provide examples for team members
+- Keep configuration notes updated
+
+## Column Type Comparison
+
+| Category | Column Types | Best For | Execution |
+|----------|--------------|----------|-----------|
+| **Data Input** | Text, Numeric, Boolean, Select, Multi-Select, JSON | Static data entry, imported data | Immediate |
+| **Computation** | Prompt, Code, API, Metadata Extractor | Data processing, external calls | Async |
+| **Import** | Source, Imported | External data integration | On-demand |
+| **Evaluation** | Evaluation, Custom Evaluator, Label | Quality assessment, scoring | Async |
+
+## Next Steps
+
+Ready to explore specific column types? Start with:
+
+### For Beginners
+1. **[Custom Text](./data-input/custom-text)** - Basic text input
+2. **[Prompt](./computation/prompt)** - LLM interactions
+3. **[Evaluation](../evaluation/columns/evaluation)** - Built-in evaluators
+
+### For Advanced Users
+1. **[Code](./computation/code)** - Python execution
+2. **[API](./computation/api)** - External service integration
+3. **[Custom Evaluator](../evaluation/columns/custom-evaluator)** - Custom evaluation logic
+
+### For Data Integration
+1. **[Source](./import/source)** - Import production data
+2. **[JSON](./data-input/json)** - Complex data structures
+3. **[Imported](./import/imported)** - File and dataset imports
+
+Explore the specific column type documentation to learn about configuration options, use cases, and best practices for each type.
