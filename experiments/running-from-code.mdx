@@ -77,9 +77,13 @@ interface ExperimentTaskFunction<TInput = TaskInput, TOutput = TaskOutput> {
 
 </CodeGroup>
 
+A task can perform any desired internal operation—such as LLM calls, semantic search, RAG, or custom business logic. The task output is then used as the evaluator input and is automatically logged in the Traceloop platform.
 
+<Note> Ensure that the evaluator input schema variables are included in the task output dictionary. </Note> <Tip> You can add extra attributes to the task output even if they are not evaluator input parameters—these will also be logged to the platform. </Tip>
 
-```python
+<CodeGroup>
+
+```python Python
 from openai import AsyncOpenAI
 
 def provide_medical_info_prompt(question: str) -> str:
@@ -116,23 +120,87 @@ async def medical_task(row):
     return {"completion": ai_response, "text": ai_response}
 ```
 
+```typescript TypeScript
+import { OpenAI } from "openai";
+import type {
+  ExperimentTaskFunction,
+  TaskInput,
+  TaskOutput,
+} from "@traceloop/node-server-sdk";
+
+function provideMedicalInfoPrompt(question: string): string {
+  return `You are a health educator providing comprehensive medical information.
+
+    Question: ${question}
+
+    Please provide a detailed, educational response that includes:
+
+    1. **Clear, factual explanation** of the medical concept or condition
+    2. **Key benefits and considerations** related to the topic
+    3. **Specific recommendations** based on current medical knowledge
+    4. **Important disclaimers** about consulting healthcare professionals
+    5. **Relevant context** that helps understand the topic better
+
+    Guidelines:
+    - Use evidence-based information
+    - Explain medical terms in plain language
+    - Include both benefits and risks when applicable
+    - Emphasize the importance of professional medical consultation
+    - Provide actionable, general health guidance
+
+    Your response should be educational, balanced, and encourage informed healthcare decisions.`;
+}
+
+
+/**
+ * Task function for medical advice prompt
+ */
+const medicalTask: ExperimentTaskFunction = async (
+  row: TaskInput,
+): Promise<TaskOutput> => {
+  const promptText = provideMedicalInfoPrompt(row.question as string);
+  const answer = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages: [{ role: "user", content: promptText }],
+    temperature: 0.7,
+    max_tokens: 500,
+  });
+
+  const aiResponse = answer.choices?.[0]?.message?.content
+  return { completion: aiResponse, text: aiResponse };
+};
+```
+
+</CodeGroup>
+
 ## Running Experiments
 
-Use the `experiment.run()` method to execute your experiment:
+Use the `experiment.run()` method to execute your experiment by selecting a dataset as the source data, choosing the evaluators to run, and assigning a slug to make it easy to rerun later.
 
-```python
-async def run_my_experiment():
-    results, errors = await client.experiment.run(
-        dataset_slug="my-dataset",
-        dataset_version="v1",
-        task=my_task_function,
-        evaluators=["accuracy", "relevance"],
-        experiment_slug="my-experiment-v1"
-    )
-    
-    print(f"Experiment completed with {len(results)} results and {len(errors)} errors")
-    return results, errors
+<CodeGroup>
+
+```python Python
+results, errors = await client.experiment.run(
+    dataset_slug="medical-q",
+    dataset_version="v1",
+    task=medical_task,
+    evaluators=["medical_advice", "response-counter"],
+    experiment_slug="medical-advice-exp",
+    stop_on_error=False,
+)
 ```
+
+```typescript TypeScript
+const results = await client.experiment.run(medicalTask, {
+    datasetSlug: "medical-q",
+    datasetVersion: "v1",
+    evaluators: ["medical_advice", "response-counter"],
+    experimentSlug: "medical-advice-exp-ts",
+    stopOnError: false,
+});
+```
+
+</CodeGroup>
 
 ## Comparing Different Approaches
 
