@@ -1,0 +1,63 @@
+---
+title: "Quick Start"
+---
+
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/dataset-list-light.png"
+  />
+  <img className="hidden dark:block" src="/img/dataset-list-dark.png" />
+</Frame>
+
+Datasets are simple data tables that you can use to manage your data for experiments and evaluation of your AI applications.
+Datasets are available in the SDK, and they enable you to create versioned snapshots for reproducible testing. 
+
+<Steps>
+<Step title="Create a new dataset">
+
+Click **New Dataset** to create a dataset, give it a descriptive name that reflects its purpose or use case, add a description to help your team understand its context, and provide a slug that allows you to use the dataset in the SDK.
+
+</Step>
+
+<Step title="Add your data">
+
+Add rows and columns to structure your dataset.
+You can add different column types:
+- **Text**: For prompts, model responses, or any textual data
+- **Number**: For numerical values, scores, or metrics
+- **Boolean**: For true/false flags or binary classifications
+
+<Tip>
+ Use meaningful column names that clearly describe what each field contains,
+ making it easier to work with your dataset in code, ensure clarity when using evaluators, and collaborate with team members.
+</Tip>
+
+</Step>
+
+<Step title="Publish your dataset version">
+
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/dataset/dataset-view-light.png"
+  />
+  <img className="hidden dark:block" src="/img/dataset/dataset-view-dark.png" />
+</Frame>
+
+Once you're satisfied with your dataset structure and data:
+1. Click **Publish Version** to create a stable snapshot
+2. Published versions are immutable
+3. Publish versions are accessible in the SDK
+
+</Step>
+
+<Step title="View your version history">
+
+You can access all published versions of your dataset by opening the version history modal. This allows you to:
+- Compare different versions of your dataset
+- Track changes over time
+- Switch between versions
+
+</Step>
+</Steps>

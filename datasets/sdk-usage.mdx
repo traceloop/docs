@@ -1,0 +1,282 @@
+---
+title: "Using Datasets"
+description: "Access your managed datasets with the Traceloop SDKs"
+---
+
+### Accessing your datasets
+
+Make sure to set `traceloop_sync_enabled=True` when initializing the SDK or the `TRACELOOP_SYNC_ENABLED` environment variable to `true`,
+to enable the dataset sync.
+
+The SDK fetches your datasets from Traceloop servers. Changes made to published dataset versions are immediately available in the SDK during runtime.
+The SDK polls the Traceloop servers for changes every poll interval.
+
+The default poll interval is 60 seconds but can be configured with the `TRACELOOP_SYNC_POLL_INTERVAL` environment variable, or the initialization function.
+When in the `Development` environment, the poll interval is determined by the `TRACELOOP_SYNC_DEV_POLL_INTERVAL` environment variable or appropriate initialization argument, and defaults to 5 seconds.
+
+Make sure you've configured the SDK with the right environment and API Key. See the [SDK documentation](/openllmetry/integrations/traceloop) for more information.
+
+<Tip>
+  The SDK uses smart caching mechanisms to provide zero latency for fetching
+  datasets and supports offline usage when datasets are already cached.
+</Tip>
+
+## Get Dataset API
+
+Let's say you've created a dataset with a key `evaluation_scenarios` containing test cases for your AI application:
+
+| user_input | expected_tone | expected_length |
+|------------|---------------|-----------------|
+| "Help me write an email" | professional | medium |  
+| "Create a fun story" | casual | long |
+| "Summarize this document" | neutral | short |
+
+Then, you can retrieve it in your code using `get_dataset`:
+
+<CodeGroup>
+
+```python Python
+from traceloop.sdk.datasets import get_dataset
+
+# Get the latest published version
+dataset = get_dataset(key="evaluation_scenarios")
+
+# Get a specific version
+dataset = get_dataset(key="evaluation_scenarios", version="1.2.0")
+
+# Iterate through all rows
+for row in dataset:
+    user_input = row["user_input"]  
+    expected_tone = row["expected_tone"]
+    expected_length = row["expected_length"]
+    
+    # Use the data in your tests
+    result = generate_response(user_input)
+    assert validate_tone(result, expected_tone)
+    assert validate_length(result, expected_length)
+```
+
+```js Typescript / Javascript
+import * as traceloop from "@traceloop/node-server-sdk";
+
+// Get the latest published version
+const dataset = traceloop.getDataset("evaluation_scenarios");
+
+// Get a specific version  
+const dataset = traceloop.getDataset("evaluation_scenarios", "1.2.0");
+
+// Iterate through all rows
+for (const row of dataset) {
+    const userInput = row.user_input;
+    const expectedTone = row.expected_tone;
+    const expectedLength = row.expected_length;
+    
+    // Use the data in your tests
+    const result = await generateResponse(userInput);
+    console.assert(validateTone(result, expectedTone));
+    console.assert(validateLength(result, expectedLength));
+}
+```
+
+```go Go
+import "github.com/traceloop/go-sdk/datasets"
+
+func runTests() {
+    // Get the latest published version
+    dataset, err := datasets.GetDataset("evaluation_scenarios", "")
+    if err != nil {
+        log.Printf("GetDataset error: %v\n", err)
+        return
+    }
+    
+    // Get a specific version
+    dataset, err = datasets.GetDataset("evaluation_scenarios", "1.2.0")
+    if err != nil {
+        log.Printf("GetDataset error: %v\n", err)
+        return
+    }
+    
+    // Iterate through all rows
+    for _, row := range dataset {
+        userInput := row["user_input"].(string)
+        expectedTone := row["expected_tone"].(string) 
+        expectedLength := row["expected_length"].(string)
+        
+        // Use the data in your tests
+        result := generateResponse(userInput)
+        assert.True(t, validateTone(result, expectedTone))
+        assert.True(t, validateLength(result, expectedLength))
+    }
+}
+```
+
+</CodeGroup>
+
+<Tip>
+  Each row in the dataset is returned as a dictionary/object where column names
+  are the keys. This makes it easy to access your structured test data.
+</Tip>
+
+## Dataset Versioning
+
+When working with datasets, you can specify which version to use:
+
+<CodeGroup>
+
+```python Python
+# Always get the latest published version (recommended for development)
+dataset = get_dataset("my_dataset")
+
+# Get a specific version (recommended for production/CI)
+dataset = get_dataset("my_dataset", version="2.1.0")
+
+# Get version info
+dataset_info = get_dataset_info("my_dataset")
+print(f"Latest version: {dataset_info.latest_version}")
+print(f"Available versions: {dataset_info.versions}")
+```
+
+```js Typescript / Javascript
+// Always get the latest published version (recommended for development)
+const dataset = traceloop.getDataset("my_dataset");
+
+// Get a specific version (recommended for production/CI)
+const dataset = traceloop.getDataset("my_dataset", "2.1.0");
+
+// Get version info
+const datasetInfo = traceloop.getDatasetInfo("my_dataset");
+console.log(`Latest version: ${datasetInfo.latestVersion}`);
+console.log(`Available versions: ${datasetInfo.versions}`);
+```
+
+</CodeGroup>
+
+## Common Usage Patterns
+
+### Automated Testing
+
+Use datasets to create comprehensive test suites:
+
+<CodeGroup>
+
+```python Python  
+import pytest
+from traceloop.sdk.datasets import get_dataset
+
+class TestAIApplication:
+    @pytest.fixture
+    def test_cases(self):
+        return get_dataset("ai_app_test_suite", version="1.0.0")
+    
+    def test_response_quality(self, test_cases):
+        for case in test_cases:
+            input_text = case["input"]
+            expected_output = case["expected_output"]
+            
+            result = your_ai_function(input_text)
+            
+            # Add your validation logic
+            similarity_score = calculate_similarity(result, expected_output)
+            assert similarity_score > 0.8, f"Low similarity for input: {input_text}"
+```
+
+```js Typescript / Javascript
+import * as traceloop from "@traceloop/node-server-sdk";
+
+describe("AI Application Tests", () => {
+    let testCases;
+    
+    beforeAll(async () => {
+        testCases = traceloop.getDataset("ai_app_test_suite", "1.0.0");
+    });
+    
+    test("response quality", async () => {
+        for (const testCase of testCases) {
+            const inputText = testCase.input;
+            const expectedOutput = testCase.expected_output;
+            
+            const result = await yourAiFunction(inputText);
+            
+            // Add your validation logic
+            const similarityScore = calculateSimilarity(result, expectedOutput);
+            expect(similarityScore).toBeGreaterThan(0.8);
+        }
+    });
+});
+```
+
+</CodeGroup>
+
+### Batch Processing
+
+Process entire datasets for bulk evaluation:
+
+<CodeGroup>
+
+```python Python
+from traceloop.sdk.datasets import get_dataset
+import concurrent.futures
+
+def evaluate_dataset(dataset_key, version=None):
+    dataset = get_dataset(dataset_key, version)
+    results = []
+    
+    # Process in parallel for better performance
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        futures = []
+        
+        for row in dataset:
+            future = executor.submit(process_single_case, row)
+            futures.append(future)
+        
+        for future in concurrent.futures.as_completed(futures):
+            result = future.result()
+            results.append(result)
+    
+    return results
+
+def process_single_case(row):
+    # Your processing logic here
+    input_data = row["input"]
+    result = your_ai_function(input_data)
+    
+    return {
+        "input": input_data,
+        "output": result,
+        "expected": row.get("expected_output"),
+        "metadata": row
+    }
+```
+
+```js Typescript / Javascript
+import * as traceloop from "@traceloop/node-server-sdk";
+
+async function evaluateDataset(datasetKey: string, version?: string) {
+    const dataset = traceloop.getDataset(datasetKey, version);
+    const results = [];
+    
+    // Process in parallel for better performance
+    const promises = dataset.map(async (row) => {
+        const inputData = row.input;
+        const result = await yourAiFunction(inputData);
+        
+        return {
+            input: inputData,
+            output: result,
+            expected: row.expected_output,
+            metadata: row
+        };
+    });
+    
+    const results = await Promise.all(promises);
+    return results;
+}
+```
+
+</CodeGroup>
+
+<Warning>  
+  When processing datasets in parallel, be mindful of rate limits on your
+  AI provider's API. Consider implementing appropriate throttling or using
+  a smaller number of concurrent workers.
+</Warning>

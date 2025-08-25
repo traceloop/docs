@@ -152,6 +152,10 @@
       "pages": ["prompts/quick-start", "prompts/registry", "prompts/sdk-usage"]
     },
     {
+      "group": "Datasets",
+      "pages": ["datasets/quick-start"]
+    },
+    {
       "group": "Integrations",
       "pages": ["integrations/posthog"]
     },
