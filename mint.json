@@ -157,7 +157,7 @@
     },
     {
       "group": "Experiments",
-      "pages": ["experiments/introduction", "experiments/running-from-code"]
+      "pages": ["experiments/introduction", "experiments/result-overview", "experiments/running-from-code"]
     },
     {
       "group": "Integrations",

@@ -1,0 +1,44 @@
+---
+title: "Result Overview"
+---
+
+All experiments are logged in the Traceloop platform. Each experiment is executed through the SDK.
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/experiment/exp-list-light.png"
+  />
+  <img className="hidden dark:block" src="/img/experiment/exp-list-dark.png" />
+</Frame>
+
+## Experiment Runs
+An experiment can be run multiple times against different datasets and tasks. All runs are logged in the Traceloop platform to enable easy comparison.
+
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/experiment/exp-run-list-light.png"
+  />
+  <img className="hidden dark:block" src="/img/experiment/exp-run-list-dark.png" />
+</Frame>
+
+## Experiment Tasks
+
+An experiment run is made up of multiple tasks, where each task represents the experiment flow applied to a single dataset row.
+
+The task logging captures:
+
+- Task input – the data taken from the dataset row.
+
+- Task outputs – the results produced by running the task, which are then passed as input to the evaluator.
+
+- Evaluator results – the evaluator’s assessment based on the task outputs.
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/experiment/exp-run-light.png"
+  />
+  <img className="hidden dark:block" src="/img/experiment/exp-run-dark.png" />
+</Frame>
+
+
