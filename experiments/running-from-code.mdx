@@ -85,6 +85,7 @@ A task can perform any desired internal operation—such as LLM calls, semantic 
 
 ```python Python
 from openai import AsyncOpenAI
+import os
 
 def provide_medical_info_prompt(question: str) -> str:
     """
@@ -158,6 +159,10 @@ function provideMedicalInfoPrompt(question: string): string {
 const medicalTask: ExperimentTaskFunction = async (
   row: TaskInput,
 ): Promise<TaskOutput> => {
+    const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
   const promptText = provideMedicalInfoPrompt(row.question as string);
   const answer = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
