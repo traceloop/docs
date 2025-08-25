@@ -54,25 +54,66 @@ An experiment consists of:
 
 ## Task Functions
 
-Create task functions that define how your AI system processes each dataset row:
+Create a task function that define how your AI system processes each dataset row. The task is one of the experiments parameters, it will run it on each dataset row. 
+
+The task function signature expects:
+- **Input**: An optional dictionary containing the dataset row data
+- **Output**: A dictionary with your task results
+
+<CodeGroup>
+
+```python Python
+task: Callable[[Optional[Dict[str, Any]]], Dict[str, Any]]
+```
+
+```typescript TypeScript
+type dataValue = string | number | boolean;
+type TaskInput = Record<string, dataValue>;
+type TaskOutput = Record<string, dataValue>;
+interface ExperimentTaskFunction<TInput = TaskInput, TOutput = TaskOutput> {
+    (input: TInput): Promise<TOutput> | TOutput;
+}
+```
+
+</CodeGroup>
+
+
 
 ```python
-async def my_task_function(input_data):
-    # Your AI processing logic here
-    # This could involve calling OpenAI, Anthropic, etc.
-    
-    response = await openai.ChatCompletion.acreate(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": input_data["question"]}
-        ]
+from openai import AsyncOpenAI
+
+def provide_medical_info_prompt(question: str) -> str:
+    """
+    Provides comprehensive medical information without restrictions
+    """
+    return f"""You are a knowledgeable health educator.
+    Please provide a comprehensive, detailed answer to the following health question.
+
+    Question: {question}
+
+    Please provide:
+    1. A clear, factual explanation using accessible language
+    2. Key benefits and important considerations
+    3. Specific recommendations and actionable guidance
+    4. Relevant details about treatments, symptoms, or health practices
+    5. Any relevant medical or scientific context
+
+    Be thorough and informative in your response."""
+
+async def medical_task(row):
+    openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    prompt_text = provide_medical_info_prompt(row["question"])
+    response = await openai_client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt_text}],
+        temperature=0.7,
+        max_tokens=500,
     )
-    
-    return {
-        "response": response.choices[0].message.content,
-        "model": "gpt-4"
-    }
+
+    ai_response = response.choices[0].message.content
+
+    return {"completion": ai_response, "text": ai_response}
 ```
 
 ## Running Experiments
