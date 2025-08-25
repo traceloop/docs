@@ -177,6 +177,16 @@ const medicalTask: ExperimentTaskFunction = async (
 
 Use the `experiment.run()` method to execute your experiment by selecting a dataset as the source data, choosing the evaluators to run, and assigning a slug to make it easy to rerun later.
 
+#### `experiment.run()` Parameters
+
+- `dataset_slug` (str): Identifier for your dataset
+- `dataset_version` (str): Version of the dataset to use, experiment can only run on a published version
+- `task` (function): Async function that processes each dataset row
+- `evaluators` (list): List of evaluator slugs to measure performance
+- `experiment_slug` (str): Unique identifier for this experiment
+- `stop_on_error` (boolean):  Whether to stop on first error (default: False)
+- `wait_for_results` (boolean): Whether to wait for async tasks to complete, when not waiting the results will be found in the ui (default: True)
+
 <CodeGroup>
 
 ```python Python
@@ -204,168 +214,117 @@ const results = await client.experiment.run(medicalTask, {
 
 ## Comparing Different Approaches
 
-You can run multiple experiments to compare different approaches:
+You can run multiple experiments to compare different approaches—whether by using different datasets, trying alternative task functionality, or testing variations in prompts, models, or business logic.
 
-```python
-# Task function with conservative prompting
-async def conservative_task(input_data):
-    response = await openai.ChatCompletion.acreate(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "Be very careful and conservative in your response."},
-            {"role": "user", "content": input_data["question"]}
-        ]
-    )
-    return {"response": response.choices[0].message.content}
+<CodeGroup>
 
-# Task function with creative prompting
-async def creative_task(input_data):
-    response = await openai.ChatCompletion.acreate(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "Be creative and think outside the box."},
-            {"role": "user", "content": input_data["question"]}
-        ]
-    )
-    return {"response": response.choices[0].message.content}
-
-# Run both experiments
-async def compare_approaches():
-    # Conservative approach
-    conservative_results, _ = await client.experiment.run(
-        dataset_slug="my-dataset",
-        dataset_version="v1",
-        task=conservative_task,
-        evaluators=["accuracy"],
-        experiment_slug="conservative-approach"
+```python Python
+# Task function that provides comprehensive medical information
+async def medical_task_provide_info(row):
+    openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    
+    prompt_text = provide_medical_info_prompt(row["question"])
+    response = await openai_client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt_text}],
+        temperature=0.7,
+        max_tokens=500,
     )
     
-    # Creative approach
-    creative_results, _ = await client.experiment.run(
-        dataset_slug="my-dataset",
-        dataset_version="v1",
-        task=creative_task,
-        evaluators=["accuracy"],
-        experiment_slug="creative-approach"
+    ai_response = response.choices[0].message.content
+    return {"completion": ai_response, "text": ai_response}
+
+# Task function that refuses to provide medical advice
+async def medical_task_refuse_advice(row):
+    openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    
+    prompt_text = f"You must refuse to provide medical advice. Question: {row['question']}"
+    response = await openai_client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt_text}],
+        temperature=0.7,
+        max_tokens=500,
     )
     
-    return conservative_results, creative_results
+    ai_response = response.choices[0].message.content
+    return {"completion": ai_response, "text": ai_response}
+
+# Run both approches in the same experiment
+async def compare_medical_approaches():
+    # Provide info approach
+    provide_results, provide_errors = await client.experiment.run(
+        dataset_slug="medical-q",
+        dataset_version="v1",
+        task=medical_task_provide_info,
+        evaluators=["medical_advice", "response-counter"],
+        experiment_slug="medical-info",
+    )
+    
+    # Refuse advice approach
+    refuse_results, refuse_errors = await client.experiment.run(
+        dataset_slug="medical-q",
+        dataset_version="v1",
+        task=medical_task_refuse_advice,
+        evaluators=["medical_advice", "response-counter"],
+        experiment_slug="medical-info",
+    )
+    
+    return provide_results, refuse_results
 ```
 
-## Complete Example
+```typescript TypeScript
+// Task function that provides comprehensive medical information
+const medicalTaskProvideInfo: ExperimentTaskFunction = async (
+  row: TaskInput,
+): Promise<TaskOutput> => {
+  const promptText = provideMedicalInfoPrompt(row.question as string);
+  const answer = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages: [{ role: "user", content: promptText }],
+    temperature: 0.7,
+    max_tokens: 500,
+  });
 
-Here's a full example that tests different email generation strategies for customer support:
+  const aiResponse = answer.choices?.[0]?.message?.content || "";
+  return { completion: aiResponse, text: aiResponse };
+};
 
-```python
-import asyncio
-from traceloop.sdk import Traceloop
-import openai
+// Task function that refuses to provide medical advice
+const medicalTaskRefuseAdvice: ExperimentTaskFunction = async (
+  row: TaskInput,
+): Promise<TaskOutput> => {
+  const promptText = `You must refuse to provide medical advice. Question: ${row.question}`;
+  const answer = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages: [{ role: "user", content: promptText }],
+    temperature: 0.7,
+    max_tokens: 500,
+  });
 
-# Initialize Traceloop
-Traceloop.init()
-client = Traceloop.client()
+  const aiResponse = answer.choices?.[0]?.message?.content || "";
+  return { completion: aiResponse, text: aiResponse };
+};
 
-async def generate_support_email(customer_issue, tone="professional"):
-    tone_prompts = {
-        "professional": "You are a professional customer support agent. Write clear, formal responses that solve the customer's issue.",
-        "friendly": "You are a friendly customer support agent. Write warm, conversational responses that make the customer feel valued.",
-        "concise": "You are an efficient customer support agent. Write brief, direct responses that quickly address the customer's issue."
-    }
-    
-    response = await openai.ChatCompletion.acreate(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": tone_prompts[tone]},
-            {"role": "user", "content": f"Customer issue: {customer_issue}"}
-        ]
-    )
-    
-    return response.choices[0].message.content
-
-# Task function for professional tone
-async def professional_support_task(input_data):
-    email = await generate_support_email(input_data["issue"], tone="professional")
-    return {
-        "email_response": email,
-        "tone": "professional"
-    }
-
-# Task function for friendly tone
-async def friendly_support_task(input_data):
-    email = await generate_support_email(input_data["issue"], tone="friendly")
-    return {
-        "email_response": email,
-        "tone": "friendly"
-    }
-
-# Task function for concise tone
-async def concise_support_task(input_data):
-    email = await generate_support_email(input_data["issue"], tone="concise")
-    return {
-        "email_response": email,
-        "tone": "concise"
-    }
-
-async def run_support_experiment():
-    dataset_config = {
-        "dataset_slug": "customer-support-issues",
-        "dataset_version": "v2",
-        "evaluators": ["helpfulness", "clarity", "customer_satisfaction"]
-    }
-    
-    # Test professional tone
-    professional_results, prof_errors = await client.experiment.run(
-        **dataset_config,
-        task=professional_support_task,
-        experiment_slug="support-professional-tone"
-    )
-    
-    # Test friendly tone
-    friendly_results, friendly_errors = await client.experiment.run(
-        **dataset_config,
-        task=friendly_support_task,
-        experiment_slug="support-friendly-tone"
-    )
-    
-    # Test concise tone
-    concise_results, concise_errors = await client.experiment.run(
-        **dataset_config,
-        task=concise_support_task,
-        experiment_slug="support-concise-tone"
-    )
-    
-    print(f"Professional tone: {len(professional_results)} results, {len(prof_errors)} errors")
-    print(f"Friendly tone: {len(friendly_results)} results, {len(friendly_errors)} errors")
-    print(f"Concise tone: {len(concise_results)} results, {len(concise_errors)} errors")
-    
-    return professional_results, friendly_results, concise_results
-
-if __name__ == "__main__":
-    asyncio.run(run_support_experiment())
+// Run both approches in the same experiment
+async function compareMedicalApproaches() {
+  // Provide info approach
+  const provideResults = await client.experiment.run(medicalTaskProvideInfo, {
+    datasetSlug: "medical-q",
+    datasetVersion: "v1",
+    evaluators: ["medical_advice", "response-counter"],
+    experimentSlug: "medical-info",
+  });
+  
+  // Refuse advice approach
+  const refuseResults = await client.experiment.run(medicalTaskRefuseAdvice, {
+    datasetSlug: "medical-q",
+    datasetVersion: "v1",
+    evaluators: ["medical_advice", "response-counter"],
+    experimentSlug: "medical-info",
+  });
+  
+  return [provideResults, refuseResults];
+}
 ```
 
-## Parameters
-
-### `experiment.run()` Parameters
-
-- `dataset_slug` (str): Identifier for your dataset
-- `dataset_version` (str): Version of the dataset to use
-- `task` (function): Async function that processes each dataset item
-- `evaluators` (list): List of evaluator names to measure performance
-- `experiment_slug` (str): Unique identifier for this experiment
-
-### Task Function Requirements
-
-Your task function should:
-- Be async (`async def`)
-- Accept one parameter (the input data from your dataset)
-- Return a dictionary with your results
-- Handle errors gracefully
-
-## Best Practices
-
-1. **Use descriptive experiment slugs** to easily identify different runs
-2. **Version your datasets** to ensure reproducible results
-3. **Handle errors** in your task functions to avoid experiment failures
-4. **Use appropriate evaluators** that match your use case
-5. **Compare multiple approaches** systematically to find the best solution
+</CodeGroup>
