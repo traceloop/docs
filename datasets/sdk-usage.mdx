@@ -3,23 +3,377 @@ title: "SDK usage"
 description: "Access your managed datasets with the Traceloop SDK"
 ---
 
-### Accessing your datasets
+## SDK Initialization
 
-Make sure to set `traceloop_sync_enabled=True` when initializing the SDK or the `TRACELOOP_SYNC_ENABLED` environment variable to `true`,
-to enable the dataset sync.
+First, initialize the Traceloop SDK with dataset sync enabled:
 
-The SDK fetches your datasets from Traceloop servers. Changes made to published dataset versions are immediately available in the SDK during runtime.
-The SDK polls the Traceloop servers for changes every poll interval.
+<CodeGroup>
 
-The default poll interval is 60 seconds but can be configured with the `TRACELOOP_SYNC_POLL_INTERVAL` environment variable, or the initialization function.
-When in the `Development` environment, the poll interval is determined by the `TRACELOOP_SYNC_DEV_POLL_INTERVAL` environment variable or appropriate initialization argument, and defaults to 5 seconds.
+```python Python
+from traceloop.sdk import Traceloop
 
-Make sure you've configured the SDK with the right environment and API Key. See the [SDK documentation](/openllmetry/integrations/traceloop) for more information.
+# Initialize with dataset sync enabled
+client = Traceloop.init()
+```
 
-<Tip>
-  The SDK uses smart caching mechanisms to provide zero latency for fetching
-  datasets and supports offline usage when datasets are already cached.
-</Tip>
+```js Typescript / Javascript
+import * as traceloop from "@traceloop/node-server-sdk";
+
+// Initialize with comprehensive configuration
+traceloop.initialize({
+  appName: "your-app-name",
+  apiKey: process.env.TRACELOOP_API_KEY,
+  disableBatch: true,
+  traceloopSyncEnabled: true,
+});
+
+// Wait for initialization to complete
+await traceloop.waitForInitialization();
+
+// Get the client instance for dataset operations
+const client = traceloop.getClient();
+```
+
+</CodeGroup>
+
+<Note>
+  Make sure you've created an API key and set it as an environment variable
+  `TRACELOOP_API_KEY` before you start. Check out the SDK's [getting started
+  guide](/openllmetry/getting-started-python) for more information.
+</Note>
+
+The SDK fetches your datasets from Traceloop servers. Changes made to a draft dataset version are immediately available in the UI.
+
+## Dataset CRUD Operations
+
+### Create a dataset
+
+<CodeGroup>
+
+```python Python
+import pandas as pd
+from traceloop.sdk import Traceloop
+
+client = Traceloop.init()
+
+# Create dataset from CSV file
+dataset = client.datasets.from_csv(
+    file_path="path/to/your/data.csv",
+    slug="my-dataset-slug",
+    name="My Dataset Name",
+    description="Description of the dataset contents"
+)
+
+print(f"Created dataset: {dataset.slug}")
+```
+
+```js Typescript / Javascript
+
+// Create a new dataset
+const dataset = await client.datasets.create({
+  name: `Medical Qustions}`,
+  slug: `medical-questions`,
+  description: "Dataset with patients medical questions"
+});
+
+console.log(`Created dataset: ${dataset.name} (ID: ${dataset.id})`);
+```
+
+</CodeGroup>
+
+### Importing from CSV
+
+<CodeGroup>
+
+```python Python
+# Python CSV import example above
+```
+
+```js Typescript / Javascript
+// Import data from CSV string
+const csvData = `user_id,prompt,response,model,satisfaction_score
+user_001,"What is React?","React is a JavaScript library...","gpt-3.5-turbo",4
+user_002,"Explain Docker","Docker is a containerization platform...","gpt-3.5-turbo",5`;
+
+await dataset.fromCSV(csvData, { hasHeader: true });
+console.log("Imported data from CSV");
+```
+
+</CodeGroup>
+
+### From DataFrames
+
+<CodeGroup>
+
+```python Python
+import pandas as pd
+from traceloop.sdk import Traceloop
+
+client = Traceloop.init()
+
+# Create sample DataFrame
+data = {
+    "user_input": ["How do I reset my password?", "What's your refund policy?"],
+    "ai_response": ["Click 'Forgot Password' on the login page.", "We offer 30-day returns."],
+    "category": ["authentication", "billing"],
+    "resolved": [True, True]
+}
+df = pd.DataFrame(data)
+
+# Create dataset from DataFrame
+dataset = client.datasets.from_dataframe(
+    df=df,
+    slug="support-interactions",
+    name="Customer Support Dataset",
+    description="Customer queries and AI responses"
+)
+```
+
+</CodeGroup>
+
+## Managing Dataset Structure
+
+### Adding Columns
+
+<CodeGroup>
+
+```python Python
+from traceloop.sdk.dataset import ColumnType
+
+# Add a new column to your dataset
+new_column = dataset.add_column(
+    slug="confidence_score",
+    name="Confidence Score", 
+    col_type=ColumnType.NUMBER
+)
+```
+
+```js Typescript / Javascript
+// Define schema by adding multiple columns
+const columnsToAdd = [
+  {
+    name: "user_id",
+    type: "string" as const,
+    required: true,
+    description: "Unique identifier for the user"
+  },
+  {
+    name: "prompt", 
+    type: "string" as const,
+    required: true,
+    description: "The user's input prompt"
+  },
+  {
+    name: "response",
+    type: "string" as const,
+    required: true,
+    description: "The AI model's response"
+  },
+  {
+    name: "tokens_used",
+    type: "number" as const,
+    required: false,
+    description: "Total tokens consumed"
+  },
+  {
+    name: "satisfaction_score",
+    type: "number" as const,
+    required: false,
+    description: "User satisfaction rating (1-5)"
+  }
+];
+
+await dataset.addColumn(columnsToAdd);
+console.log("Schema defined with multiple columns");
+```
+
+</CodeGroup>
+
+### Updating Columns
+
+<CodeGroup>
+
+```python Python
+# Update column properties
+column.update(
+    name="Updated Column Name",
+    type=ColumnType.STRING
+)
+```
+
+</CodeGroup>
+
+### Deleting Columns
+
+<CodeGroup>
+
+```python Python
+# Delete a column
+column.delete()
+```
+
+</CodeGroup>
+
+## Managing Dataset Data
+
+### Adding Rows
+
+<CodeGroup>
+
+```python Python
+# Add new rows to your dataset
+row_data = {
+    "user_input": "New customer question",
+    "ai_response": "Generated response",
+    "category": "general",
+    "resolved": True
+}
+
+dataset.add_rows([row_data])
+```
+
+```js Typescript / Javascript
+// Add individual rows to dataset
+const interaction = {
+  user_id: "user_001",
+  prompt: "Explain machine learning in simple terms",
+  response: "Machine learning is a subset of AI that enables computers to learn...",
+  model: "gpt-3.5-turbo",
+  tokens_used: 150,
+  response_time_ms: 1200,
+  satisfaction_score: 4,
+  timestamp: new Date().toISOString()
+};
+
+await dataset.addRow(interaction);
+console.log("Added interaction record");
+```
+
+</CodeGroup>
+
+### Updating Rows  
+
+<CodeGroup>
+
+```python Python
+# Update existing row data
+if dataset.rows:
+    row = dataset.rows[0]  # Get first row
+    
+    updates = {
+        "ai_response": "Updated response text",
+        "resolved": True
+    }
+    
+    row.update(updates)
+```
+
+</CodeGroup>
+
+### Deleting Rows
+
+<CodeGroup>
+
+```python Python
+# Delete a row
+if dataset.rows:
+    row = dataset.rows[0]
+    row.delete()
+```
+
+</CodeGroup>
+
+## Publishing and Versioning
+
+### Publishing Datasets
+
+<CodeGroup>
+
+```python Python
+# Publish the current dataset state as a new version
+published_version = dataset.publish()
+print(f"Published version: {published_version}")
+```
+
+</CodeGroup>
+
+### Retrieving Specific Versions
+
+<CodeGroup>
+
+```python Python
+# Get dataset by slug (latest version)
+dataset = client.datasets.get_by_slug("my-dataset-slug")
+
+# Get specific version as CSV
+dataset_csv = client.datasets.get_version_csv(
+    slug="my-dataset-slug", 
+    version="1.2.0"
+)
+```
+
+```js Typescript / Javascript
+// Get dataset by slug
+const retrievedDataset = await client.datasets.get("my-dataset-slug");
+console.log(`Retrieved dataset: ${retrievedDataset.name}`);
+
+// Get dataset information and rows
+const rows = await dataset.getRows(); // Get all rows
+const columns = await dataset.getColumns(); // Get all columns
+console.log(`Total rows: ${rows.length}, Total columns: ${columns.length}`);
+
+// List all datasets
+const datasetsList = await client.datasets.list();
+console.log(`Found ${datasetsList.total} total datasets`);
+```
+
+</CodeGroup>
+
+### Data Analysis
+
+<CodeGroup>
+
+```python Python
+# Analyze dataset contents
+for row in dataset:
+    print(f"User: {row['user_input']}")
+    print(f"Response: {row['ai_response']}")
+```
+
+```js Typescript / Javascript
+// Analyze collected data
+const analysisRows = rows.slice(0, 10); // Get first 10 rows
+
+// Calculate average satisfaction score
+const satisfactionScores = analysisRows
+  .map(row => row.data.satisfaction_score as number)
+  .filter(score => score != null);
+
+if (satisfactionScores.length > 0) {
+  const avgSatisfaction = satisfactionScores.reduce((a, b) => a + b, 0) / satisfactionScores.length;
+  console.log(`Average satisfaction score: ${avgSatisfaction.toFixed(2)}/5`);
+}
+
+// Calculate average response time
+const responseTimes = analysisRows
+  .map(row => row.data.response_time_ms as number)
+  .filter(time => time != null);
+
+if (responseTimes.length > 0) {
+  const avgResponseTime = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length;
+  console.log(`Average response time: ${avgResponseTime.toFixed(0)}ms`);
+}
+
+// Show sample interactions
+console.log("Sample interactions:");
+analysisRows.slice(0, 3).forEach((row, index) => {
+  console.log(`${index + 1}. User: "${row.data.prompt}"`);
+  console.log(`   Response: "${String(row.data.response).substring(0, 80)}..."`);
+  console.log(`   Satisfaction: ${row.data.satisfaction_score}/5`);
+});
+```
+
+</CodeGroup>
 
 ## Get Dataset API
 
@@ -280,3 +634,328 @@ async function evaluateDataset(datasetKey: string, version?: string) {
   AI provider's API. Consider implementing appropriate throttling or using
   a smaller number of concurrent workers.
 </Warning>
+
+## Real-World Integration Examples
+
+### Customer Support Dataset with OpenAI
+
+Create datasets with AI-generated responses for testing customer support scenarios:
+
+<CodeGroup>
+
+```python Python
+import openai
+import pandas as pd
+from datetime import datetime
+from traceloop.sdk import Traceloop
+
+client = Traceloop.init()
+
+def create_customer_support_dataset():
+    queries = [
+        "How do I reset my password?",
+        "My order hasn't arrived yet, what should I do?", 
+        "Can I return this item after 30 days?",
+        "Do you offer international shipping?",
+        "What's your refund policy?"
+    ]
+    
+    data = []
+    openai_client = openai.OpenAI()
+    
+    for query in queries:
+        try:
+            response = openai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are a helpful customer support agent."},
+                    {"role": "user", "content": query}
+                ],
+                max_tokens=150,
+                temperature=0.7
+            )
+            
+            ai_response = response.choices[0].message.content
+            
+            data.append({
+                "customer_query": query,
+                "ai_response": ai_response,
+                "timestamp": datetime.now().isoformat(),
+                "category": "general_support",
+                "resolved": True
+            })
+            
+        except Exception as e:
+            print(f"Error generating response: {e}")
+            data.append({
+                "customer_query": query,
+                "ai_response": "Error generating response",
+                "timestamp": datetime.now().isoformat(),
+                "category": "general_support", 
+                "resolved": False
+            })
+    
+    df = pd.DataFrame(data)
+    
+    dataset = client.datasets.from_dataframe(
+        df=df,
+        slug="customer-support-interactions",
+        name="Customer Support Interactions",
+        description="Customer queries with AI-generated support responses"
+    )
+    
+    return dataset
+
+# Create and publish the dataset
+support_dataset = create_customer_support_dataset()
+version = support_dataset.publish()
+print(f"Published customer support dataset version: {version}")
+```
+
+```js Typescript / Javascript
+import * as traceloop from "@traceloop/node-server-sdk";
+import OpenAI from "openai";
+
+const client = traceloop.getClient();
+
+async function createLLMInteractionsDataset() {
+  // Create dataset
+  const dataset = await client.datasets.create({
+    name: `llm-interactions-${Date.now()}`,
+    description: "Dataset for tracking OpenAI chat completions and user interactions"
+  });
+
+  // Define schema
+  const columnsToAdd = [
+    {
+      name: "user_id",
+      type: "string" as const,
+      required: true,
+      description: "Unique identifier for the user"
+    },
+    {
+      name: "prompt",
+      type: "string" as const,
+      required: true,
+      description: "The user's input prompt"
+    },
+    {
+      name: "response",
+      type: "string" as const,
+      required: true,
+      description: "The AI model's response"
+    },
+    {
+      name: "model",
+      type: "string" as const,
+      required: true,
+      description: "The AI model used"
+    },
+    {
+      name: "tokens_used",
+      type: "number" as const,
+      required: false,
+      description: "Total tokens consumed"
+    },
+    {
+      name: "response_time_ms",
+      type: "number" as const,
+      required: false,
+      description: "Response time in milliseconds"
+    },
+    {
+      name: "satisfaction_score",
+      type: "number" as const,
+      required: false,
+      description: "User satisfaction rating (1-5)"
+    },
+    {
+      name: "timestamp",
+      type: "string" as const,
+      required: true,
+      description: "When the interaction occurred"
+    }
+  ];
+  
+  await dataset.addColumn(columnsToAdd);
+
+  // Generate data with OpenAI
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  const samplePrompts = [
+    "Explain machine learning in simple terms",
+    "Write a Python function to calculate fibonacci numbers",
+    "What are the benefits of using TypeScript?",
+    "How does async/await work in JavaScript?",
+    "Explain the concept of closures in programming"
+  ];
+
+  for (let i = 0; i < samplePrompts.length; i++) {
+    const prompt = samplePrompts[i];
+    const userId = `user_${String(i + 1).padStart(3, "0")}`;
+    const startTime = Date.now();
+
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 150
+      });
+
+      const endTime = Date.now();
+      const response = completion.choices[0]?.message?.content || "No response";
+      const tokensUsed = completion.usage?.total_tokens || 0;
+      const responseTime = endTime - startTime;
+
+      const interaction = {
+        user_id: userId,
+        prompt: prompt,
+        response: response,
+        model: "gpt-3.5-turbo",
+        tokens_used: tokensUsed,
+        response_time_ms: responseTime,
+        satisfaction_score: Math.floor(Math.random() * 5) + 1,
+        timestamp: new Date().toISOString()
+      };
+
+      await dataset.addRow(interaction);
+      console.log(`Added interaction for prompt ${i + 1}`);
+      
+    } catch (error) {
+      console.log(`Error with prompt ${i + 1}: ${error.message}`);
+      
+      const errorInteraction = {
+        user_id: userId,
+        prompt: prompt,
+        response: `Error: ${error.message}`,
+        model: "gpt-3.5-turbo",
+        tokens_used: 0,
+        response_time_ms: Date.now() - startTime,
+        satisfaction_score: 1,
+        timestamp: new Date().toISOString()
+      };
+
+      await dataset.addRow(errorInteraction);
+    }
+  }
+
+  // Publish the dataset
+  await dataset.publish({
+    version: "v1.0",
+    description: "Initial release of LLM interactions dataset with sample data"
+  });
+
+  console.log(`Dataset published: ${dataset.name}`);
+  return dataset;
+}
+
+// Create and publish the dataset
+const interactionsDataset = await createLLMInteractionsDataset();
+```
+
+</CodeGroup>
+
+### Translation Dataset
+
+Generate translation datasets for multilingual testing:
+
+<CodeGroup>
+
+```python Python
+import openai
+import pandas as pd
+from datetime import datetime
+from traceloop.sdk import Traceloop
+
+client = Traceloop.init()
+
+def create_translation_dataset():
+    phrases = [
+        "Hello, how are you today?",
+        "Thank you for your help.",
+        "Where is the nearest restaurant?",
+        "I would like to book a room.",
+        "What time does the store close?"
+    ]
+    
+    languages = ["Spanish", "French", "German", "Italian"]
+    data = []
+    openai_client = openai.OpenAI()
+    
+    for phrase in phrases:
+        for lang in languages:
+            try:
+                response = openai_client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": f"Translate to {lang}. Provide only the translation."},
+                        {"role": "user", "content": phrase}
+                    ],
+                    max_tokens=100,
+                    temperature=0.3
+                )
+                
+                translation = response.choices[0].message.content.strip()
+                
+                data.append({
+                    "source_text": phrase,
+                    "target_language": lang,
+                    "translation": translation,
+                    "timestamp": datetime.now().isoformat(),
+                    "confidence_score": 0.95
+                })
+                
+            except Exception as e:
+                print(f"Translation error: {e}")
+                data.append({
+                    "source_text": phrase,
+                    "target_language": lang,
+                    "translation": f"[Translation error for {lang}]",
+                    "timestamp": datetime.now().isoformat(),
+                    "confidence_score": 0.0
+                })
+    
+    df = pd.DataFrame(data)
+    
+    dataset = client.datasets.from_dataframe(
+        df=df,
+        slug="translation-results",
+        name="Translation Results",
+        description="Text translations generated using AI"
+    )
+    
+    return dataset
+
+# Create and publish the dataset
+translation_dataset = create_translation_dataset()
+version = translation_dataset.publish()
+print(f"Published translation dataset version: {version}")
+```
+
+</CodeGroup>
+
+### Dataset Cleanup
+
+<CodeGroup>
+
+```python Python
+# Delete datasets when no longer needed
+def cleanup_datasets():
+    # Delete by slug
+    client.datasets.delete_by_slug("customer-support-interactions")
+    client.datasets.delete_by_slug("translation-results") 
+    print("Datasets cleaned up")
+
+# Call when needed
+cleanup_datasets()
+```
+
+</CodeGroup>
+
+<Tip>
+  These examples show how to integrate datasets with AI providers like OpenAI
+  to create rich test data. You can adapt these patterns for your specific
+  use cases and AI models.
+</Tip>
