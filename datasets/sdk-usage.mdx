@@ -61,7 +61,7 @@ from traceloop.sdk import Traceloop
 client = Traceloop.init()
 
 # Create dataset from CSV file
-dataset = client.datasets.from_csv(
+dataset_csv = client.datasets.from_csv(
     file_path="path/to/your/data.csv",
     slug="medical-questions",
     name="Medical Questions",
@@ -78,7 +78,7 @@ data = {
 df = pd.DataFrame(data)
 
 # Create dataset from DataFrame
-dataset = client.datasets.from_dataframe(
+dataset_df = client.datasets.from_dataframe(
     df=df,
     slug="product-inventory",
     name="Product Inventory",
@@ -90,7 +90,7 @@ dataset = client.datasets.from_dataframe(
 const client = traceloop.getClient();
 
 // Option 1: Create dataset manually
-const dataset = await client.datasets.create({
+const myDataset = await client.datasets.create({
   name: "Medical Questions",
   slug: "medical-questions",
   description: "Dataset with patients medical questions"
@@ -101,7 +101,7 @@ const csvData = `user_id,prompt,response,model,satisfaction_score
 user_001,"What is React?","React is a JavaScript library...","gpt-3.5-turbo",4
 user_002,"Explain Docker","Docker is a containerization platform...","gpt-3.5-turbo",5`;
 
-await dataset.fromCSV(csvData, { hasHeader: true });
+await myDataset.fromCSV(csvData, { hasHeader: true });
 ```
 
 </CodeGroup>
@@ -112,7 +112,7 @@ The dataset can be retrieved using its slug, which is available on the dataset p
 
 ```python Python
 # Get dataset by slug - current draft version
-dataset = client.datasets.get_by_slug("medical-questions")
+my_dataset = client.datasets.get_by_slug("medical-questions")
 
 # Get specific version as CSV
 dataset_csv = client.datasets.get_version_csv(
@@ -123,7 +123,7 @@ dataset_csv = client.datasets.get_version_csv(
 
 ```js Typescript
 // Get dataset by slug - current draft version
-const dataset = await client.datasets.get("medical-questions");
+const myDataset = await client.datasets.get("medical-questions");
 
 // Get specific version as CSV
 const datasetCsv = await client.datasets.getVersionCSV("medical-questions", "v1");
@@ -140,7 +140,7 @@ const datasetCsv = await client.datasets.getVersionCSV("medical-questions", "v1"
 from traceloop.sdk.dataset import ColumnType
 
 # Add a new column to your dataset
-new_column = dataset.add_column(
+new_column = my_dataset.add_column(
     slug="confidence_score",
     name="Confidence Score", 
     col_type=ColumnType.NUMBER
@@ -164,7 +164,7 @@ const columnsToAdd = [
   }
 ];
 
-await dataset.addColumn(columnsToAdd);
+await myDataset.addColumn(columnsToAdd);
 console.log("Schema defined with multiple columns");
 ```
 
@@ -184,7 +184,7 @@ row_data = {
     "category": "Electronics"
 }
 
-dataset.add_rows([row_data])
+my_dataset.add_rows([row_data])
 ```
 
 ```js Typescript
@@ -201,7 +201,7 @@ const errorInteraction = {
   satisfaction_score: 1,
 };
 
-await dataset.addRow(errorInteraction);
+await myDataset.addRow(errorInteraction);
 ```
 
 </CodeGroup>
@@ -209,4 +209,18 @@ await dataset.addRow(errorInteraction);
 ## Dataset Versions
 
 ### Publish a dataset
+Dataset versions and history can be viewed in the UI. Versioning allows you to run the same evaluations and experiments across different datasets, making valuable comparisons possible.
+<CodeGroup>
+
+```python Python
+# Publish the current dataset state as a new version
+published_version = my_dataset.publish()
+```
+
+```js Typescript
+// Publish dataset with version and description
+const publishedVersion = await myDataset.publish();
+```
+
+</CodeGroup>
 
