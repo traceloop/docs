@@ -152,7 +152,7 @@ new_column = my_dataset.add_column(
 const columnsToAdd = [
   {
     name: "User ID",
-    slug: "user-id"
+    slug: "user-id",
     type: "string" as const,
     description: "Unique identifier for the user"
   },
@@ -193,15 +193,15 @@ const userId = "user_001";
 const prompt = "Explain machine learning in simple terms";
 const startTime = Date.now();
 
-const errorInteraction = {
+const rowData = {
   user_id: userId,
   prompt: prompt,
-  response: `Error: ${error instanceof Error ? error.message : String(error)}`,
+  response: `This is the model response`,
   model: "gpt-3.5-turbo",
   satisfaction_score: 1,
 };
 
-await myDataset.addRow(errorInteraction);
+await myDataset.addRow(rowData);
 ```
 
 </CodeGroup>
