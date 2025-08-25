@@ -5,29 +5,56 @@ description: "Learn how to run experiments programmatically using the Traceloop 
 
 You can run experiments programmatically using the Traceloop SDK. This allows you to systematically evaluate different AI model configurations, prompts, and approaches with your datasets.
 
-## Setup
+## SDK Initialization
 
-First, initialize the Traceloop client in your code:
+First, initialize the Traceloop SDK.
 
-```python
+<CodeGroup>
+
+```python Python
 from traceloop.sdk import Traceloop
 
-# Initialize Traceloop
-Traceloop.init()
-client = Traceloop.client()
+# Initialize with dataset sync enabled
+client = Traceloop.init()
 ```
+
+```js Typescript
+import * as traceloop from "@traceloop/node-server-sdk";
+
+// Initialize with comprehensive configuration
+traceloop.initialize({
+  appName: "your-app-name",
+  apiKey: process.env.TRACELOOP_API_KEY,
+  disableBatch: true,
+  traceloopSyncEnabled: true,
+});
+
+// Wait for initialization to complete
+await traceloop.waitForInitialization();
+
+// Get the client instance for dataset operations
+const client = traceloop.getClient();
+```
+
+</CodeGroup>
+
+<Note>
+  Make sure you've created an API key and set it as an environment variable
+  `TRACELOOP_API_KEY` before you start. Check out the SDK's [getting started
+  guide](/openllmetry/getting-started-python) for more information.
+</Note>
+
 
 ## Basic Experiment Structure
 
 An experiment consists of:
 - A **dataset** to test against
 - A **task function** that defines what your AI system should do
-- **evaluators** to measure performance
-- An **experiment slug** to identify the experiment
+- **Evaluators** to measure performance
 
 ## Task Functions
 
-Create task functions that define how your AI system processes each dataset item:
+Create task functions that define how your AI system processes each dataset row:
 
 ```python
 async def my_task_function(input_data):
