@@ -160,7 +160,8 @@
           "pages": [
             "playgrounds/columns/data-columns",
             "playgrounds/columns/prompt",
-            "playgrounds/columns/evaluation"
+            "playgrounds/columns/evaluation",
+            "playgrounds/columns/column-management"
           ]
         },
         "playgrounds/evaluation/index"
@@ -205,6 +206,10 @@
     {
       "group": "Datasets",
       "pages": ["datasets/quick-start", "datasets/sdk-usage"]
+    },
+    {
+      "group": "Evaluators",
+      "pages": ["evaluators/intro"]
     },
     {
       "group": "Experiments",

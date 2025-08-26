@@ -4,15 +4,19 @@ title: "Data Columns"
 
 Columns are the building blocks of playgrounds, defining what kind of data you can store, process, and analyze. 
 
-## Column Categories
 
-<Frame>
-  <img
-    className="block dark:hidden"
-    src="/img/playground/play-column-list-light.png"
-  />
-  <img className="hidden dark:block" src="/img/playground/play-column-list-dark.png" />
-</Frame>
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-column-list-light.png"
+/>
+<img className="hidden dark:block" src="/img/playground/play-column-list-dark.png" />
+
+
+<Tip>
+**Need to reorder, edit, or delete columns?**
+
+ Learn how to effectively manage your columns in the [Column Management](./column-management) guide.
+</Tip>
 
 ## 📝 Data Input Columns
 Store and manage static data entered manually or imported from external sources.
@@ -23,33 +27,31 @@ Free-form text input with multiline support
 ### Numeric
 Numbers, integers, and floating-point values
 
-<Frame>
-  <img
-    className="block dark:hidden"
-    src="/img/playground/play-number-col-light.png"
-    style={{maxWidth: '300px'}}
-  />
-  <img 
-    className="hidden dark:block" 
-    src="/img/playground/play-number-col-dark.png"
-    style={{maxWidth: '300px'}}
-  />
-</Frame>
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-number-col-light.png"
+  style={{maxWidth: '300px'}}
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-number-col-dark.png"
+  style={{maxWidth: '300px'}}
+/>
 
 The last row allows you to choose a calculation method for the column, such as average, median, minimum, maximum, or sum.
 
-<Frame>
-  <img
-    className="block dark:hidden"
-    src="/img/playground/play-number-col-summary-light.png"
-    style={{maxWidth: '300px'}}
-  />
-  <img 
-    className="hidden dark:block" 
-    src="/img/playground/play-number-col-summary-dark.png"
-    style={{maxWidth: '300px'}}
-  />
-</Frame>
+
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-number-col-summary-light.png"
+  style={{maxWidth: '300px'}}
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-number-col-summary-dark.png"
+  style={{maxWidth: '300px'}}
+/>
+
 
 
 
@@ -61,181 +63,54 @@ In the values box, type an option and press Enter to save it—once added, it wi
 In the table, each cell will then allow you to select only one of the defined options.
 This column type is especially useful for manual tagging with a single tag.
 
-<Frame>
-  <img
-    className="block dark:hidden"
-    src="/img/playground/play-single-select-creation-light.png"
-  />
-  <img 
-    className="hidden dark:block" 
-    src="/img/playground/play-single-select-creation-dark.png"
-  />
-</Frame>
 
-<Frame>
-  <img
-    className="block dark:hidden"
-    src="/img/playground/play-single-select-dark.png"
-  />
-  <img 
-    className="hidden dark:block" 
-    src="/img/playground/play-single-select-dark.png"
-  />
-</Frame>
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-single-select-creation-light.png"
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-single-select-creation-dark.png"
+/>
+
+
+
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-single-select-dark.png"
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-single-select-dark.png"
+/>
+
 
 ### Multi select
 Multi-select columns let you define a set of predefined options and allow each cell to contain multiple selections. The setup process is the same as for single-select columns: define the column name, add options in the Create Column drawer, and save them as labels.
 
 In the table, each cell can then include several of the defined options. This column type is especially useful for manual tagging with multiple tags.
 
-<Frame>
-  <img
-    className="block dark:hidden"
-    src="/img/playground/play-multi-select-light.png"
-  />
-  <img 
-    className="hidden dark:block" 
-    src="/img/playground/play-multi-select-dark.png"
-  />
-</Frame>
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-multi-select-light.png"
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-multi-select-dark.png"
+/>
+
 
 ### JSON
 A JSON column allows you to store and edit structured JSON objects directly in the Playground. Each cell can contain a JSON value, making it easy to work with complex data structures.
 
 When editing a cell, an Edit JSON panel opens with syntax highlighting and formatting support, so you can quickly add or update fields.
 
-<Frame>
-  <img
-    className="block dark:hidden"
-    src="/img/playground/play-json-light.png"
-  />
-  <img 
-    className="hidden dark:block" 
-    src="/img/playground/play-json-dark.png"
-  />
-</Frame>
 
-### Prompt
-
-A Prompt column allows you to define a custom prompt and run it directly on your Playground data. You can compose prompts with messages (system, user, or assistant), insert dataset variables, and configure which model to use. Each row in your dataset will be passed through the prompt, and the model’s response will be stored in the column.
-
-Prompt columns make it easy to:
-
-Test different prompts against real data.
-
-Compare model outputs side by side.
-
-Use structured output with JSON schemas for consistent results.
-
-This feature gives you an interactive way to iterate on prompt design, validate responses, and prepare evaluators without leaving the Playground.
-## Evaluation
-
-
-
-## Working with Columns
-
-### Creating Columns
-1. Click **"Add Column"** in the playground header
-2. Select the appropriate column type
-3. Configure the column settings
-4. Choose placement in the column order
-5. Click **"Create Column"**
-
-### Managing Columns
-**Reordering**
-- Drag column headers to reposition
-- Consider dependency order when reordering
-- Update variable references if needed
-
-**Editing**
-- Click column header settings icon
-- Modify configuration without losing data
-- Some changes may require re-execution
-
-**Deleting**
-- Use column header menu to delete
-- Check for dependent columns before deletion
-- Consider archiving instead of permanent deletion
-
-### Column Dependencies
-Columns can reference each other using variables:
-```
-{{Column Name}} - References another column's value
-```
-
-**Dependency Rules**
-- Variables create automatic dependencies
-- Execution follows dependency order
-- Circular references are prevented
-- Changes propagate to dependent columns
-
-## Best Practices
-
-### Column Design
-**Naming Conventions**
-- Use descriptive, clear names
-- Maintain consistent naming style
-- Avoid special characters that complicate variables
-- Consider column purpose in the name
-
-**Organization**
-- Arrange columns in logical order (inputs → processing → outputs)
-- Group related columns together
-- Separate concerns (data, computation, evaluation)
-- Plan for future expansion
-
-### Performance Optimization
-**Execution Efficiency**
-- Minimize unnecessary dependencies
-- Use appropriate column types for data
-- Consider caching for expensive operations
-- Plan for parallel execution where possible
-
-**Resource Management**
-- Monitor API usage in computation columns
-- Set appropriate timeouts and limits
-- Use selective execution during development
-- Plan for scale when designing workflows
-
-### Data Quality
-**Validation**
-- Use appropriate input validation
-- Handle edge cases in computation logic
-- Provide meaningful error messages
-- Test with representative data
-
-**Documentation**
-- Document complex column logic
-- Explain variable relationships
-- Provide examples for team members
-- Keep configuration notes updated
-
-## Column Type Comparison
-
-| Category | Column Types | Best For | Execution |
-|----------|--------------|----------|-----------|
-| **Data Input** | Text, Numeric, Boolean, Select, Multi-Select, JSON | Static data entry, imported data | Immediate |
-| **Computation** | Prompt, Code, API, Metadata Extractor | Data processing, external calls | Async |
-| **Import** | Source, Imported | External data integration | On-demand |
-| **Evaluation** | Evaluation, Custom Evaluator, Label | Quality assessment, scoring | Async |
-
-## Next Steps
-
-Ready to explore specific column types? Start with:
-
-### For Beginners
-1. **[Custom Text](./data-input/custom-text)** - Basic text input
-2. **[Prompt](./computation/prompt)** - LLM interactions
-3. **[Evaluation](../evaluation/columns/evaluation)** - Built-in evaluators
-
-### For Advanced Users
-1. **[Code](./computation/code)** - Python execution
-2. **[API](./computation/api)** - External service integration
-3. **[Custom Evaluator](../evaluation/columns/custom-evaluator)** - Custom evaluation logic
-
-### For Data Integration
-1. **[Source](./import/source)** - Import production data
-2. **[JSON](./data-input/json)** - Complex data structures
-3. **[Imported](./import/imported)** - File and dataset imports
-
-Explore the specific column type documentation to learn about configuration options, use cases, and best practices for each type.
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-json-light.png"
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-json-dark.png"
+/>
