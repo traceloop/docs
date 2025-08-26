@@ -153,27 +153,16 @@
     },
     {
       "group": "Playgrounds", 
+      "pages": ["playgrounds/quick-start", "playgrounds/columns/index"]
+    },
+    {
+      "group": "Playgrounds old", 
       "pages": [
         "playgrounds/quick-start",
-        {
-          "group": "Core Concepts",
-          "pages": [
-            "playgrounds/concepts/structure",
-            "playgrounds/concepts/execution", 
-            "playgrounds/concepts/variables",
-            "playgrounds/concepts/dependencies"
-          ]
-        },
         {
           "group": "Columns",
           "pages": [
             "playgrounds/columns/index",
-            {
-              "group": "Data Input",
-              "pages": [
-                "playgrounds/columns/data-input/custom-text"
-              ]
-            },
             {
               "group": "Computation", 
               "pages": [
