@@ -168,48 +168,8 @@
       ]
     },
     {
-      "group": "Playgrounds old", 
-      "pages": [
-        "playgrounds/quick-start",
-        {
-          "group": "Columns",
-          "pages": [
-            "playgrounds/columns/index",
-            {
-              "group": "Computation", 
-              "pages": [
-                "playgrounds/columns/computation/prompt"
-              ]
-            }
-          ]
-        },
-        {
-          "group": "Evaluation",
-          "pages": [
-            "playgrounds/evaluation/index",
-            {
-              "group": "Built-in Evaluators",
-              "pages": [
-                "playgrounds/evaluation/built-in/helpfulness"
-              ]
-            }
-          ]
-        },
-        {
-          "group": "Data Management",
-          "pages": [
-            "playgrounds/data/import-export"
-          ]
-        }
-      ]
-    },
-    {
       "group": "Datasets",
       "pages": ["datasets/quick-start", "datasets/sdk-usage"]
-    },
-    {
-      "group": "Evaluators",
-      "pages": ["evaluators/intro"]
     },
     {
       "group": "Experiments",
