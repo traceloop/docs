@@ -11,9 +11,15 @@ The system supports:
 - **Custom evaluators** - Create your own evaluation logic tailored to specific needs
 - **Built-in evaluators** - pre-configured evaluators by Traceloop for common assessment tasks
 
+In the Evaluator Library, select the evaluator you want to define. 
+You can either create a custom evaluator by clicking **New Evaluator** or choose one of the prebuilt **Made by Traceloop** evaluators.
 
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/playground/eval-library-light.png"
+  />
+  <img className="hidden dark:block" src="/img/evaluator/eval-library-dark.png" />
+</Frame>
 
-##nina
-
-- **Evaluation columns** - Interactive column types that perform evaluation operations
-- **SDK-based evaluations** - Programmatic evaluation workflows integrated into your applications
+Clicking on existing evaluators will present their input and output schema. This is valuable information in order to execute the evaluator [through the SDK](../experiments/running-from-code). 
