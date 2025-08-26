@@ -1,6 +1,5 @@
 ---
-title: "Columns"
-description: "Complete guide to all column types in playgrounds"
+title: "Data Columns"
 ---
 
 Columns are the building blocks of playgrounds, defining what kind of data you can store, process, and analyze. 
@@ -28,8 +27,13 @@ Numbers, integers, and floating-point values
   <img
     className="block dark:hidden"
     src="/img/playground/play-number-col-light.png"
+    style={{maxWidth: '300px'}}
   />
-  <img className="hidden dark:block" src="/img/playground/play-number-col-dark.png" />
+  <img 
+    className="hidden dark:block" 
+    src="/img/playground/play-number-col-dark.png"
+    style={{maxWidth: '300px'}}
+  />
 </Frame>
 
 The last row allows you to choose a calculation method for the column, such as average, median, minimum, maximum, or sum.
@@ -38,55 +42,95 @@ The last row allows you to choose a calculation method for the column, such as a
   <img
     className="block dark:hidden"
     src="/img/playground/play-number-col-summary-light.png"
+    style={{maxWidth: '300px'}}
   />
-  <img className="hidden dark:block" src="/img/playground/play-number-col-summary-dark.png" />
+  <img 
+    className="hidden dark:block" 
+    src="/img/playground/play-number-col-summary-dark.png"
+    style={{maxWidth: '300px'}}
+  />
 </Frame>
 
 
 
 ### Single select
-Single choice from predefined options
+Single-choice columns let you define a set of predefined options and restrict each cell to one selection. 
+To create one, set the column name and add options in the Create Column drawer. 
+In the values box, type an option and press Enter to save it—once added, it will appear as a colored label.
+
+In the table, each cell will then allow you to select only one of the defined options.
+This column type is especially useful for manual tagging with a single tag.
+
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/playground/play-single-select-creation-light.png"
+  />
+  <img 
+    className="hidden dark:block" 
+    src="/img/playground/play-single-select-creation-dark.png"
+  />
+</Frame>
+
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/playground/play-single-select-dark.png"
+  />
+  <img 
+    className="hidden dark:block" 
+    src="/img/playground/play-single-select-dark.png"
+  />
+</Frame>
 
 ### Multi select
-Multiple choices from predefined options
+Multi-select columns let you define a set of predefined options and allow each cell to contain multiple selections. The setup process is the same as for single-select columns: define the column name, add options in the Create Column drawer, and save them as labels.
+
+In the table, each cell can then include several of the defined options. This column type is especially useful for manual tagging with multiple tags.
+
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/playground/play-multi-select-light.png"
+  />
+  <img 
+    className="hidden dark:block" 
+    src="/img/playground/play-multi-select-dark.png"
+  />
+</Frame>
 
 ### JSON
-Structured JSON data with syntax highlighting
+A JSON column allows you to store and edit structured JSON objects directly in the Playground. Each cell can contain a JSON value, making it easy to work with complex data structures.
+
+When editing a cell, an Edit JSON panel opens with syntax highlighting and formatting support, so you can quickly add or update fields.
+
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/playground/play-json-light.png"
+  />
+  <img 
+    className="hidden dark:block" 
+    src="/img/playground/play-json-dark.png"
+  />
+</Frame>
+
+### Prompt
+
+A Prompt column allows you to define a custom prompt and run it directly on your Playground data. You can compose prompts with messages (system, user, or assistant), insert dataset variables, and configure which model to use. Each row in your dataset will be passed through the prompt, and the model’s response will be stored in the column.
+
+Prompt columns make it easy to:
+
+Test different prompts against real data.
+
+Compare model outputs side by side.
+
+Use structured output with JSON schemas for consistent results.
+
+This feature gives you an interactive way to iterate on prompt design, validate responses, and prepare evaluators without leaving the Playground.
+## Evaluation
 
 
-## Column Configuration
-
-### Common Settings
-All columns share these basic configuration options:
-
-**Basic Properties**
-- **Name**: Column identifier (used for variable references)
-- **Description**: Optional documentation for team collaboration
-- **Required**: Whether cells must have values
-- **Default Value**: Value used for new rows
-
-**Display Options**
-- **Width**: Column width in the table view
-- **Alignment**: Text alignment (left, center, right)
-- **Formatting**: Type-specific display formatting
-
-### Type-Specific Settings
-Each column type has additional configuration options:
-
-**Input Columns**
-- Data validation rules
-- Input format requirements
-- Display preferences
-
-**Computation Columns**  
-- Model/service configuration
-- Execution parameters
-- Retry and timeout settings
-
-**Evaluation Columns**
-- Evaluator selection and configuration
-- Scoring criteria and scales
-- Evaluation prompts and templates
 
 ## Working with Columns
 

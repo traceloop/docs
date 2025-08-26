@@ -153,7 +153,18 @@
     },
     {
       "group": "Playgrounds", 
-      "pages": ["playgrounds/quick-start", "playgrounds/columns/index"]
+      "pages": [
+        "playgrounds/quick-start", 
+        {
+          "group": "Columns",
+          "pages": [
+            "playgrounds/columns/data-columns",
+            "playgrounds/columns/prompt",
+            "playgrounds/columns/evaluation"
+          ]
+        },
+        "playgrounds/evaluation/index"
+      ]
     },
     {
       "group": "Playgrounds old", 
