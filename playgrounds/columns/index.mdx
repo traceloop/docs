@@ -7,64 +7,52 @@ Columns are the building blocks of playgrounds, defining what kind of data you c
 
 ## Column Categories
 
-### 📝 [Data Input Columns](./data-input/)
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/playground/play-column-list-light.png"
+  />
+  <img className="hidden dark:block" src="/img/playground/play-column-list-dark.png" />
+</Frame>
+
+## 📝 Data Input Columns
 Store and manage static data entered manually or imported from external sources.
 
-- **[Custom Text](./data-input/custom-text)** - Free-form text input with multiline support
-- **[Numeric](./data-input/numeric)** - Numbers, integers, and floating-point values  
-- **[Boolean](./data-input/boolean)** - True/false values with various display options
-- **[Select](./data-input/select)** - Single choice from predefined options
-- **[Multi-Select](./data-input/multi-select)** - Multiple choices from predefined options
-- **[JSON](./data-input/json)** - Structured JSON data with syntax highlighting
+### Text field
+Free-form text input with multiline support
 
-### ⚙️ [Computation Columns](./computation/)
-Perform operations and computations using data from other columns.
+### Numeric
+Numbers, integers, and floating-point values
 
-- **[Prompt](./computation/prompt)** - Execute LLM prompts with full model configuration
-- **[Code](./computation/code)** - Run Python code with variable mapping
-- **[API](./computation/api)** - Make HTTP requests to external services
-- **[Metadata Extractor](./computation/metadata-extractor)** - Extract structured data from other columns
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/playground/play-number-col-light.png"
+  />
+  <img className="hidden dark:block" src="/img/playground/play-number-col-dark.png" />
+</Frame>
 
-### 📊 [Import Columns](./import/)
-Bring in data from external Traceloop sources and production systems.
+The last row allows you to choose a calculation method for the column, such as average, median, minimum, maximum, or sum.
 
-- **[Source](./import/source)** - Import traces and spans from production
-- **[Imported](./import/imported)** - Data imported from files and datasets
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/playground/play-number-col-summary-light.png"
+  />
+  <img className="hidden dark:block" src="/img/playground/play-number-col-summary-dark.png" />
+</Frame>
 
-### 🔍 Evaluation Columns
-Assess and score data using built-in evaluators, custom logic, or manual annotation. *(Evaluation columns are documented in the [Evaluation section](../evaluation/) due to their complexity.)*
 
-- **Evaluation** - Built-in evaluators for common assessment tasks
-- **Custom Evaluator** - User-defined LLM-powered evaluation logic
-- **Label** - Manual annotation and labeling interface
 
-## Choosing Column Types
+### Single select
+Single choice from predefined options
 
-### For Data Input
-**When you have static data to enter or import:**
-- **Text data** → Custom Text
-- **Numbers** → Numeric  
-- **Yes/No values** → Boolean
-- **Pick from list** → Select or Multi-Select
-- **Complex data** → JSON
+### Multi select
+Multiple choices from predefined options
 
-### For Processing  
-**When you need to compute or transform data:**
-- **LLM operations** → Prompt
-- **Custom logic** → Code
-- **External services** → API
-- **Data extraction** → Metadata Extractor
+### JSON
+Structured JSON data with syntax highlighting
 
-### For Evaluation
-**When you need to assess quality or performance:**
-- **Standard metrics** → Evaluation (built-in evaluators)
-- **Custom criteria** → Custom Evaluator
-- **Human judgment** → Label
-
-### For Integration
-**When you need to import external data:**
-- **Production data** → Source
-- **File/dataset data** → Imported
 
 ## Column Configuration
 
