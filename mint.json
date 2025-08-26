@@ -160,11 +160,9 @@
           "pages": [
             "playgrounds/columns/data-columns",
             "playgrounds/columns/prompt",
-            "playgrounds/columns/evaluation",
             "playgrounds/columns/column-management"
           ]
-        },
-        "playgrounds/evaluation/index"
+        }
       ]
     },
     {
