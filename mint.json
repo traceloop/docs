@@ -170,6 +170,10 @@
       "pages": ["datasets/quick-start", "datasets/sdk-usage"]
     },
     {
+      "group": "Evaluators",
+      "pages": ["evaluators/intro", "evaluators/custom-evaluator", "evaluators/made-by-traceloop"]
+    },
+    {
       "group": "Experiments",
       "pages": ["experiments/introduction", "experiments/result-overview", "experiments/running-from-code"]
     },
