@@ -48,7 +48,23 @@ You can connect to a wide range of LLM providers and models. Common choices incl
 Other providers such as Groq and DeepSeek may also be supported, and additional integrations will continue to be added over time.
 
 ### Structured Output
-Structured output can be enabled for models that support it. You can define a schema either by writing a JSON structure in the JSON editor or by using the Visual editor to add parameters, specifying their names and types.
+Structured output can be enabled for models that support it. You can define a schema in several ways:
+
+- **JSON Editor** - Write a JSON structure directly in the editor
+- **Visual Editor** - Add parameters interactively, specifying their names and types
+- **Generate Schema** - Use the "Generate schema" button on the top right to automatically create a schema based on your written prompt
+
+
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-prompt-structure-output-light.png"
+  style={{maxWidth: '600px'}}
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-prompt-structure-output-dark.png"
+  style={{maxWidth: '600px'}}
+/>
 
 ## Tools
 Tools let you extend prompts by allowing the model to call custom functions with structured arguments. Instead of plain text, the model can return a validated tool-call object that follows your schema.
