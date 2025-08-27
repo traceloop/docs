@@ -1,0 +1,47 @@
+---
+title: "Custom Evaluators"
+description: "Define an evaluator for your specific needs "
+---
+
+Create your own evaluator to match your specific needs. You can start right away with custom criteria for full flexibility, or use one of our recommended formats as a starting point.
+
+
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/evaluator/eval-custom-light.png"
+  />
+  <img className="hidden dark:block" src="/img/evaluator/eval-custom-dark.png" />
+</Frame>
+
+## Do It Yourself
+
+This option lets you write the evaluator prompt from scratch by adding the desired messages (System, Assistant, User, or Developer) and configuring the model along with its settings.
+
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/evaluator/eval-do-it-yourself-light.png"
+  />
+  <img className="hidden dark:block" src="/img/evaluator/eval-do-it-yourself-dark.png" />
+</Frame>
+
+## Generate Evaluator
+
+The evaluator prompt can be automatically configured by Traceloop by clicking on the **Generate Evaluator** button. 
+To enable the button, map the column you want to evaluate (such as an LLM response) and add any additional data columns required for prompt creation. 
+Describe the evaluator’s purpose and reference the relevant data columns in the description.
+
+The system generates a prompt template that you can edit and customize as needed.
+
+
+## Test Evaluator 
+
+Before creating an evaluator, you can test it on existing Playground data. 
+This allows you to refine and correct the evaluator prompt before saving the final version.
+
+## Execute Evaluator
+
+Evaluators can be executed in [playground columns](../playgrounds/columns/column-management) and in [experiments through the SDK](../experiments/running-from-code). 
+
+

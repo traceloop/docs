@@ -152,8 +152,26 @@
       "pages": ["prompts/quick-start", "prompts/registry", "prompts/sdk-usage"]
     },
     {
+      "group": "Playgrounds", 
+      "pages": [
+        "playgrounds/quick-start", 
+        {
+          "group": "Columns",
+          "pages": [
+            "playgrounds/columns/data-columns",
+            "playgrounds/columns/prompt",
+            "playgrounds/columns/column-management"
+          ]
+        }
+      ]
+    },
+    {
       "group": "Datasets",
       "pages": ["datasets/quick-start", "datasets/sdk-usage"]
+    },
+    {
+      "group": "Evaluators",
+      "pages": ["evaluators/intro", "evaluators/custom-evaluator", "evaluators/made-by-traceloop"]
     },
     {
       "group": "Experiments",

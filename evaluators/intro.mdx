@@ -1,0 +1,41 @@
+---
+title: "Introduction"
+description: "Evaluating workflows and LLM outputs"
+---
+
+The evaluation library is a core feature of Traceloop, providing comprehensive tools to assess LLM outputs, data quality, and performance across various dimensions. Whether you need automated scoring or human judgment, the evaluation system has you covered.
+
+## Why Do We Need Evaluators?
+
+LLM agents are more complex than single-turn completions. 
+They operate across multiple steps, use tools, and depend on context and external systems like memory or APIs. This complexity introduces new failure modes: agents may hallucinate tools, get stuck in loops, or produce final answers that hide earlier mistakes.
+
+Evaluators make these issues visible by checking correctness, relevance, task completion, tool usage, memory retention, safety, and style. They ensure outputs remain consistent even when dependencies shift and provide a structured way to measure reliability. Evaluation is continuous, extending into production through automated tests, drift detection, quality gates, and online monitoring.
+In short, evaluators turn outputs into trustworthy systems by providing measurable and repeatable checks that give teams confidence to deploy at scale.
+
+## Evaluators types
+
+The system supports: 
+- **Custom evaluators** - Create your own evaluation logic tailored to specific needs
+- **Built-in evaluators** - pre-configured evaluators by Traceloop for common assessment tasks
+
+In the Evaluator Library, select the evaluator you want to define. 
+You can either create a custom evaluator by clicking **New Evaluator** or choose one of the prebuilt **Made by Traceloop** evaluators.
+
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/evaluator/eval-library-light.png"
+  />
+  <img className="hidden dark:block" src="/img/evaluator/eval-library-dark.png" />
+</Frame>
+
+Clicking on existing evaluators will present their input and output schema. This is valuable information in order to execute the evaluator [through the SDK](../experiments/running-from-code).
+
+## Where to Use Evaluators
+
+Evaluators can be used in two main contexts within Traceloop:
+
+- **[Playgrounds](../playgrounds/quick-start)** - Test and iterate on your evaluators interactively, compare different configurations, and validate evaluation logic before deployment
+- **[Experiments](../experiments/introduction)** - Run systematic evaluations across datasets programmatically using the SDK, track performance metrics over time, and easily compare experiment results
+- **[Monitors](../monitoring/introduction)** - Continuously evaluate your LLM applications in production with real-time monitoring and alerting on quality degradation

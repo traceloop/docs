@@ -1,0 +1,116 @@
+---
+title: "Data Columns"
+---
+
+Columns are the building blocks of playgrounds, defining what kind of data you can store, process, and analyze. 
+
+
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-column-list-light.png"
+/>
+<img className="hidden dark:block" src="/img/playground/play-column-list-dark.png" />
+
+
+<Tip>
+**Need to reorder, edit, or delete columns?**
+
+ Learn how to effectively manage your columns in the [Column Management](./column-management) guide.
+</Tip>
+
+## 📝 Data Input Columns
+Store and manage static data entered manually or imported from external sources.
+
+### Text field
+Free-form text input with multiline support
+
+### Numeric
+Numbers, integers, and floating-point values
+
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-number-col-light.png"
+  style={{maxWidth: '300px'}}
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-number-col-dark.png"
+  style={{maxWidth: '300px'}}
+/>
+
+The last row allows you to choose a calculation method for the column, such as average, median, minimum, maximum, or sum.
+
+
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-number-col-summary-light.png"
+  style={{maxWidth: '300px'}}
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-number-col-summary-dark.png"
+  style={{maxWidth: '300px'}}
+/>
+
+
+
+
+### Single select
+Single-choice columns let you define a set of predefined options and restrict each cell to one selection. 
+To create one, set the column name and add options in the Create Column drawer. 
+In the values box, type an option and press Enter to save it—once added, it will appear as a colored label.
+
+In the table, each cell will then allow you to select only one of the defined options.
+This column type is especially useful for manual tagging with a single tag.
+
+
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-single-select-creation-light.png"
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-single-select-creation-dark.png"
+/>
+
+
+
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-single-select-light.png"
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-single-select-dark.png"
+/>
+
+
+### Multi select
+Multi-select columns let you define a set of predefined options and allow each cell to contain multiple selections. The setup process is the same as for single-select columns: define the column name, add options in the Create Column drawer, and save them as labels.
+
+In the table, each cell can then include several of the defined options. This column type is especially useful for manual tagging with multiple tags.
+
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-multi-select-light.png"
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-multi-select-dark.png"
+/>
+
+
+### JSON
+A JSON column allows you to store and edit structured JSON objects directly in the Playground. Each cell can contain a JSON value, making it easy to work with complex data structures.
+
+When editing a cell, an Edit JSON panel opens with syntax highlighting and formatting support, so you can quickly add or update fields.
+
+
+<img
+  className="block dark:hidden"
+  src="/img/playground/play-json-light.png"
+/>
+<img 
+  className="hidden dark:block" 
+  src="/img/playground/play-json-dark.png"
+/>

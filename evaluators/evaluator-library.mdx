@@ -1,0 +1,82 @@
+---
+title: "Evaluator Library"
+description: "Select from pre-built quality checks or create custom evaluators to systematically assess AI outputs"
+---
+
+The Evaluator Library provides a comprehensive collection of pre-built quality checks designed to systematically assess AI outputs. You can choose from existing evaluators or create custom ones tailored to your specific needs.
+
+<Frame>
+  <img
+    className="block dark:hidden"
+    src="/img/evaluator/eval-library-light.png"
+  />
+  <img className="hidden dark:block" src="/img/evaluator/eval-library-dark.png" />
+</Frame>
+
+## Made by Traceloop
+
+Traceloop provides several pre-configured evaluators for common assessment tasks:
+
+### Content Analysis Evaluators
+
+**Character Count**
+- Analyze response length and verbosity
+- Helps ensure responses meet length requirements
+
+**Character Count Ratio** 
+- Measure the ratio of characters to the input
+- Useful for assessing response proportionality
+
+**Word Count**
+- Ensure appropriate response detail level
+- Track output length consistency
+
+**Word Count Ratio**
+- Measure the ratio of words to the input
+- Compare input/output verbosity
+
+### Quality Assessment Evaluators
+
+**Answer Relevancy**
+- Verify responses address the query
+- Ensure AI outputs stay on topic
+
+**Faithfulness**
+- Detect hallucinations and verify facts
+- Maintain accuracy and truthfulness
+
+### Safety & Security Evaluators
+
+**PII Detection**
+- Identify personal information in responses
+- Protect user privacy and data security
+
+**Profanity Detection** 
+- Monitor for inappropriate language
+- Maintain content quality standards
+
+**Secrets Detection**
+- Monitor for sensitive information leakage
+- Prevent accidental exposure of credentials
+
+## Custom Evaluators
+
+In addition to the pre-built evaluators, you can create custom evaluators with:
+
+### Inputs
+- **string**: Text-based input parameters
+- Support for multiple input types
+
+### Outputs  
+- **results**: String-based evaluation results
+- **pass**: Boolean indicator for pass/fail status
+
+## Usage
+
+1. Browse the available evaluators in the library
+2. Select evaluators that match your assessment needs
+3. Configure input parameters as required
+4. Use the "Use evaluator" button to integrate into your workflow
+5. Monitor outputs and pass/fail status for systematic quality assessment
+
+The Evaluator Library streamlines the process of implementing comprehensive AI output assessment, ensuring consistent quality and safety standards across your applications.
