@@ -2,7 +2,7 @@
 title: "Quick Start"
 ---
 
-Playgrounds are interactive spreadsheet where you can organize your data and experiment with LLMs, evaluate outputs, and analyze data. 
+Playgrounds are interactive spreadsheets where you can organize your data and experiment with LLMs, evaluate outputs, and analyze data. 
 Think of them as powerful workbenches for AI development that combine the flexibility of a spreadsheet with the power of LLM evaluation and execution.
 It’s designed for everyone, from product managers and analysts to QA, data engineers, and software developers.
 
@@ -21,18 +21,27 @@ A playground is organized as a table-like structure with three fundamental compo
 ### Rows
 
 Rows represent individual **data points** or **test cases** in your playground. Each row is a complete record that spans across all columns.
-
-### Row Characteristics
 Each row in the Playground is independent and can be executed on its own, maintains an order that can be rearranged as needed.
 
 ### Row Operations
 - **Add Row**: Create new rows manually or through bulk operations
+- **Generate Rows**: Use the AI row generator to create new rows based on the existing data in your Playground.
 - **Delete Row**: Remove unwanted rows individually or in bulk
-- **Duplicate Row**: Copy existing rows to create variations
-- **Reorder Rows**: Drag and drop to change row order
-- **Generate Rows**: Use AI to generate multiple similar rows based on patterns
+- **Execute Row**: Execute all cells in a specific row
 
-## Create A Playground
+## Columns
+
+Columns are the building blocks of playgrounds, defining what kind of data you can store, process, and analyze. They come in different types to handle various data formats and use cases:
+
+**Data Input Columns** store static data such as text, json, numbers and tags
+
+**Prompt Columns** execute LLM prompts directly on your data with full model configuration, allowing you to test different prompts and compare outputs side by side.
+
+**Evaluation Columns** assess AI outputs and data quality using pre-built evaluators or custom evaluators tailored to your specific needs. Learn more about [evaluators](../evaluators/intro).
+
+You can manage columns by reordering, hiding, editing, duplicating, or deleting them as your analysis evolves. Learn more about [column types](./columns/data-columns) and [column management](./columns/column-management).
+
+## Create a Playground
 
 Data can be imported from different sources: 
 
@@ -42,12 +51,12 @@ Data can be imported from different sources:
 4. From production spans
 
 You can create a Playground from scratch and import data later. Simply set a name for the Playground and start adding columns, rows, and data.
-<Frame style={{margin: '80px'}}>
+<Frame>
   <img
     className="block dark:hidden"
-    src="/img/playground/play-empty-table-light.png"
+    src="/img/playground/play-full-table-light.png"
   />
-  <img className="hidden dark:block" src="/img/playground/play-empty-table-dark.png" />
+  <img className="hidden dark:block" src="/img/playground/play-full-table-dark.png" />
 </Frame>
 
 
