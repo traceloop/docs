@@ -7,11 +7,22 @@ Monitors in Traceloop allow you to continuously evaluate your LLM outputs in rea
 
 ## Creating a Monitor
 
-To create a monitor, you need to define:
+To create a monitor, you need to complete these steps:
 
-1. **Evaluator**: The evaluation logic that will run on matching spans. You can define your own custom evaluators or use the pre-built ones by Traceloop. See [Evaluators](/evaluators/intro) for more details. 
-2. **Span Filter**: Criteria that determine which spans the monitor will evaluate
-3. **Configuration**: Settings for how the monitor operates
+<Steps>
+  <Step title="Send Traces">
+    Connect the SDK to your system and add decorators to your flow. See [OpenLLMetry](/openllmetry/introduction) for setup instructions.
+  </Step>
+  <Step title="Choose an Evaluator">
+    Select the evaluation logic that will run on matching spans. You can define your own custom evaluators or use the pre-built ones by Traceloop. See [Evaluators](/evaluators/intro) for more details.
+  </Step>
+  <Step title="Define Span Filter">
+    Set criteria that determine which spans the monitor will evaluate.
+  </Step>
+  <Step title="Configure Settings">
+    Set up how the monitor operates, including sampling rates and other advanced options.
+  </Step>
+</Steps>
 
 ### Basic Monitor Setup
 
