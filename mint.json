@@ -145,7 +145,7 @@
     },
     {
       "group": "Monitoring",
-      "pages": ["monitoring/introduction"]
+      "pages": ["monitoring/introduction", "monitoring/defining-monitors"]
     },
     {
       "group": "Prompt Management",
