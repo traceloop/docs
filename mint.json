@@ -144,12 +144,8 @@
       "pages": ["hub/getting-started", "hub/configuration"]
     },
     {
-      "group": "Monitoring",
-      "pages": ["monitoring/introduction", "monitoring/defining-monitors", "monitoring/using-monitors"]
-    },
-    {
-      "group": "Prompt Management",
-      "pages": ["prompts/quick-start", "prompts/registry", "prompts/sdk-usage"]
+      "group": "Datasets",
+      "pages": ["datasets/quick-start", "datasets/sdk-usage"]
     },
     {
       "group": "Playgrounds", 
@@ -166,16 +162,20 @@
       ]
     },
     {
-      "group": "Datasets",
-      "pages": ["datasets/quick-start", "datasets/sdk-usage"]
-    },
-    {
       "group": "Evaluators",
       "pages": ["evaluators/intro", "evaluators/custom-evaluator", "evaluators/made-by-traceloop"]
     },
     {
       "group": "Experiments",
       "pages": ["experiments/introduction", "experiments/result-overview", "experiments/running-from-code"]
+    },
+    {
+      "group": "Monitoring",
+      "pages": ["monitoring/introduction", "monitoring/defining-monitors", "monitoring/using-monitors"]
+    },
+    {
+      "group": "Prompt Management",
+      "pages": ["prompts/quick-start", "prompts/registry", "prompts/sdk-usage"]
     },
     {
       "group": "Integrations",
