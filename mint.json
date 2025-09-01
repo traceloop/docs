@@ -61,7 +61,7 @@
   "navigation": [
     {
       "group": "Learn",
-      "pages": ["introduction", "demo"]
+      "pages": ["introduction"]
     },
     {
       "group": "Self-host",
