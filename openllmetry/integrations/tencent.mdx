@@ -1,0 +1,22 @@
+---
+title: "LLM Observability with Tencent APM and OpenLLMetry"
+sidebarTitle: "Tencent Cloud"
+---
+
+[Tencent APM](https://console.tencentcloud.com/apm) is a monitoring and observability platform that provides a comprehensive view of your application's performance and behavior.
+
+Tencent APM(also known as `TAPM`) natively supports OpenTelemetry, so you can use OpenLLMetry to trace your applications on this platform.
+
+<Frame>
+  <img src="/img/integrations/tencent.png" />
+</Frame>
+
+To integrate OpenLLMetry with Tencent APM, you'll need to configure your tracing endpoint and authentication:
+
+
+```bash
+TRACELOOP_BASE_URL="<TAPM_ENDPOINT>" # Use port `55681` rather than `4317` as the default port.
+TRACELOOP_HEADERS="Authorization=Bearer%20<TAPM_TOKEN>" # header values in env variables must be URL‑encoded.
+```
+
+Tencent APM defaults to using port `4317` for the gRPC exporter; we recommend using port `55681` instead, which is the HTTP exporter port.
