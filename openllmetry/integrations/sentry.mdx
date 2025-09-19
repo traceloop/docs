@@ -58,7 +58,7 @@ Traceloop.init(processor=SentrySpanProcessor(), propagator=SentryPropagator())
 import * as traceloop from "@traceloop/node-server-sdk";
 import { SentrySpanProcessor, SentryPropagator, SentrySampler } from "@sentry/opentelemetry";
 
-Traceloop.init({
+traceloop.initialize({
   contextManager: new Sentry.SentryContextManager(),
   processor: new SentrySpanProcessor(),
   propagator: new SentryPropagator()
