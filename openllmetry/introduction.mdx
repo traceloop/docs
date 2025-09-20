@@ -47,7 +47,7 @@ const openai = new OpenAI();
 
 class MyLLM {
   @traceloop.workflow("joke_creation")
-  async create_joke():
+  async create_joke() {
       completion = await openai.chat.completions.create({
           model: "gpt-3.5-turbo",
           messages: [{"role": "user", "content": "Tell me a joke about opentelemetry"}],
