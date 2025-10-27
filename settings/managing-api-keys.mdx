@@ -56,10 +56,14 @@ Done! Your application can now send traces and access Traceloop features.
 ### How API Keys Work
 
 Each API key is scoped to a specific **project + environment** combination:
-- **Project**: Isolates data for different applications or services (e.g., "web-app", "api-service")
+- **Project**: Isolates data for different applications or teams (e.g., "orders-service", "users-service")
 - **Environment**: Separates deployment stages (dev, stg, prd)
 
-When you use an API key, the SDK automatically knows where to send your data based on the key itself.
+When you use an API key, Traceloop automatically knows where to send your data based on the key itself.
+
+<Note>
+  If the `TRACELOOP_API_KEY` environment variable is set, the SDK will automatically use it. You don't need to pass it explicitly in your code.
+</Note>
 
 **Example:**
 - API key from "web-app" → "dev" sends traces to the "web-app" project's dev environment
@@ -134,19 +138,6 @@ traceloop.Init(traceloop.Config{
 ```
 </CodeGroup>
 
-### Multiple Environments from One Application
-
-Similar to multiple projects, pass different keys for different environments:
-
-```python
-import os
-
-environment = os.getenv("APP_ENV", "dev")
-api_keys = {
-    "dev": "dev_api_key",
-    "stg": "stg_api_key",
-    "prd": "prd_api_key"
-}
 
 Traceloop.init(api_key=api_keys[environment])
 ```
