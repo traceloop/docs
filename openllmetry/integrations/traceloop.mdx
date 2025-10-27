@@ -13,22 +13,32 @@ It allows you to deploy changes to prompts and model configurations with confide
 
 ## Connecting OpenLLMetry to Traceloop directly
 
-On Traceloop, API keys can be generated from the [Traceloop Dashboard](https://app.traceloop.com/settings/api-keys), for each of the three supported environments (Development, Staging, Production).
-
-Go to [Traceloop Environments Management](https://app.traceloop.com/settings/api-keys)
-(you can also reach here by clicking on **Environments** on the left-hand navigation bar).
-Click on **Generate API Key**. Click **Copy Key** to copy the API key.
-
 <Note>
-  API Keys are only displayed once, at the time of their creation and are not
-  stored anywhere. If you lose your API key, you will need to revoke the old one
-  and generate a new one.
+  You need an API key to send traces to Traceloop. API keys are scoped to a specific **project** and **environment**.
+
+  **To generate an API key:**
+  1. Go to [Settings → Organization](https://app.traceloop.com/settings/api-keys)
+  2. Click on your project (or create a new one)
+  3. Select an environment (Development, Staging, Production, or custom)
+  4. Click **Generate API key**
+  5. **Copy the key immediately** - it won't be shown again after you close or reload the page
+
+  [Detailed instructions →](/settings/managing-api-keys)
 </Note>
 
-Set the API key as an environment variable named `TRACELOOP_API_KEY`.
+Set the API key as an environment variable named `TRACELOOP_API_KEY`:
+
+```bash
+export TRACELOOP_API_KEY=your_api_key_here
+```
 
 Done! You'll get instant visibility into everything that's happening with your LLM.
 If you're calling a vector DB, or any other external service or database, you'll also see it in the Traceloop dashboard.
+
+<Tip>
+  **Want to organize your data?** Learn about [Projects and Environments](/settings/projects-and-environments)
+  to separate traces for different applications and deployment stages.
+</Tip>
 
 ## Using an OpenTelemetry Collector
 

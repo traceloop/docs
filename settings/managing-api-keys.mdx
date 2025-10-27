@@ -1,0 +1,257 @@
+---
+title: "Managing API Keys"
+description: "Generate and manage API keys for sending traces and accessing Traceloop features"
+---
+
+API keys are required to authenticate your application with Traceloop. Each API key is tied to a specific project and environment combination, determining where your traces and data will appear.
+
+## Quick Start: Generate Your First API Key
+
+<Steps>
+<Step title="Navigate to Settings">
+Go to [Settings → Organization](https://app.traceloop.com/settings/api-keys) in your Traceloop dashboard.
+</Step>
+
+<Step title="Select Your Project">
+Click on the project where you want to generate an API key (e.g., "Default project").
+
+If you haven't created a project yet, see [Projects and Environments](/settings/projects-and-environments).
+</Step>
+
+<Step title="Generate API Key for an Environment">
+Find the environment you want to use (Development, Staging, or Production) and click **Generate API key**.
+
+<Warning>
+  **Copy the API key immediately!** The full key is only shown once and cannot be retrieved later.
+  After you close or reload the page, you'll need to revoke and generate a new key if you lose it.
+</Warning>
+
+The key will be displayed partially masked, but you can copy the full key using the copy button.
+</Step>
+
+<Step title="Set as Environment Variable">
+Export the API key in your application:
+
+```bash
+export TRACELOOP_API_KEY=your_api_key_here
+```
+
+Or set it in your `.env` file:
+
+```bash
+TRACELOOP_API_KEY=your_api_key_here
+```
+</Step>
+</Steps>
+
+Done! Your application can now send traces and access Traceloop features.
+
+## Understanding API Keys
+
+### How API Keys Work
+
+Each API key is scoped to a specific **project + environment** combination:
+- **Project**: Isolates data for different applications or services (e.g., "web-app", "api-service")
+- **Environment**: Separates deployment stages (Development, Staging, Production)
+
+When you use an API key, the SDK automatically knows where to send your data based on the key itself.
+
+**Example:**
+- API key from "web-app" → "Development" sends traces to the "web-app" project's Development environment
+- API key from "api-service" → "Production" sends traces to the "api-service" project's Production environment
+
+### Viewing Your Data
+
+To see your traces in the dashboard:
+1. Select the correct **project** from the project dropdown
+2. Filter by **environment** if needed
+
+<Tip>
+  **Not seeing your traces?** Make sure you're viewing the same project and environment
+  that matches your API key.
+</Tip>
+
+## Common Scenarios
+
+### Local Development
+
+Use your Development environment API key:
+
+```bash
+# In your .env or shell
+export TRACELOOP_API_KEY=your_development_key
+```
+
+### CI/CD Pipeline
+
+Use Staging or Production keys in your deployment configuration:
+
+```yaml
+# Example: GitHub Actions
+env:
+  TRACELOOP_API_KEY: ${{ secrets.TRACELOOP_STAGING_KEY }}
+```
+
+```yaml
+# Example: Docker Compose
+environment:
+  - TRACELOOP_API_KEY=${TRACELOOP_PRODUCTION_KEY}
+```
+
+### Multiple Projects from One Application
+
+If you need to send data to different projects from the same codebase, pass the API key directly in code instead of using environment variables:
+
+<CodeGroup>
+```python Python
+from traceloop.sdk import Traceloop
+
+# Initialize with specific API key
+Traceloop.init(api_key="your_project_specific_key")
+```
+
+```javascript TypeScript / JavaScript
+import * as traceloop from "@traceloop/node-server-sdk";
+
+// Initialize with specific API key
+traceloop.initialize({
+  apiKey: "your_project_specific_key"
+});
+```
+
+```go Go
+import "github.com/traceloop/go-sdk/traceloop"
+
+// Initialize with specific API key
+traceloop.Init(traceloop.Config{
+  APIKey: "your_project_specific_key",
+})
+```
+</CodeGroup>
+
+### Multiple Environments from One Application
+
+Similar to multiple projects, pass different keys for different environments:
+
+```python
+import os
+
+environment = os.getenv("APP_ENV", "development")
+api_keys = {
+    "development": "dev_api_key",
+    "staging": "staging_api_key",
+    "production": "prod_api_key"
+}
+
+Traceloop.init(api_key=api_keys[environment])
+```
+
+## Managing Your API Keys
+
+### Revoking an API Key
+
+If your API key is compromised or you need to rotate keys:
+
+1. Go to Settings → Organization → Select your project
+2. Find the environment with the key you want to revoke
+3. Click **Revoke API key**
+4. Generate a new key immediately
+5. Update your application configuration with the new key
+
+<Warning>
+  Revoking a key immediately stops all applications using it from sending data.
+  Make sure to update your configuration before revoking production keys.
+</Warning>
+
+### Lost Your API Key?
+
+If you lose your API key and didn't save it:
+
+1. You **cannot** retrieve the original key
+2. You must **revoke** the old key and **generate** a new one
+3. Update your application with the new key
+
+This is a security feature - API keys are never stored in retrievable form.
+
+### Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Secret Management" icon="key">
+    Store API keys in secret management systems like AWS Secrets Manager, Azure Key Vault,
+    HashiCorp Vault, or 1Password instead of hardcoding them.
+  </Card>
+
+  <Card title="Rotate Keys Regularly" icon="rotate">
+    Periodically rotate your API keys, especially for production environments.
+    Schedule key rotation as part of your security practices.
+  </Card>
+
+  <Card title="Separate Keys Per Environment" icon="layer-group">
+    Never use production API keys in development or staging.
+    This prevents accidental data mixing and security risks.
+  </Card>
+
+  <Card title="Limit Key Exposure" icon="eye-slash">
+    Don't commit API keys to version control. Use environment variables
+    or secret management systems instead.
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+### Authentication Failed
+
+**Problem:** Getting authentication errors when initializing the SDK.
+
+**Solutions:**
+- Verify the API key is correctly set as `TRACELOOP_API_KEY`
+- Check if the key has been revoked (generate a new one if needed)
+- Ensure there are no extra spaces or characters in the key
+
+### Not Seeing Traces
+
+**Problem:** Application runs but traces don't appear in dashboard.
+
+**Solutions:**
+- Confirm you're viewing the correct **project** in the dashboard dropdown
+- Check you're filtering by the correct **environment**
+- Verify the API key matches the project + environment you're viewing
+- Check SDK initialization logs for connection errors
+
+### Wrong Data Appearing
+
+**Problem:** Seeing unexpected traces or data in your project.
+
+**Solutions:**
+- Double-check which API key you're using (`echo $TRACELOOP_API_KEY`)
+- Verify the API key belongs to the intended project + environment
+- Check if other team members are using the same project
+
+### Multiple Applications Sending to Same Project
+
+**Problem:** Want to separate data from different services but they're in the same project.
+
+**Solutions:**
+- Create a separate project for each application/service
+- Generate unique API keys for each project
+- See [Projects and Environments](/settings/projects-and-environments) for more details
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="Projects and Environments" icon="folder-tree" href="/settings/projects-and-environments">
+    Learn about organizing your applications and deployment stages
+  </Card>
+
+  <Card title="Getting Started" icon="rocket" href="/openllmetry/getting-started-python">
+    Set up OpenLLMetry SDK with your API key
+  </Card>
+
+  <Card title="Dashboard API" icon="webhook" href="/api-reference/introduction">
+    Use API keys to access Traceloop's REST API
+  </Card>
+
+  <Card title="Self-Hosting" icon="server" href="/self-host/introduction">
+    Configure API keys in self-hosted deployments
+  </Card>
+</CardGroup>
