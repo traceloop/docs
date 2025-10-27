@@ -28,8 +28,8 @@ When you have multiple applications or deployment stages:
 - Generate separate API keys per project
 
 **Environments** separate deployment stages within a project:
-- Development, Staging, and Production environments (built-in)
-- Custom environments (e.g., "QA", "EU-Production", "Preview")
+- dev, stg, and prd environments (built-in)
+- Custom environments (e.g., "qa", "eu-prd", "preview")
 - Each environment has its own API key and data stream
 
 ## Understanding Projects
@@ -71,12 +71,12 @@ A project is a complete isolation boundary for all your Traceloop data. Think of
 An environment represents a deployment stage within a project. Each environment has its own API key, allowing you to send traces from different stages without mixing the data.
 
 **Default environments** (cannot be deleted):
-- **Development**: Local development and testing
-- **Staging**: Pre-production testing and validation
-- **Production**: Live production traffic
+- **dev**: Local development and testing
+- **stg**: Pre-production testing and validation
+- **prd**: Live production traffic
 
 **Custom environments**: Add your own based on your workflow
-- Examples: "QA", "UAT", "Preview", "EU-Production", "US-Production"
+- Examples: "qa", "uat", "preview", "eu-prd", "us-prd"
 
 ### Organization-Level vs. Project-Level Environments
 
@@ -94,7 +94,7 @@ Traceloop supports two types of environments:
 
 <Tip>
   **Best practice:** Create organization-level environments for company-wide deployment stages
-  (Development, Staging, Production, QA). Create project-specific environments only when needed
+  (dev, stg, prd, qa). Create project-specific environments only when needed
   for unique deployment scenarios.
 </Tip>
 
@@ -141,11 +141,11 @@ The project is created instantly with all organization-level environments includ
 </Step>
 
 <Step title="Create Custom Environments (Optional)">
-If you need additional environments beyond Development, Staging, and Production:
+If you need additional environments beyond dev, stg, and prd:
 
 **For organization-wide environments:**
 1. Click the **+** button next to "Organization environments"
-2. Enter an environment name (e.g., "QA", "Preview", "EU-Prod")
+2. Enter an environment name (e.g., "qa", "preview", "eu-prd")
 3. Click **Create**
 4. The environment appears in all projects immediately
 
@@ -158,7 +158,8 @@ If you need additional environments beyond Development, Staging, and Production:
 
 <Tip>
   An environment **slug** is automatically created for SDK usage. For example,
-  "EU Production" becomes "eu-production" as the slug.
+  "EU Production" becomes "eu-production" as the slug. The default environments
+  use "dev", "stg", and "prd" as their slugs.
 </Tip>
 </Step>
 
@@ -181,7 +182,7 @@ See [Managing API Keys](/settings/managing-api-keys) for detailed instructions.
 
 The Traceloop dashboard shows **one project at a time**. To switch projects:
 
-1. Click the project dropdown (usually at the top of the dashboard)
+1. Click the project dropdown from the main menu on the left-hand side of the dashboard
 2. Select the project you want to view
 3. All traces, datasets, and other data will update to show only that project
 
@@ -242,7 +243,7 @@ To delete a project:
 </Warning>
 
 **Organization-level environments:**
-- Cannot delete the three default environments (Development, Staging, Production)
+- Cannot delete the three default environments (dev, stg, prd)
 - Can delete custom organization-level environments
 - Deleting removes the environment from all projects
 
@@ -309,17 +310,17 @@ To delete a project:
 
 **Use built-in environments for standard workflows:**
 ```
-Development  → Local development and unit testing
-Staging      → Integration testing and QA
-Production   → Live customer traffic
+dev  → Local development and unit testing
+stg  → Integration testing and QA
+prd  → Live customer traffic
 ```
 
 **Add custom environments for special cases:**
 ```
-QA           → Dedicated QA team testing
-Preview      → Preview deployments for each PR
-Canary       → Canary deployments before full rollout
-EU-Prod      → Regional production environments
+qa       → Dedicated QA team testing
+preview  → Preview deployments for each PR
+canary   → Canary deployments before full rollout
+eu-prd   → Regional production environments
 ```
 
 ### Naming Conventions
@@ -332,7 +333,7 @@ EU-Prod      → Regional production environments
 **Environments:**
 - Keep names short and clear
 - Use standard terms when possible
-- Examples: `development`, `staging`, `production`, `qa`, `preview`
+- Examples: `dev`, `stg`, `prd`, `qa`, `preview`
 
 ## Common Scenarios
 
@@ -342,10 +343,10 @@ Create one project per microservice:
 
 ```
 Projects:
-├── api-gateway (Dev, Staging, Prod environments)
-├── auth-service (Dev, Staging, Prod environments)
-├── payment-service (Dev, Staging, Prod environments)
-└── notification-service (Dev, Staging, Prod environments)
+├── api-gateway (dev, stg, prd environments)
+├── auth-service (dev, stg, prd environments)
+├── payment-service (dev, stg, prd environments)
+└── notification-service (dev, stg, prd environments)
 ```
 
 Each service has its own API keys per environment, keeping traces completely isolated.
@@ -356,9 +357,9 @@ Create projects per deployable application:
 
 ```
 Projects:
-├── web-frontend (Dev, Staging, Prod)
-├── mobile-backend (Dev, Staging, Prod)
-└── admin-dashboard (Dev, Staging, Prod)
+├── web-frontend (dev, stg, prd)
+├── mobile-backend (dev, stg, prd)
+└── admin-dashboard (dev, stg, prd)
 ```
 
 ### Multi-Region Deployment
@@ -368,20 +369,20 @@ Option 1: Use custom environments per region within one project:
 ```
 Project: global-app
 Environments:
-├── Development
-├── Staging
-├── US-Production
-├── EU-Production
-└── APAC-Production
+├── dev
+├── stg
+├── us-prd
+├── eu-prd
+└── apac-prd
 ```
 
 Option 2: Use separate projects per region:
 
 ```
 Projects:
-├── app-us (Dev, Staging, Prod)
-├── app-eu (Dev, Staging, Prod)
-└── app-apac (Dev, Staging, Prod)
+├── app-us (dev, stg, prd)
+├── app-eu (dev, stg, prd)
+└── app-apac (dev, stg, prd)
 ```
 
 ## Troubleshooting

@@ -5,6 +5,11 @@ description: "Generate and manage API keys for sending traces and accessing Trac
 
 API keys are required to authenticate your application with Traceloop. Each API key is tied to a specific project and environment combination, determining where your traces and data will appear.
 
+<Frame>
+  <img className="block dark:hidden" src="/img/settings/project-light.png" />
+  <img className="hidden dark:block" src="/img/settings/project-dark.png" />
+</Frame>
+
 ## Quick Start: Generate Your First API Key
 
 <Steps>
@@ -19,7 +24,7 @@ If you haven't created a project yet, see [Projects and Environments](/settings/
 </Step>
 
 <Step title="Generate API Key for an Environment">
-Find the environment you want to use (Development, Staging, or Production) and click **Generate API key**.
+Find the environment you want to use (dev, stg, or prd) and click **Generate API key**.
 
 <Warning>
   **Copy the API key immediately!** The full key is only shown once and cannot be retrieved later.
@@ -52,13 +57,13 @@ Done! Your application can now send traces and access Traceloop features.
 
 Each API key is scoped to a specific **project + environment** combination:
 - **Project**: Isolates data for different applications or services (e.g., "web-app", "api-service")
-- **Environment**: Separates deployment stages (Development, Staging, Production)
+- **Environment**: Separates deployment stages (dev, stg, prd)
 
 When you use an API key, the SDK automatically knows where to send your data based on the key itself.
 
 **Example:**
-- API key from "web-app" → "Development" sends traces to the "web-app" project's Development environment
-- API key from "api-service" → "Production" sends traces to the "api-service" project's Production environment
+- API key from "web-app" → "dev" sends traces to the "web-app" project's dev environment
+- API key from "api-service" → "prd" sends traces to the "api-service" project's prd environment
 
 ### Viewing Your Data
 
@@ -75,7 +80,7 @@ To see your traces in the dashboard:
 
 ### Local Development
 
-Use your Development environment API key:
+Use your dev environment API key:
 
 ```bash
 # In your .env or shell
@@ -84,18 +89,18 @@ export TRACELOOP_API_KEY=your_development_key
 
 ### CI/CD Pipeline
 
-Use Staging or Production keys in your deployment configuration:
+Use stg or prd keys in your deployment configuration:
 
 ```yaml
 # Example: GitHub Actions
 env:
-  TRACELOOP_API_KEY: ${{ secrets.TRACELOOP_STAGING_KEY }}
+  TRACELOOP_API_KEY: ${{ secrets.TRACELOOP_STG_KEY }}
 ```
 
 ```yaml
 # Example: Docker Compose
 environment:
-  - TRACELOOP_API_KEY=${TRACELOOP_PRODUCTION_KEY}
+  - TRACELOOP_API_KEY=${TRACELOOP_PRD_KEY}
 ```
 
 ### Multiple Projects from One Application
@@ -136,11 +141,11 @@ Similar to multiple projects, pass different keys for different environments:
 ```python
 import os
 
-environment = os.getenv("APP_ENV", "development")
+environment = os.getenv("APP_ENV", "dev")
 api_keys = {
-    "development": "dev_api_key",
-    "staging": "staging_api_key",
-    "production": "prod_api_key"
+    "dev": "dev_api_key",
+    "stg": "stg_api_key",
+    "prd": "prd_api_key"
 }
 
 Traceloop.init(api_key=api_keys[environment])
@@ -187,7 +192,7 @@ This is a security feature - API keys are never stored in retrievable form.
   </Card>
 
   <Card title="Separate Keys Per Environment" icon="layer-group">
-    Never use production API keys in development or staging.
+    Never use prd API keys in dev or stg.
     This prevents accidental data mixing and security risks.
   </Card>
 
