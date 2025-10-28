@@ -59,7 +59,7 @@ Each API key is scoped to a specific **project + environment** combination:
 - **Project**: Isolates data for different applications or teams (e.g., "orders-service", "users-service")
 - **Environment**: Separates deployment stages (dev, stg, prd)
 
-When you use an API key, Traceloop automatically knows where to send your data based on the key itself.
+When you use an API key, Traceloop automatically knows where to save your data based on the key itself.
 
 <Note>
   If the `TRACELOOP_API_KEY` environment variable is set, the SDK will automatically use it. You don't need to pass it explicitly in your code.
@@ -137,10 +137,6 @@ traceloop.Init(traceloop.Config{
 })
 ```
 </CodeGroup>
-
-
-Traceloop.init(api_key=api_keys[environment])
-```
 
 ## Managing Your API Keys
 
