@@ -179,6 +179,13 @@
       "pages": ["prompts/quick-start", "prompts/registry", "prompts/sdk-usage"]
     },
     {
+      "group": "Settings",
+      "pages": [
+        "settings/managing-api-keys",
+        "settings/projects-and-environments"
+      ]
+    },
+    {
       "group": "Integrations",
       "pages": ["integrations/posthog"]
     },

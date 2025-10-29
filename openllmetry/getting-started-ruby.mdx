@@ -80,21 +80,29 @@ For Traceloop, read on. For other options, see [Exporting](/openllmetry/integrat
 
 ### Using Traceloop Cloud
 
-Go to [Traceloop](https://app.traceloop.com), and create a new account.
-Then, click on **Environments** on the left-hand navigation bar. Or go to directly to https://app.traceloop.com/settings/api-keys.
-Click **Generate API Key** to generate an API key for the developement environment and click **Copy API Key** to copy it over.
+<Note>
+  You need an API key to send traces to Traceloop.
+  [Generate one in Settings](https://app.traceloop.com/settings/api-keys) by selecting
+  a project and environment, then click **Generate API key**.
 
-<Warning>Make sure to copy it as it won't be shown again.</Warning>
+  ⚠️ **Important:** Copy the key immediately - it won't be shown again after you close or reload the page.
 
-<Frame>
-  <img className="block dark:hidden" src="/img/api-key-light.png" />
-  <img className="hidden dark:block" src="/img/api-key-dark.png" />
-</Frame>
+  [Detailed instructions →](/settings/managing-api-keys)
+</Note>
 
-Set the copied Traceloop's API key as an environment variable in your app named `TRACELOOP_API_KEY`.
+Set the API key as an environment variable in your app named `TRACELOOP_API_KEY`:
+
+```bash
+export TRACELOOP_API_KEY=your_api_key_here
+```
 
 Done! You'll get instant visibility into everything that's happening with your LLM.
 If you're calling a vector DB, or any other external service or database, you'll also see it in the Traceloop dashboard.
+
+<Tip>
+  **Not seeing traces?** Make sure you're viewing the correct project and environment in the
+  dashboard that matches your API key. See [Troubleshooting](/settings/managing-api-keys#troubleshooting).
+</Tip>
 
 </Step>
 </Steps>
