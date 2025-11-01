@@ -1,0 +1,221 @@
+---
+title: "Get Spans"
+api: "GET https://app.traceloop.com/api/v2/warehouse/spans"
+---
+
+Retrieve spans from the data warehouse with flexible filtering and pagination options. This endpoint allows you to query trace data based on various criteria including time ranges, environments, workflows, attributes, and more.
+
+## Request Parameters
+
+<ParamField query="env" type="string">
+  The environment name.
+</ParamField>
+
+<ParamField query="environments" type="string[]">
+  List of environment names to filter by.
+</ParamField>
+
+<ParamField query="envProjectIDs" type="string[]">
+  List of environment project IDs to filter by.
+</ParamField>
+
+<ParamField query="fromTimestampSec" type="int64" required>
+  Start time in Unix seconds timestamp.
+</ParamField>
+
+<ParamField query="toTimestampSec" type="int64" required>
+  End time in Unix seconds timestamp.
+</ParamField>
+
+<ParamField query="workflowName" type="string">
+  Filter spans by workflow name.
+</ParamField>
+
+<ParamField query="attributes" type="map[string]string">
+  Key-value pairs of attributes to filter by.
+</ParamField>
+
+<ParamField query="spanName" type="string">
+  Filter spans by span name.
+</ParamField>
+
+<ParamField query="sortOrder" type="string">
+  Sort order for results. Accepted values: `asc` or `desc`.
+</ParamField>
+
+<ParamField query="sortBy" type="string">
+  Field to sort by (e.g., `timestamp`, `duration`).
+</ParamField>
+
+<ParamField query="cursor" type="int64">
+  **Deprecated:** Use `compositeCursor` instead. Pagination cursor for fetching
+  the next set of results.
+</ParamField>
+
+<ParamField query="compositeCursor" type="CompositeCursor">
+  Advanced pagination cursor for fetching the next set of results.
+</ParamField>
+
+<ParamField query="limit" type="int">
+  Maximum number of spans to return.
+</ParamField>
+
+<ParamField query="filters" type="FilterCondition[]">
+  Array of filter conditions to apply to the query.
+</ParamField>
+
+<ParamField query="logicalOperator" type="string">
+  Logical operator to apply between filter conditions. Accepted values: `AND` or
+  `OR`.
+</ParamField>
+
+## Response
+
+Returns an array of Span objects:
+
+<ResponseField name="organizationId" type="string">
+  The organization ID associated with the span.
+</ResponseField>
+
+<ResponseField name="environment" type="string">
+  The environment where the span was captured.
+</ResponseField>
+
+<ResponseField name="timestamp" type="timestamp">
+  The timestamp when the span was created.
+</ResponseField>
+
+<ResponseField name="traceId" type="string">
+  The unique trace identifier.
+</ResponseField>
+
+<ResponseField name="spanId" type="string">
+  The unique span identifier.
+</ResponseField>
+
+<ResponseField name="parentSpanId" type="string">
+  The parent span identifier.
+</ResponseField>
+
+<ResponseField name="traceState" type="string">
+  The trace state information.
+</ResponseField>
+
+<ResponseField name="spanName" type="string">
+  The name of the span.
+</ResponseField>
+
+<ResponseField name="spanKind" type="string">
+  The kind of span (e.g., CLIENT, SERVER, INTERNAL).
+</ResponseField>
+
+<ResponseField name="serviceName" type="string">
+  The name of the service that generated the span.
+</ResponseField>
+
+<ResponseField name="resourceAttributes" type="map">
+  Key-value pairs of resource attributes.
+</ResponseField>
+
+<ResponseField name="scopeName" type="string">
+  The instrumentation scope name.
+</ResponseField>
+
+<ResponseField name="scopeVersion" type="string">
+  The instrumentation scope version.
+</ResponseField>
+
+<ResponseField name="spanAttributes" type="map">
+  Key-value pairs of span attributes.
+</ResponseField>
+
+<ResponseField name="workflowName" type="string">
+  The workflow name associated with the span.
+</ResponseField>
+
+<ResponseField name="duration" type="int64">
+  The duration of the span in nanoseconds.
+</ResponseField>
+
+<ResponseField name="statusCode" type="string">
+  The status code of the span (e.g., OK, ERROR).
+</ResponseField>
+
+<ResponseField name="statusMessage" type="string">
+  The status message providing additional context.
+</ResponseField>
+
+<ResponseField name="eventsName" type="string[]">
+  Array of event names associated with the span.
+</ResponseField>
+
+<ResponseField name="eventsAttributes" type="map[]">
+  Array of event attributes as key-value pairs.
+</ResponseField>
+
+<ResponseField name="prompts" type="map">
+  Prompt data associated with the span.
+</ResponseField>
+
+<ResponseField name="completions" type="map">
+  Completion data associated with the span.
+</ResponseField>
+
+<ResponseField name="input" type="string">
+  Input data for the span.
+</ResponseField>
+
+<ResponseField name="output" type="string">
+  Output data for the span.
+</ResponseField>
+
+## Example Response
+
+```json
+[
+  {
+    "organizationId": "org_123",
+    "environment": "production",
+    "timestamp": "2025-11-01T12:00:00Z",
+    "traceId": "trace_abc123",
+    "spanId": "span_def456",
+    "parentSpanId": "span_parent_789",
+    "traceState": "",
+    "spanName": "llm.completion",
+    "spanKind": "CLIENT",
+    "serviceName": "chat-service",
+    "resourceAttributes": {
+      "service.version": "1.0.0"
+    },
+    "scopeName": "opentelemetry",
+    "scopeVersion": "1.0.0",
+    "spanAttributes": {
+      "llm.model": "gpt-4",
+      "llm.provider": "openai"
+    },
+    "workflowName": "chat-workflow",
+    "duration": 1500000000,
+    "statusCode": "OK",
+    "statusMessage": "",
+    "eventsName": ["start", "end"],
+    "eventsAttributes": [
+      {
+        "event.type": "start"
+      },
+      {
+        "event.type": "end"
+      }
+    ],
+    "prompts": {
+      "role": "user",
+      "content": "Hello, how are you?"
+    },
+    "completions": {
+      "role": "assistant",
+      "content": "I'm doing well, thank you!"
+    },
+    "input": "Hello, how are you?",
+    "output": "I'm doing well, thank you!"
+  }
+]
+```

@@ -149,9 +149,9 @@
       "pages": ["datasets/quick-start", "datasets/sdk-usage"]
     },
     {
-      "group": "Playgrounds", 
+      "group": "Playgrounds",
       "pages": [
-        "playgrounds/quick-start", 
+        "playgrounds/quick-start",
         {
           "group": "Columns",
           "pages": [
@@ -164,15 +164,27 @@
     },
     {
       "group": "Evaluators",
-      "pages": ["evaluators/intro", "evaluators/custom-evaluator", "evaluators/made-by-traceloop"]
+      "pages": [
+        "evaluators/intro",
+        "evaluators/custom-evaluator",
+        "evaluators/made-by-traceloop"
+      ]
     },
     {
       "group": "Experiments",
-      "pages": ["experiments/introduction", "experiments/result-overview", "experiments/running-from-code"]
+      "pages": [
+        "experiments/introduction",
+        "experiments/result-overview",
+        "experiments/running-from-code"
+      ]
     },
     {
       "group": "Monitoring",
-      "pages": ["monitoring/introduction", "monitoring/defining-monitors", "monitoring/using-monitors"]
+      "pages": [
+        "monitoring/introduction",
+        "monitoring/defining-monitors",
+        "monitoring/using-monitors"
+      ]
     },
     {
       "group": "Prompt Management",
@@ -219,6 +231,10 @@
     {
       "group": "Costs",
       "pages": ["api-reference/costs/property_costs"]
+    },
+    {
+      "group": "Warehouse",
+      "pages": ["api-reference/warehouse/get_spans"]
     }
   ],
   "redirects": [
