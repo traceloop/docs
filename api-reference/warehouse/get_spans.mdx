@@ -27,7 +27,7 @@ Retrieve spans from the data warehouse with flexible filtering and pagination op
   End time in Unix seconds timestamp.
 </ParamField>
 
-<ParamField query="workflowName" type="string">
+<ParamField query="workflow" type="string">
   Filter spans by workflow name.
 </ParamField>
 
@@ -35,7 +35,7 @@ Retrieve spans from the data warehouse with flexible filtering and pagination op
   Key-value pairs of attributes to filter by.
 </ParamField>
 
-<ParamField query="spanName" type="string">
+<ParamField query="span_name" type="string">
   Filter spans by span name.
 </ParamField>
 
@@ -66,10 +66,6 @@ Retrieve spans from the data warehouse with flexible filtering and pagination op
   Supported operators: `equals`, `not_equals`, `greater_than`, `less_than`, `exists`, `not_exists`, `contains`, `starts_with`
 </ParamField>
 
-<ParamField query="logicalOperator" type="string">
-  Logical operator to apply between filter conditions. Accepted values: `AND` or
-  `OR`.
-</ParamField>
 
 ## Response
 
