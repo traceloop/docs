@@ -14,19 +14,26 @@ Connecting Traceloop to Slack allows you to receive automated updates about your
     </Frame>
   </Step>
   <Step title="Authorize Slack">
-    Click "Connect to Slack" to authorize Traceloop to send messages to your Slack workspace.
-    <Frame>
-      <img className="block dark:hidden" src="/img/traceloop-integrations/slack-light.png" />
-      <img className="hidden dark:block" src="/img/traceloop-integrations/slack-dark.png" />
-    </Frame>
+    Click on the Slack integration and follow the "Connect to Slack" button to authorize Traceloop to send messages to your Slack workspace.
   </Step>
   <Step title="Configure your preferences">
     Choose your notification preferences:
     - Select the Slack channel where you want to receive updates
-    - Set the frequency (daily or weekly)
-    - Choose which environments to monitor
 
-    Click "Enable" to activate the integration.
+    <Info>
+      **Important:** Make sure to invite the Traceloop app to the channel before enabling the integration.
+    </Info>
+
+    <Frame>
+      <img src="/img/traceloop-integrations/slack-invite-app.png" />
+    </Frame>
+    - Select the desired schedule -  daily/weekly
+    - Set the required time and timezone
+    - Choose which environment to monitor
+    <Frame>
+      <img className="block dark:hidden" src="/img/traceloop-integrations/slack-settings-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/slack-settings-dark.png" />
+    </Frame>
   </Step>
 </Steps>
 
