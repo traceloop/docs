@@ -19,15 +19,15 @@ Retrieve spans from the data warehouse with flexible filtering and pagination op
   List of environment project IDs to filter by.
 </ParamField>
 
-<ParamField query="fromTimestampSec" type="int64" required>
+<ParamField query="from_timestamp_sec" type="int64" required>
   Start time in Unix seconds timestamp.
 </ParamField>
 
-<ParamField query="toTimestampSec" type="int64" required>
+<ParamField query="to_timestamp_sec" type="int64" required>
   End time in Unix seconds timestamp.
 </ParamField>
 
-<ParamField query="workflowName" type="string">
+<ParamField query="workflow" type="string">
   Filter spans by workflow name.
 </ParamField>
 
@@ -35,11 +35,11 @@ Retrieve spans from the data warehouse with flexible filtering and pagination op
   Key-value pairs of attributes to filter by.
 </ParamField>
 
-<ParamField query="spanName" type="string">
+<ParamField query="span_name" type="string">
   Filter spans by span name.
 </ParamField>
 
-<ParamField query="sortOrder" type="string">
+<ParamField query="sort_order" type="string">
   Sort order for results. Accepted values: `asc` or `desc`.
 </ParamField>
 
@@ -61,13 +61,11 @@ Retrieve spans from the data warehouse with flexible filtering and pagination op
 </ParamField>
 
 <ParamField query="filters" type="FilterCondition[]">
-  Array of filter conditions to apply to the query.
+  Array of filter conditions to apply to the query. Each filter should have `id`, `value`, and `operator` fields. Filters must be URL-encoded.
+
+  Supported operators: `equals`, `not_equals`, `greater_than`, `less_than`, `exists`, `not_exists`, `contains`, `starts_with`
 </ParamField>
 
-<ParamField query="logicalOperator" type="string">
-  Logical operator to apply between filter conditions. Accepted values: `AND` or
-  `OR`.
-</ParamField>
 
 ## Response
 
@@ -101,7 +99,7 @@ Returns an array of Span objects:
   The trace state information.
 </ResponseField>
 
-<ResponseField name="spanName" type="string">
+<ResponseField name="span_name" type="string">
   The name of the span.
 </ResponseField>
 
