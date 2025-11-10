@@ -199,7 +199,10 @@
     },
     {
       "group": "Integrations",
-      "pages": ["integrations/posthog"]
+      "pages": [
+        "integrations/posthog",
+        "integrations/slack"
+      ]
     },
     {
       "group": "Contribute",
