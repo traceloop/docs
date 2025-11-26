@@ -17,17 +17,12 @@ The Traceloop GitHub App integration allows you to automatically run experiments
 <Steps>
   <Step title="Install the Traceloop GitHub App">
     Go to the [integrations page](https://app.traceloop.com/settings/integrations) within Traceloop and click on the GitHub card.
-    <Frame>
-      <img className="block dark:hidden" src="/img/traceloop-integrations/integrations-light.png" />
-      <img className="hidden dark:block" src="/img/traceloop-integrations/integrations-dark.png" />
-    </Frame>
 
     Click "Install GitHub App" to be redirected to GitHub where you can authorize the Traceloop app for your organization or personal account.
 
-    <Frame>
-      <img className="block dark:hidden" src="/img/traceloop-integrations/github-app-install-light.png" />
-      <img className="hidden dark:block" src="/img/traceloop-integrations/github-app-install-dark.png" />
-    </Frame>
+    <Info>
+    You can also install Traceloop GitHub app [here](https://github.com/apps/traceloop/installations/new) 
+    </Info>
   </Step>
 
   <Step title="Configure Repository Access">
@@ -50,7 +45,13 @@ The Traceloop GitHub App integration allows you to automatically run experiments
   </Step>
 
   <Step title="Create Your Experiment Script">
-    Create an experiment script that will run your AI flow with your dataset and evaluators. This script validates your changes by running your agent flow against real test cases and measuring quality with automated evaluators.
+    Create an [experiment](/experiments/introduction) script that runs your AI flow. An experiment consists of three key components:
+
+    - **[Dataset](/datasets/quick-start)**: A collection of test inputs that represent real-world scenarios your AI will handle
+    - **Task Function**: Your AI flow code that processes each dataset row (e.g., calling your LLM, running RAG, executing agent logic)
+    - **[Evaluators](/evaluators/intro)**: Automated quality checks that measure your AI's performance (e.g., accuracy, safety, relevance)
+
+    The experiment runs your task function on every row in the dataset, then applies evaluators to measure quality. This validates your changes with real data before production.
 
     The script below shows how to test a question-answering flow:
 
@@ -209,14 +210,29 @@ The Traceloop GitHub App integration allows you to automatically run experiments
   </Step>
 
   <Step title="View Results in Pull Requests">
-    Once configured, every pull request will automatically trigger the experiment run. The Traceloop GitHub App will post a comment with:
-    - Overall experiment status (pass/fail)
-    - Evaluation metrics and scores
-    - Links to detailed results in the Traceloop dashboard
-    - Comparison with baseline results when available
+    Once configured, every pull request will automatically trigger the experiment run. The Traceloop GitHub App will post a comment on your PR with a comprehensive summary of the evaluation results.
 
     <Frame>
-      <img src="/img/traceloop-integrations/github-pr-comment.png" />
+      <img className="block dark:hidden" src="/img/traceloop-integrations/github-app-comment-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/github-app-comment-dark.png" />
+    </Frame>
+
+    The PR comment includes:
+    - **Overall experiment status**: Quick pass/fail indicator at the top
+    - **Evaluation metrics**: Aggregated scores across all evaluators
+    - **Link to detailed results**: Click through to see the full experiment run in Traceloop
+
+    ### Detailed Results in Traceloop Dashboard
+
+    Click the link in the PR comment to view the complete experiment run in the Traceloop dashboard, where you can:
+    - Review individual test cases and their evaluator scores
+    - Analyze which specific inputs passed or failed
+    - Compare results with previous runs to track improvements or regressions
+    - Drill down into evaluator reasoning and feedback
+
+    <Frame>
+      <img className="block dark:hidden" src="/img/traceloop-integrations/github-app-exp-run-results-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/github-app-exp-run-results-dark.png" />
     </Frame>
   </Step>
 </Steps>
