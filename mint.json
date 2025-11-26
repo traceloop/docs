@@ -201,7 +201,9 @@
       "group": "Integrations",
       "pages": [
         "integrations/posthog",
-        "integrations/slack"
+        "integrations/slack",
+        "integrations/github"
+
       ]
     },
     {

@@ -1,0 +1,330 @@
+---
+title: "GitHub"
+description: "Run experiments in CI and get evaluation results directly in your pull requests"
+---
+
+**Need to change your agent flow, update a prompt, or switch models?**
+
+Instead of deploying blindly and hoping for the best, you can validate changes with real data before they reach production.
+
+Create experiments that automatically run your agent flow in CI, test your changes against production-quality datasets, and get comprehensive evaluation results directly in your pull request. This ensures every change is validated with the same rigor as your application code.
+
+
+## How It Works
+
+The Traceloop GitHub App integration allows you to automatically run experiments in your CI/CD pipeline and receive real evaluation results as comments on your pull requests. This helps you validate AI model changes, prompt updates, and configuration modifications before merging to production.
+
+<Steps>
+  <Step title="Install the Traceloop GitHub App">
+    Go to the [integrations page](https://app.traceloop.com/settings/integrations) within Traceloop and click on the GitHub card.
+    <Frame>
+      <img className="block dark:hidden" src="/img/traceloop-integrations/integrations-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/integrations-dark.png" />
+    </Frame>
+
+    Click "Install GitHub App" to be redirected to GitHub where you can authorize the Traceloop app for your organization or personal account.
+
+    <Frame>
+      <img className="block dark:hidden" src="/img/traceloop-integrations/github-app-install-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/github-app-install-dark.png" />
+    </Frame>
+  </Step>
+
+  <Step title="Configure Repository Access">
+    Select the repositories where you want to enable Traceloop experiment runs. You can choose:
+    - All repositories in your organization
+    - Specific repositories only
+
+    After installing the app you will be redirected to a Traceloop autorization page.
+
+    <Info>
+      **Permissions Required:** The app needs read access to your repository contents and write access to pull requests to post evaluation results as comments.
+    </Info>
+  </Step>
+
+   <Step title="Authorize GitHub app installation at Traceloop">
+     <Frame>
+      <img className="block dark:hidden" src="/img/traceloop-integrations/github-app-auth-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/github-app-auth-dark.png" />
+    </Frame>
+  </Step>
+
+  <Step title="Create Your Experiment Script">
+    Create an experiment script that will run your AI flow with your dataset and evaluators. This script validates your changes by running your agent flow against real test cases and measuring quality with automated evaluators.
+
+    The script below shows how to test a question-answering flow:
+
+    <CodeGroup>
+
+    ```python experiments/run_ci_experiments.py
+    import asyncio
+    import os
+    from traceloop.sdk import Traceloop
+    from openai import AsyncOpenAI
+
+    async def qa_task(row):
+        """
+        Task function that answers questions using GPT-4
+        """
+        openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+        response = await openai_client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": row["question"]}
+            ],
+            temperature=0.7,
+            max_tokens=500,
+        )
+
+        ai_response = response.choices[0].message.content
+        return {"completion": ai_response, "answer": ai_response}
+
+    async def main():
+        # Initialize Traceloop client
+        client = Traceloop.init()
+
+        # Run experiment
+        results, errors = await client.experiment.run(
+            dataset_slug="qa-dataset",
+            dataset_version="v1",
+            task=qa_task,
+            evaluators=["accuracy", "relevance"],
+            experiment_slug="ci-qa-experiment",
+            stop_on_error=False,
+        )
+
+        # Print results summary
+        print(f"Experiment completed with {len(results)} results")
+        if errors:
+            print(f"Encountered {len(errors)} errors")
+            exit(1)
+
+        print("All experiments passed!")
+
+    if __name__ == "__main__":
+        asyncio.run(main())
+    ```
+
+    ```typescript experiments/run-ci-experiments.ts
+    import * as traceloop from "@traceloop/node-server-sdk";
+    import { OpenAI } from "openai";
+    import type { ExperimentTaskFunction } from "@traceloop/node-server-sdk";
+
+    /**
+     * Task function that answers questions using GPT-4
+     */
+    const qaTask: ExperimentTaskFunction = async (row) => {
+      const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4",
+        messages: [
+          { role: "system", content: "You are a helpful assistant." },
+          { role: "user", content: row.question as string },
+        ],
+        temperature: 0.7,
+        max_tokens: 500,
+      });
+
+      const aiResponse = response.choices?.[0]?.message?.content || "";
+      return { completion: aiResponse, answer: aiResponse };
+    };
+
+    async function main() {
+      // Initialize Traceloop
+      traceloop.initialize({
+        appName: "ci-experiments",
+        apiKey: process.env.TRACELOOP_API_KEY,
+        disableBatch: true,
+        traceloopSyncEnabled: true,
+      });
+
+      await traceloop.waitForInitialization();
+      const client = traceloop.getClient();
+
+      // Run experiment
+      const results = await client.experiment.run(qaTask, {
+        datasetSlug: "qa-dataset",
+        datasetVersion: "v1",
+        evaluators: ["accuracy", "relevance"],
+        experimentSlug: "ci-qa-experiment",
+        stopOnError: false,
+      });
+
+      console.log(`Experiment completed with ${results.length} results`);
+      console.log("All experiments passed!");
+    }
+
+    main().catch((error) => {
+      console.error("Experiment failed:", error);
+      process.exit(1);
+    });
+    ```
+
+    </CodeGroup>
+  </Step>
+
+  <Step title="Set up Your CI Workflow">
+    Add a GitHub Actions workflow to your repository that runs experiments on pull requests. Create a file at `.github/workflows/traceloop-experiments.yml`:
+
+    ```yaml .github/workflows/traceloop-experiments.yml
+    name: Run Traceloop Experiments
+
+    on:
+      pull_request:
+        branches: [main, develop]
+
+    jobs:
+      run-experiments:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Set up Python
+            uses: actions/setup-python@v5
+            with:
+              python-version: '3.11'
+
+          - name: Install dependencies
+            run: |
+              pip install traceloop-sdk openai
+
+          - name: Run experiments
+            env:
+              TRACELOOP_API_KEY: ${{ secrets.TRACELOOP_API_KEY }}
+              OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+            run: |
+              python experiments/run_ci_experiments.py
+    ```
+
+    <Note>
+      Make sure to add your `TRACELOOP_API_KEY` to your GitHub repository secrets. [Generate one in Settings →](/settings/managing-api-keys)
+    </Note>
+  </Step>
+
+  <Step title="View Results in Pull Requests">
+    Once configured, every pull request will automatically trigger the experiment run. The Traceloop GitHub App will post a comment with:
+    - Overall experiment status (pass/fail)
+    - Evaluation metrics and scores
+    - Links to detailed results in the Traceloop dashboard
+    - Comparison with baseline results when available
+
+    <Frame>
+      <img src="/img/traceloop-integrations/github-pr-comment.png" />
+    </Frame>
+  </Step>
+</Steps>
+
+**That's it!**
+
+You now have automated experiment evaluation running in your CI pipeline. Every pull request will be validated against your datasets and evaluators before merging, ensuring your AI application maintains quality and performance standards.
+
+## Advanced Configuration
+
+### Running Experiments on Specific Paths
+
+You can configure your workflow to only run experiments when specific files change:
+
+```yaml .github/workflows/traceloop-experiments.yml
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/prompts/**'
+      - 'src/models/**'
+      - 'experiments/**'
+```
+
+### Multiple Experiments
+
+Run multiple experiments to validate different aspects of your application:
+
+<CodeGroup>
+
+```python Python
+# Run multiple experiments in parallel
+await asyncio.gather(
+    client.experiment.run(
+        dataset_slug="qa-dataset",
+        dataset_version="v1",
+        task=qa_task,
+        evaluators=["accuracy"],
+        experiment_slug="qa-accuracy-test",
+    ),
+    client.experiment.run(
+        dataset_slug="safety-dataset",
+        dataset_version="v1",
+        task=safety_task,
+        evaluators=["safety-check"],
+        experiment_slug="safety-test",
+    ),
+)
+```
+
+```typescript TypeScript
+// Run multiple experiments in parallel
+await Promise.all([
+  client.experiment.run(qaTask, {
+    datasetSlug: "qa-dataset",
+    datasetVersion: "v1",
+    evaluators: ["accuracy"],
+    experimentSlug: "qa-accuracy-test",
+  }),
+  client.experiment.run(safetyTask, {
+    datasetSlug: "safety-dataset",
+    datasetVersion: "v1",
+    evaluators: ["safety-check"],
+    experimentSlug: "safety-test",
+  }),
+]);
+```
+
+</CodeGroup>
+
+### Setting Thresholds
+
+Configure your CI to fail if evaluation scores fall below certain thresholds by analyzing the results:
+
+<CodeGroup>
+
+```python Python
+results, errors = await client.experiment.run(
+    dataset_slug="qa-dataset",
+    dataset_version="v1",
+    task=qa_task,
+    evaluators=["accuracy"],
+    experiment_slug="qa-experiment",
+)
+
+# Calculate average score
+avg_score = sum(r.get("score", 0) for r in results) / len(results)
+
+if avg_score < 0.8:
+    print(f"Experiment failed: average score {avg_score} below threshold 0.8")
+    exit(1)
+```
+
+```typescript TypeScript
+const results = await client.experiment.run(qaTask, {
+  datasetSlug: "qa-dataset",
+  datasetVersion: "v1",
+  evaluators: ["accuracy"],
+  experimentSlug: "qa-experiment",
+});
+
+// Calculate average score
+const avgScore = results.reduce((sum, r) => sum + (r.score || 0), 0) / results.length;
+
+if (avgScore < 0.8) {
+  console.error(`Experiment failed: average score ${avgScore} below threshold 0.8`);
+  process.exit(1);
+}
+```
+
+</CodeGroup>
