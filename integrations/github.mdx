@@ -202,14 +202,14 @@ main().catch((error) => {
   </Step>
 
   <Step title="Set up Your CI Workflow">
-    Add a GitHub Actions workflow to your repository that runs experiments on pull requests. Create a file at `.github/workflows/traceloop-experiments.yml`:
-
-    ```yaml .github/workflows/traceloop-experiments.yml
+    Add a GitHub Actions workflow to automatically run Traceloop experiments on pull requests. 
+     Below is an example workflow file you can customize for your project:
+    ```yaml ci-cd configuration 
     name: Run Traceloop Experiments
 
     on:
       pull_request:
-        branches: [main, develop]
+        branches: [main, master]
 
     jobs:
       run-experiments:
@@ -237,7 +237,13 @@ main().catch((error) => {
     ```
 
     <Note>
-      Make sure to add your `TRACELOOP_API_KEY` to your GitHub repository secrets. [Generate one in Settings →](/settings/managing-api-keys)
+    **Add secrets to your GitHub repository**
+
+    Make sure all secrets used in your experiment script (like `OPENAI_API_KEY`) are added to both:
+    - Your GitHub Actions workflow configuration
+    - Your GitHub repository secrets
+
+    Traceloop requires you to add `TRACELOOP_API_KEY` to your GitHub repository secrets. [Generate one in Settings →](/settings/managing-api-keys)
     </Note>
 
     <Frame>
@@ -246,8 +252,8 @@ main().catch((error) => {
     </Frame>
   </Step>
 
-  <Step title="View Results in Pull Requests">
-    Once configured, every pull request will automatically trigger the experiment run. The Traceloop GitHub App will post a comment on your PR with a comprehensive summary of the evaluation results.
+  <Step title="View Results in Your Pull Request">
+    Once configured, every pull request will automatically trigger the experiment run. The Traceloop GitHub App will post a comment on the PR with a comprehensive summary of the evaluation results.
 
     <Frame>
       <img className="block dark:hidden" src="/img/traceloop-integrations/github-app-comment-light.png" />
@@ -255,13 +261,13 @@ main().catch((error) => {
     </Frame>
 
     The PR comment includes:
-    - **Overall experiment status**: Quick pass/fail indicator at the top
-    - **Evaluation metrics**: Aggregated scores across all evaluators
-    - **Link to detailed results**: Click through to see the full experiment run in Traceloop
+    - **Overall experiment status**
+    - **Evaluation metrics**
+    - **Link to detailed results**
 
-    ### Detailed Results in Traceloop Dashboard
+    ### Experiment Dashboard
 
-    Click the link in the PR comment to view the complete experiment run in the Traceloop dashboard, where you can:
+    Click on the link in the PR comment to view the complete experiment run in the Traceloop experiment dashboard, where you can:
     - Review individual test cases and their evaluator scores
     - Analyze which specific inputs passed or failed
     - Compare results with previous runs to track improvements or regressions
@@ -273,111 +279,3 @@ main().catch((error) => {
     </Frame>
   </Step>
 </Steps>
-
-**That's it!**
-
-You now have automated experiment evaluation running in your CI pipeline. Every pull request will be validated against your datasets and evaluators before merging, ensuring your AI application maintains quality and performance standards.
-
-## Advanced Configuration
-
-### Running Experiments on Specific Paths
-
-You can configure your workflow to only run experiments when specific files change:
-
-```yaml .github/workflows/traceloop-experiments.yml
-on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'src/prompts/**'
-      - 'src/models/**'
-      - 'experiments/**'
-```
-
-### Multiple Experiments
-
-Run multiple experiments to validate different aspects of your application:
-
-<CodeGroup>
-
-```python Python
-# Run multiple experiments in parallel
-await asyncio.gather(
-    client.experiment.run(
-        dataset_slug="qa-dataset",
-        dataset_version="v1",
-        task=qa_task,
-        evaluators=["accuracy"],
-        experiment_slug="qa-accuracy-test",
-    ),
-    client.experiment.run(
-        dataset_slug="safety-dataset",
-        dataset_version="v1",
-        task=safety_task,
-        evaluators=["safety-check"],
-        experiment_slug="safety-test",
-    ),
-)
-```
-
-```typescript TypeScript
-// Run multiple experiments in parallel
-await Promise.all([
-  client.experiment.run(qaTask, {
-    datasetSlug: "qa-dataset",
-    datasetVersion: "v1",
-    evaluators: ["accuracy"],
-    experimentSlug: "qa-accuracy-test",
-  }),
-  client.experiment.run(safetyTask, {
-    datasetSlug: "safety-dataset",
-    datasetVersion: "v1",
-    evaluators: ["safety-check"],
-    experimentSlug: "safety-test",
-  }),
-]);
-```
-
-</CodeGroup>
-
-### Setting Thresholds
-
-Configure your CI to fail if evaluation scores fall below certain thresholds by analyzing the results:
-
-<CodeGroup>
-
-```python Python
-results, errors = await client.experiment.run(
-    dataset_slug="qa-dataset",
-    dataset_version="v1",
-    task=qa_task,
-    evaluators=["accuracy"],
-    experiment_slug="qa-experiment",
-)
-
-# Calculate average score
-avg_score = sum(r.get("score", 0) for r in results) / len(results)
-
-if avg_score < 0.8:
-    print(f"Experiment failed: average score {avg_score} below threshold 0.8")
-    exit(1)
-```
-
-```typescript TypeScript
-const results = await client.experiment.run(qaTask, {
-  datasetSlug: "qa-dataset",
-  datasetVersion: "v1",
-  evaluators: ["accuracy"],
-  experimentSlug: "qa-experiment",
-});
-
-// Calculate average score
-const avgScore = results.reduce((sum, r) => sum + (r.score || 0), 0) / results.length;
-
-if (avgScore < 0.8) {
-  console.error(`Experiment failed: average score ${avgScore} below threshold 0.8`);
-  process.exit(1);
-}
-```
-
-</CodeGroup>
