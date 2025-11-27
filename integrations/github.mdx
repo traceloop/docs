@@ -57,7 +57,7 @@ The Traceloop GitHub App integration allows you to automatically run experiments
 
     <CodeGroup>
 
-    ```python experiments/run_ci_experiments.py
+    ```python Python
     import asyncio
     import os
     from traceloop.sdk import Traceloop
@@ -108,7 +108,7 @@ The Traceloop GitHub App integration allows you to automatically run experiments
         asyncio.run(main())
     ```
 
-    ```typescript experiments/run-ci-experiments.ts
+    ```typescript TypeScript
     import * as traceloop from "@traceloop/node-server-sdk";
     import { OpenAI } from "openai";
     import type { ExperimentTaskFunction } from "@traceloop/node-server-sdk";
@@ -207,6 +207,11 @@ The Traceloop GitHub App integration allows you to automatically run experiments
     <Note>
       Make sure to add your `TRACELOOP_API_KEY` to your GitHub repository secrets. [Generate one in Settings →](/settings/managing-api-keys)
     </Note>
+
+    <Frame>
+      <img className="block dark:hidden" src="/img/traceloop-integrations/github-app-secrets-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/github-app-secrets-dark.png" />
+    </Frame>
   </Step>
 
   <Step title="View Results in Pull Requests">
