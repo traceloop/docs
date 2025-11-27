@@ -18,7 +18,7 @@ The Traceloop GitHub App integration allows you to automatically run experiments
   <Step title="Install the Traceloop GitHub App">
     Go to the [integrations page](https://app.traceloop.com/settings/integrations) within Traceloop and click on the GitHub card.
 
-    Click "Install GitHub App" to be redirected to GitHub where you can authorize the Traceloop app for your organization or personal account.
+    Click "Install GitHub App" to be redirected to GitHub where you can install the Traceloop app for your organization or personal account.
 
     <Info>
     You can also install Traceloop GitHub app [here](https://github.com/apps/traceloop/installations/new) 
@@ -58,112 +58,69 @@ The Traceloop GitHub App integration allows you to automatically run experiments
     <CodeGroup>
 
     ```python Python
-    import asyncio
-    import os
-    from traceloop.sdk import Traceloop
-    from openai import AsyncOpenAI
+import asyncio
+import os
+from openai import AsyncOpenAI
+from traceloop.sdk import Traceloop
+from traceloop.sdk.experiment.model import RunInGithubResponse
 
-    async def qa_task(row):
-        """
-        Task function that answers questions using GPT-4
-        """
-        openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Initialize Traceloop client
+client = Traceloop.init(
+      app_name="research-experiment-ci-cd"
+)
 
-        response = await openai_client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": row["question"]}
-            ],
-            temperature=0.7,
-            max_tokens=500,
-        )
+async def generate_research_response(question: str) -> str:
+    """Generate a research response using OpenAI"""
+    openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-        ai_response = response.choices[0].message.content
-        return {"completion": ai_response, "answer": ai_response}
-
-    async def main():
-        # Initialize Traceloop client
-        client = Traceloop.init()
-
-        # Run experiment
-        results, errors = await client.experiment.run(
-            dataset_slug="qa-dataset",
-            dataset_version="v1",
-            task=qa_task,
-            evaluators=["accuracy", "relevance"],
-            experiment_slug="ci-qa-experiment",
-            stop_on_error=False,
-        )
-
-        # Print results summary
-        print(f"Experiment completed with {len(results)} results")
-        if errors:
-            print(f"Encountered {len(errors)} errors")
-            exit(1)
-
-        print("All experiments passed!")
-
-    if __name__ == "__main__":
-        asyncio.run(main())
-    ```
-
-    ```typescript TypeScript
-    import * as traceloop from "@traceloop/node-server-sdk";
-    import { OpenAI } from "openai";
-    import type { ExperimentTaskFunction } from "@traceloop/node-server-sdk";
-
-    /**
-     * Task function that answers questions using GPT-4
-     */
-    const qaTask: ExperimentTaskFunction = async (row) => {
-      const openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-      });
-
-      const response = await openai.chat.completions.create({
-        model: "gpt-4",
-        messages: [
-          { role: "system", content: "You are a helpful assistant." },
-          { role: "user", content: row.question as string },
+    response = await openai_client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a helpful research assistant. Provide accurate, well-researched answers.",
+            },
+            {"role": "user", "content": question},
         ],
-        temperature: 0.7,
-        max_tokens: 500,
-      });
+        temperature=0.7,
+        max_tokens=500,
+    )
 
-      const aiResponse = response.choices?.[0]?.message?.content || "";
-      return { completion: aiResponse, answer: aiResponse };
-    };
+    return response.choices[0].message.content
 
-    async function main() {
-      // Initialize Traceloop
-      traceloop.initialize({
-        appName: "ci-experiments",
-        apiKey: process.env.TRACELOOP_API_KEY,
-        disableBatch: true,
-        traceloopSyncEnabled: true,
-      });
 
-      await traceloop.waitForInitialization();
-      const client = traceloop.getClient();
+async def research_task(row):
+    """Task function that processes each dataset row"""
+    query = row.get("query", "")
+    answer = await generate_research_response(query)
 
-      // Run experiment
-      const results = await client.experiment.run(qaTask, {
-        datasetSlug: "qa-dataset",
-        datasetVersion: "v1",
-        evaluators: ["accuracy", "relevance"],
-        experimentSlug: "ci-qa-experiment",
-        stopOnError: false,
-      });
-
-      console.log(`Experiment completed with ${results.length} results`);
-      console.log("All experiments passed!");
+    return {
+        "completion": answer,
+        "question": query,
+        "sentence": answer
     }
 
-    main().catch((error) => {
-      console.error("Experiment failed:", error);
-      process.exit(1);
-    });
+
+async def main():
+    """Run experiment in GitHub context"""
+    print("🚀 Running research experiment in GitHub CI/CD...")
+
+    # Execute tasks locally and send results to backend
+    response = await client.experiment.run(
+        task=research_task,
+        dataset_slug="research-queries",
+        dataset_version="v2",
+        evaluators=["research-word-counter", "research-relevancy"],
+        experiment_slug="research-exp",
+    )
+
+    if isinstance(response, RunInGithubResponse):
+        print(f"Experiment {response.experiment_slug} completed!")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
     ```
 
     </CodeGroup>
