@@ -120,7 +120,82 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+    ```
 
+    ```typescript TypeScript
+import * as traceloop from "@traceloop/node-server-sdk";
+import { OpenAI } from "openai";
+import type { ExperimentTaskFunction } from "@traceloop/node-server-sdk";
+
+// Initialize Traceloop
+traceloop.initialize({
+  appName: "research-experiment-ci-cd",
+  disableBatch: true,
+  traceloopSyncEnabled: true,
+});
+
+await traceloop.waitForInitialization();
+const client = traceloop.getClient();
+
+/**
+ * Generate a research response using OpenAI
+ */
+async function generateResearchResponse(question: string): Promise<string> {
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4",
+    messages: [
+      {
+        role: "system",
+        content: "You are a helpful research assistant. Provide accurate, well-researched answers.",
+      },
+      { role: "user", content: question },
+    ],
+    temperature: 0.7,
+    max_tokens: 500,
+  });
+
+  return response.choices?.[0]?.message?.content || "";
+}
+
+/**
+ * Task function that processes each dataset row
+ */
+const researchTask: ExperimentTaskFunction = async (row) => {
+  const query = (row.query as string) || "";
+  const answer = await generateResearchResponse(query);
+
+  return {
+    completion: answer,
+    question: query,
+    sentence: answer,
+  };
+};
+
+/**
+ * Run experiment in GitHub context
+ */
+async function main() {
+  console.log("🚀 Running research experiment in GitHub CI/CD...");
+
+  // Execute tasks locally and send results to backend
+  const response = await client.experiment.run(researchTask, {
+    datasetSlug: "research-queries",
+    datasetVersion: "v2",
+    evaluators: ["research-word-counter", "research-relevancy"],
+    experimentSlug: "research-exp",
+  });
+
+  console.log(`Experiment research-exp completed!`);
+}
+
+main().catch((error) => {
+  console.error("Experiment failed:", error);
+  process.exit(1);
+});
     ```
 
     </CodeGroup>
