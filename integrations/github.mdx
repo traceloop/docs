@@ -1,0 +1,281 @@
+---
+title: "GitHub"
+description: "Run experiments in CI and get evaluation results directly in your pull requests"
+---
+
+# Track Experiment Results in CI
+
+Instead of deploying blindly and hoping for the best, you can validate changes with real data before they reach production.
+
+Create experiments that automatically run your agent flow in CI, test your changes against production-quality datasets, and get comprehensive evaluation results directly in your pull request. This ensures every change is validated with the same rigor as your application code.
+
+
+## How It Works
+
+Run an experiment in your CI/CD pipeline with the Traceloop GitHub App integration. Receive experiment evaluation results as comments on your pull requests, helping you validate AI model changes, prompt updates, and configuration modifications before merging to production.
+
+<Steps>
+  <Step title="Install the Traceloop GitHub App">
+    Go to the [integrations page](https://app.traceloop.com/settings/integrations) within Traceloop and click on the GitHub card.
+
+    Click "Install GitHub App" to be redirected to GitHub where you can install the Traceloop app for your organization or personal account.
+
+    <Info>
+    You can also install Traceloop GitHub app [here](https://github.com/apps/traceloop/installations/new) 
+    </Info>
+  </Step>
+
+  <Step title="Configure Repository Access">
+    Select the repositories where you want to enable Traceloop experiment runs. You can choose:
+    - All repositories in your organization
+    - Specific repositories only
+
+    After installing the app you will be redirected to a Traceloop authorization page.
+
+    <Info>
+      **Permissions Required:** The app needs read access to your repository contents and write access to pull requests to post evaluation results as comments.
+    </Info>
+  </Step>
+
+   <Step title="Authorize GitHub app installation at Traceloop">
+     <Frame>
+      <img className="block dark:hidden" src="/img/traceloop-integrations/github-app-auth-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/github-app-auth-dark.png" />
+    </Frame>
+  </Step>
+
+  <Step title="Create Your Experiment Script">
+    Create an [experiment](/experiments/introduction) script that runs your AI flow. An experiment consists of three key components:
+
+    - **[Dataset](/datasets/quick-start)**: A collection of test inputs that represent real-world scenarios your AI will handle
+    - **Task Function**: Your AI flow code that processes each dataset row (e.g., calling your LLM, running RAG, executing agent logic)
+    - **[Evaluators](/evaluators/intro)**: Automated quality checks that measure your AI's performance (e.g., accuracy, safety, relevance)
+
+    The experiment runs your task function on every row in the dataset, then applies evaluators to measure quality. This validates your changes with real data before production.
+
+    The script below shows how to test a question-answering flow:
+
+    <CodeGroup>
+
+    ```python Python
+import asyncio
+import os
+from openai import AsyncOpenAI
+from traceloop.sdk import Traceloop
+from traceloop.sdk.experiment.model import RunInGithubResponse
+
+# Initialize Traceloop client
+client = Traceloop.init(
+      app_name="research-experiment-ci-cd"
+)
+
+async def generate_research_response(question: str) -> str:
+    """Generate a research response using OpenAI"""
+    openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    response = await openai_client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a helpful research assistant. Provide accurate, well-researched answers.",
+            },
+            {"role": "user", "content": question},
+        ],
+        temperature=0.7,
+        max_tokens=500,
+    )
+
+    return response.choices[0].message.content
+
+
+async def research_task(row):
+    """Task function that processes each dataset row"""
+    query = row.get("query", "")
+    answer = await generate_research_response(query)
+
+    return {
+        "completion": answer,
+        "question": query,
+        "sentence": answer
+    }
+
+
+async def main():
+    """Run experiment in GitHub context"""
+    print("🚀 Running research experiment in GitHub CI/CD...")
+
+    # Execute tasks locally and send results to backend
+    response = await client.experiment.run(
+        task=research_task,
+        dataset_slug="research-queries",
+        dataset_version="v2",
+        evaluators=["research-word-counter", "research-relevancy"],
+        experiment_slug="research-exp",
+    )
+
+    if isinstance(response, RunInGithubResponse):
+        print(f"Experiment {response.experiment_slug} completed!")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+    ```
+
+    ```typescript TypeScript
+import * as traceloop from "@traceloop/node-server-sdk";
+import { OpenAI } from "openai";
+import type { ExperimentTaskFunction } from "@traceloop/node-server-sdk";
+
+// Initialize Traceloop
+traceloop.initialize({
+  appName: "research-experiment-ci-cd",
+  disableBatch: true,
+  traceloopSyncEnabled: true,
+});
+
+await traceloop.waitForInitialization();
+const client = traceloop.getClient();
+
+/**
+ * Generate a research response using OpenAI
+ */
+async function generateResearchResponse(question: string): Promise<string> {
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4",
+    messages: [
+      {
+        role: "system",
+        content: "You are a helpful research assistant. Provide accurate, well-researched answers.",
+      },
+      { role: "user", content: question },
+    ],
+    temperature: 0.7,
+    max_tokens: 500,
+  });
+
+  return response.choices?.[0]?.message?.content || "";
+}
+
+/**
+ * Task function that processes each dataset row
+ */
+const researchTask: ExperimentTaskFunction = async (row) => {
+  const query = (row.query as string) || "";
+  const answer = await generateResearchResponse(query);
+
+  return {
+    completion: answer,
+    question: query,
+    sentence: answer,
+  };
+};
+
+/**
+ * Run experiment in GitHub context
+ */
+async function main() {
+  console.log("🚀 Running research experiment in GitHub CI/CD...");
+
+  // Execute tasks locally and send results to backend
+  const response = await client.experiment.run(researchTask, {
+    datasetSlug: "research-queries",
+    datasetVersion: "v2",
+    evaluators: ["research-word-counter", "research-relevancy"],
+    experimentSlug: "research-exp",
+  });
+
+  console.log(`Experiment research-exp completed!`);
+}
+
+main().catch((error) => {
+  console.error("Experiment failed:", error);
+  process.exit(1);
+});
+    ```
+
+    </CodeGroup>
+  </Step>
+
+  <Step title="Set up Your CI Workflow">
+    Add a GitHub Actions workflow to automatically run Traceloop experiments on pull requests. 
+     Below is an example workflow file you can customize for your project:
+    ```yaml ci-cd configuration 
+    name: Run Traceloop Experiments
+
+    on:
+      pull_request:
+        branches: [main, master]
+
+    jobs:
+      run-experiments:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Set up Python
+            uses: actions/setup-python@v5
+            with:
+              python-version: '3.11'
+
+          - name: Install dependencies
+            run: |
+              pip install traceloop-sdk openai
+
+          - name: Run experiments
+            env:
+              TRACELOOP_API_KEY: ${{ secrets.TRACELOOP_API_KEY }}
+              OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+            run: |
+              python experiments/run_ci_experiments.py
+    ```
+
+    <Note>
+    **Add secrets to your GitHub repository**
+
+    Make sure all secrets used in your experiment script (like `OPENAI_API_KEY`) are added to both:
+    - Your GitHub Actions workflow configuration
+    - Your GitHub repository secrets
+
+    Traceloop requires you to add `TRACELOOP_API_KEY` to your GitHub repository secrets. [Generate one in Settings →](/settings/managing-api-keys)
+    </Note>
+
+    <Frame>
+      <img className="block dark:hidden" src="/img/traceloop-integrations/github-app-secrets-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/github-app-secrets-dark.png" />
+    </Frame>
+  </Step>
+
+  <Step title="View Results in Your Pull Request">
+    Once configured, every pull request will automatically trigger the experiment run. The Traceloop GitHub App will post a comment on the PR with a comprehensive summary of the evaluation results.
+
+    <Frame>
+      <img className="block dark:hidden" src="/img/traceloop-integrations/github-app-comment-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/github-app-comment-dark.png" />
+    </Frame>
+
+    The PR comment includes:
+    - **Overall experiment status**
+    - **Evaluation metrics**
+    - **Link to detailed results**
+
+    ### Experiment Dashboard
+
+    Click on the link in the PR comment to view the complete experiment run in the Traceloop experiment dashboard, where you can:
+    - Review individual test cases and their evaluator scores
+    - Analyze which specific inputs passed or failed
+    - Compare results with previous runs to track improvements or regressions
+    - Drill down into evaluator reasoning and feedback
+
+    <Frame>
+      <img className="block dark:hidden" src="/img/traceloop-integrations/github-app-exp-run-results-light.png" />
+      <img className="hidden dark:block" src="/img/traceloop-integrations/github-app-exp-run-results-dark.png" />
+    </Frame>
+  </Step>
+</Steps>
