@@ -16,72 +16,122 @@ Each evaluator comes with a predefined input and output schema. When using an ev
 
 ## Evaluator Types
 
+### Style
+
 <CardGroup cols={3}>
   <Card title="Character Count" icon="text">
     Analyze response length and verbosity to ensure outputs meet specific length requirements.
   </Card>
-  
+
   <Card title="Character Count Ratio" icon="hashtag">
     Measure the ratio of characters to the input to assess response proportionality and expansion.
   </Card>
-  
+
   <Card title="Word Count" icon="align-left">
     Ensure appropriate response detail level by tracking the total number of words in outputs.
   </Card>
-  
+
   <Card title="Word Count Ratio" icon="hashtag">
     Measure the ratio of words to the input to compare input/output verbosity and expansion patterns.
   </Card>
-  
+
+  <Card title="Tone Detection" icon="smile">
+    Classify emotional tone of responses (joy, anger, sadness, etc.).
+  </Card>
+</CardGroup>
+
+### Quality & Correctness
+
+<CardGroup cols={3}>
   <Card title="Answer Relevancy" icon="bullseye">
     Verify responses address the query to ensure AI outputs stay on topic and remain relevant.
   </Card>
-  
+
   <Card title="Faithfulness" icon="circle-check">
     Detect hallucinations and verify facts to maintain accuracy and truthfulness in AI responses.
   </Card>
-  
-  <Card title="PII Detection" icon="shield">
-    Identify personal information exposure to protect user privacy and ensure data security compliance.
+
+  <Card title="Answer Correctness" icon="circle-check">
+    Evaluate factual accuracy by comparing answers against ground truth.
   </Card>
-  
-  <Card title="Profanity Detection" icon="triangle-exclamation">
-    Flag inappropriate language use to maintain content quality standards and professional communication.
+
+  <Card title="Answer Completeness" icon="check-circle">
+    Measure how completely responses use relevant context.
   </Card>
-  
-  <Card title="Secrets Detection" icon="lock">
-    Monitor for credential and key leaks to prevent accidental exposure of sensitive information.
-  </Card>
-  
-  <Card title="SQL Validation" icon="database">
-    Validate SQL queries to ensure proper syntax and structure in database-related AI outputs.
-  </Card>
-  
-  <Card title="JSON Validation" icon="code">
-    Validate JSON responses to ensure proper formatting and structure in API-related outputs.
-  </Card>
-  
-  <Card title="Regex Validation" icon="asterisk">
-    Validate regex patterns to ensure correct regular expression syntax and functionality.
-  </Card>
-  
-  <Card title="Placeholder Regex" icon="asterisk">
-    Validate placeholder regex patterns to ensure proper template and variable replacement structures.
-  </Card>
-  
-  <Card title="Semantic Similarity" icon="hashtag">
-    Validate semantic similarity between expected and actual responses to measure content alignment.
-  </Card>
-  
-  <Card title="Agent Goal Accuracy" icon="bullseye">
-    Validate agent goal accuracy to ensure AI systems achieve their intended objectives effectively.
-  </Card>
-  
+
   <Card title="Topic Adherence" icon="hashtag">
     Validate topic adherence to ensure responses stay focused on the specified subject matter.
   </Card>
-  
+
+  <Card title="Semantic Similarity" icon="hashtag">
+    Validate semantic similarity between expected and actual responses to measure content alignment.
+  </Card>
+
+  <Card title="Prompt Perplexity" icon="brain">
+    Measure how predictable/familiar a prompt is to a language model.
+  </Card>
+
   <Card title="Measure Perplexity" icon="hashtag">
     Measure text perplexity from logprobs to assess the predictability and coherence of generated text.
+  </Card>
+
+  <Card title="Uncertainty Detector" icon="gauge">
+    Generate responses and measure model uncertainty from logprobs.
+  </Card>
+</CardGroup>
+
+### Security & Compliance
+
+<CardGroup cols={3}>
+  <Card title="PII Detection" icon="shield">
+    Identify personal information exposure to protect user privacy and ensure data security compliance.
+  </Card>
+
+  <Card title="Profanity Detection" icon="triangle-exclamation">
+    Flag inappropriate language use to maintain content quality standards and professional communication.
+  </Card>
+
+  <Card title="Sexism Detection" icon="triangle-exclamation">
+    Detect sexist and discriminatory content.
+  </Card>
+
+  <Card title="Prompt Injection" icon="shield-exclamation">
+    Detect prompt injection attacks in user inputs.
+  </Card>
+
+  <Card title="Toxicity Detector" icon="skull">
+    Detect toxic content including personal attacks, mockery, hate, and threats.
+  </Card>
+
+  <Card title="Secrets Detection" icon="lock">
+    Monitor for credential and key leaks to prevent accidental exposure of sensitive information.
+  </Card>
+</CardGroup>
+
+### Formatting
+
+<CardGroup cols={3}>
+  <Card title="SQL Validation" icon="database">
+    Validate SQL queries to ensure proper syntax and structure in database-related AI outputs.
+  </Card>
+
+  <Card title="JSON Validation" icon="code">
+    Validate JSON responses to ensure proper formatting and structure in API-related outputs.
+  </Card>
+
+  <Card title="Regex Validation" icon="asterisk">
+    Validate regex patterns to ensure correct regular expression syntax and functionality.
+  </Card>
+
+  <Card title="Placeholder Regex" icon="asterisk">
+    Validate placeholder regex patterns to ensure proper template and variable replacement structures.
+  </Card>
+</CardGroup>
+
+### Agents
+
+<CardGroup cols={3}>
+  <Card title="Agent Goal Accuracy" icon="bullseye">
+    Validate agent goal accuracy to ensure AI systems achieve their intended objectives effectively.
   </Card>
 </CardGroup>
