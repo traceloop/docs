@@ -44,7 +44,7 @@ Connect OpenLLMetry to [Elastic APM](https://www.elastic.co/guide/en/apm/guide/c
     # Initialize Traceloop with OTLP endpoint
     Traceloop.init(
         app_name="your-service-name",
-        api_endpoint="http://localhost:4318"
+        api_endpoint=getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318")
     )
 
     # Traceloop must be initialized before importing the LLM client
@@ -139,7 +139,7 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch, resource, memory_limiter]
+      processors: [memory_limiter, batch, resource]
       exporters: [otlp/apm, logging, debug]
 
     metrics:
