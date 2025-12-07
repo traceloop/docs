@@ -21,67 +21,8 @@ Connect OpenLLMetry to [Elastic APM](https://www.elastic.co/guide/en/apm/guide/c
     ```
   </Step>
 
-  <Step title="Configure OTLP Endpoint">
-    Set the OpenTelemetry Collector endpoint where traces will be sent:
-
-    ```python
-    import os
-    os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = "http://localhost:4318"
-    ```
-
-    The endpoint should point to your OpenTelemetry Collector's HTTP receiver (default port 4318).
-  </Step>
-
-  <Step title="Initialize Traceloop">
-    Import and initialize Traceloop before any LLM imports:
-
-    ```python
-    from os import getenv
-
-    from traceloop.sdk import Traceloop
-    from openai import OpenAI
-
-    # Initialize Traceloop with OTLP endpoint
-    Traceloop.init(
-        app_name="your-service-name",
-        api_endpoint=getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318")
-    )
-
-    # Traceloop must be initialized before importing the LLM client
-    # Traceloop instruments the OpenAI client automatically
-    client = OpenAI(api_key=getenv("OPENAI_API_KEY"))
-
-    # Make LLM calls - automatically traced
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": "Hello!"}]
-    )
-    ```
-
-    <Note>
-      The `app_name` parameter sets the service name visible in Kibana APM's service list.
-    </Note>
-  </Step>
-
-  <Step title="View Traces in Kibana">
-    Navigate to Kibana's APM interface:
-
-    1. Open Kibana at `http://localhost:5601`
-    2. Go to **Observability → APM → Services**
-    3. Click on your service name (e.g., `your-service-name`)
-    4. View transactions and trace timelines with full LLM metadata
-
-    Each LLM call appears as a span containing:
-    - Model name (`gen_ai.request.model`)
-    - Token usage (`gen_ai.usage.input_tokens`, `gen_ai.usage.output_tokens`)
-    - Prompts and completions (configurable)
-    - Request duration and latency
-  </Step>
-</Steps>
-
-## OpenTelemetry Collector Configuration
-
-Configure your OpenTelemetry Collector to receive traces from OpenLLMetry and forward them to APM Server.
+<Step title="Configure OpenTelemetry Collector">
+    Configure your OpenTelemetry Collector to receive traces from OpenLLMetry and forward them to APM Server.
 
 Create an `otel-collector-config.yaml` file:
 
@@ -157,6 +98,54 @@ service:
 In production, enable TLS and use APM Server secret tokens for authentication.
 Set `tls.insecure: false` and configure `headers: Authorization: Bearer <token>`.
 </Warning>
+    </Step>
+
+  <Step title="Initialize Traceloop">
+    Import and initialize Traceloop before any LLM imports:
+
+    ```python
+    from os import getenv
+
+    from traceloop.sdk import Traceloop
+    from openai import OpenAI
+
+    # Initialize Traceloop with OTLP endpoint
+    Traceloop.init(
+        app_name="your-service-name",
+        api_endpoint="http://localhost:4318"
+    )
+
+    # Traceloop must be initialized before importing the LLM client
+    # Traceloop instruments the OpenAI client automatically
+    client = OpenAI(api_key=getenv("OPENAI_API_KEY"))
+
+    # Make LLM calls - automatically traced
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": "Hello!"}]
+    )
+    ```
+
+    <Note>
+      The `app_name` parameter sets the service name visible in Kibana APM's service list.
+    </Note>
+  </Step>
+
+  <Step title="View Traces in Kibana">
+    Navigate to Kibana's APM interface:
+
+    1. Open Kibana at `http://localhost:5601`
+    2. Go to **Observability → APM → Services**
+    3. Click on your service name (e.g., `your-service-name`)
+    4. View transactions and trace timelines with full LLM metadata
+
+    Each LLM call appears as a span containing:
+    - Model name (`gen_ai.request.model`)
+    - Token usage (`gen_ai.usage.input_tokens`, `gen_ai.usage.output_tokens`)
+    - Prompts and completions (configurable)
+    - Request duration and latency
+  </Step>
+</Steps>
 
 ## Environment Variables
 
@@ -164,7 +153,7 @@ Configure OpenLLMetry behavior using environment variables:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | OpenTelemetry Collector endpoint | `http://localhost:4318` |
+| `TRACELOOP_BASE_URL` | OpenTelemetry Collector endpoint | `http://localhost:4318` |
 | `TRACELOOP_TRACE_CONTENT` | Capture prompts/completions | `true` |
 
 
@@ -184,7 +173,7 @@ from openai import OpenAI
 
 Traceloop.init(
   app_name="recipe-service",
-  api_endpoint=getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318"),
+  api_endpoint="http://localhost:4318",
 )
 
 # Traceloop must be initialized before importing the LLM client
