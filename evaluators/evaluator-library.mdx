@@ -17,83 +17,200 @@ The Evaluator Library provides a comprehensive collection of pre-built quality c
 
 Traceloop provides several pre-configured evaluators for common assessment tasks:
 
-### Content Analysis Evaluators
+---
 
-**Character Count**
-- Analyze response length and verbosity
-- Helps ensure responses meet length requirements
+### Agent Evaluators
 
-**Character Count Ratio** 
-- Measure the ratio of characters to the input
-- Useful for assessing response proportionality
+**Agent Efficiency** <sup>(beta)</sup>
+- Evaluates how efficiently an agent completes a task by detecting redundant steps, unnecessary tool calls, loops, or poor reasoning
+- Returns a 0-1 score
+- *Implementation: Custom GPT-4o prompt*
 
-**Word Count**
-- Ensure appropriate response detail level
-- Track output length consistency
+**Agent Flow Quality** <sup>(beta)</sup>
+- Checks whether the agent satisfies all user-defined behavioral or logical conditions; strict full-condition matching
+- Returns score as ratio of passed conditions
+- *Implementation: Custom GPT-4o prompt*
 
-**Word Count Ratio**
-- Measure the ratio of words to the input
-- Compare input/output verbosity
+**Agent Goal Accuracy**
+- Determines if the agent actually achieved the user's goal, with or without a reference expected answer
+- Supports both reference-based and reference-free evaluation
+- *Implementation: Ragas AgentGoalAccuracy metrics*
 
-### Quality Assessment Evaluators
+**Agent Goal Completeness**
+- Extracts user intents across a conversation and evaluates how many were fulfilled end-to-end
+- Automatically determines fulfillment rate
+- *Implementation: DeepEval ConversationCompletenessMetric*
+
+**Agent Tool Error Detector** <sup>(beta)</sup>
+- Detects incorrect tool usage (bad params, failed API calls, unexpected behavior) in agent trajectories
+- Returns pass/fail
+- *Implementation: Custom GPT-4o prompt*
+
+---
+
+### Answer Quality Evaluators
+
+**Answer Completeness**
+- Measures how thoroughly the answer uses relevant context, using a rubric from "barely uses context" to "fully covers it"
+- Normalized to 0-1 score
+- *Implementation: Ragas RubricsScore metric*
+
+**Answer Correctness**
+- Evaluates factual correctness by combining semantic similarity with a correctness model vs ground truth
+- Returns combined 0-1 score
+- *Implementation: Ragas AnswerCorrectness + AnswerSimilarity*
 
 **Answer Relevancy**
-- Verify responses address the query
-- Ensure AI outputs stay on topic
+- Determines whether the answer meaningfully responds to the question
+- Outputs pass/fail
+- *Implementation: Ragas answer_relevancy metric*
 
 **Faithfulness**
-- Detect hallucinations and verify facts
-- Maintain accuracy and truthfulness
+- Ensures all claims in the answer are grounded in the provided context and not hallucinated
+- Binary pass/fail
+- *Implementation: Ragas Faithfulness metric*
+
+**Semantic Similarity**
+- Computes embedding-based similarity between generated text and a reference answer
+- Returns 0-1 score
+- *Implementation: Ragas SemanticSimilarity metric*
+
+---
+
+### Conversation Evaluators
+
+**Conversation Quality**
+- Overall conversation score combining relevancy (40%), completeness (40%), and memory retention (20%) over multiple turns
+- Returns weighted combined score
+- *Implementation: DeepEval TurnRelevancy + ConversationCompleteness + KnowledgeRetention*
+
+**Intent Change**
+- Detects if the conversation stayed on the original intent or drifted into unrelated topics
+- Higher score = better adherence to original topic
+- *Implementation: Ragas TopicAdherenceScore (precision mode)*
+
+**Topic Adherence**
+- Measures how well conversation messages stay aligned with specified allowed topics
+- Returns 0-1 score
+- *Implementation: Ragas TopicAdherenceScore*
+
+**Context Relevance**
+- Rates whether retrieved context actually contains the information needed to answer the question
+- Score = relevant statements / total statements
+- *Implementation: DeepEval ContextualRelevancyMetric*
+
+**Instruction Adherence**
+- Evaluates how closely the model followed system-level or user instructions
+- Returns 0-1 adherence score
+- *Implementation: DeepEval PromptAlignmentMetric*
+
+---
 
 ### Safety & Security Evaluators
 
-**PII Detection**
-- Identify personal information in responses
-- Protect user privacy and data security
+**PII Detector**
+- Detects names, addresses, emails, and other personal identifiers in text; may redact them
+- Pass/fail based on confidence threshold
+- *Implementation: Microsoft Presidio Analyzer*
 
-**Profanity Detection** 
-- Monitor for inappropriate language
-- Maintain content quality standards
+**Secrets Detector**
+- Identifies hardcoded secrets such as API keys, tokens, passwords, etc.
+- Binary pass/fail with optional redaction
+- *Implementation: Yelp detect-secrets*
 
-**Secrets Detection**
-- Monitor for sensitive information leakage
-- Prevent accidental exposure of credentials
+**Profanity Detector**
+- Checks whether text contains offensive or profane language
+- Binary pass/fail
+- *Implementation: profanity-check library*
 
-### Formatting Evaluators
+**Prompt Injection Detector**
+- Flags attempts to override system behavior or inject malicious instructions
+- Binary pass/fail based on threshold
+- *Implementation: AWS SageMaker endpoint running DeBERTa-v3 model*
 
-**SQL Validation**
-- Validate SQL queries
-- Ensure syntactically correct SQL output
+**Toxicity Detector**
+- Classifies toxic categories like threat, insult, obscenity, hate speech, etc.
+- Binary pass/fail based on threshold
+- *Implementation: AWS SageMaker unitary/toxic-bert model*
 
-**JSON Validation**
-- Validate JSON responses
-- Ensure properly formatted JSON structures
+**Sexism Detector**
+- Detects sexist language or bias specifically toward gender-based discrimination
+- Binary pass/fail based on threshold
+- *Implementation: AWS SageMaker unitary/toxic-bert model*
 
-**Regex Validation**
-- Validate regex patterns
-- Verify pattern matching requirements
+---
+
+### Format Validators
+
+**JSON Validator**
+- Validates that output is valid JSON and optionally matches a schema
+- Binary pass/fail
+- *Implementation: Python json and jsonschema*
+
+**SQL Validator**
+- Checks whether generated text is syntactically valid PostgreSQL SQL
+- Binary pass/fail
+- *Implementation: pglast Postgres parser*
+
+**Regex Validator**
+- Validates whether text matches (or must not match) a regex with flexible flags
+- Supports case sensitivity, multiline, and dotall flags
+- *Implementation: Python re*
 
 **Placeholder Regex**
-- Validate placeholder regex patterns
-- Check for expected placeholders in responses
+- Similar to regex validator, but dynamically injects a placeholder before matching
+- Useful for dynamic pattern validation
+- *Implementation: Python re*
 
-### Advanced Quality Evaluators
+---
 
-**Semantic Similarity**
-- Validate semantic similarity between texts
-- Compare meaning and context alignment
+### Text Metrics
 
-**Agent Goal Accuracy**
-- Validate agent goal accuracy
-- Measure how well agent achieves defined goals
+**Word Count**
+- Counts number of words in generated output
+- Returns integer count
+- *Implementation: Python string split*
 
-**Topic Adherence**
-- Validate topic adherence
-- Ensure responses stay within specified topics
+**Word Count Ratio**
+- Compares output word count to input word count
+- Useful for measuring expansion/compression
+- *Implementation: Python string operations*
 
-**Measure Perplexity**
-- Measure text perplexity from logprobs
-- Assess response predictability and coherence
+**Char Count**
+- Counts number of characters in the generated text
+- Returns integer count
+- *Implementation: Python len()*
+
+**Char Count Ratio**
+- Output character count divided by input character count
+- Returns float ratio
+- *Implementation: Python len()*
+
+**Perplexity**
+- Computes perplexity using provided logprobs to quantify model confidence on its output
+- Lower = more confident predictions
+- *Implementation: Mathematical calculation exp(-avg_log_prob)*
+
+---
+
+### Specialized Evaluators
+
+**LLM as a Judge**
+- Fully flexible LLM-based evaluator using arbitrary prompts and variables; returns JSON directly from the model
+- Configurable model, temperature, etc.
+- *Implementation: Custom OpenAI API call*
+
+**Tone Detection**
+- Classifies emotional tone (joy, anger, sadness, fear, neutral, etc.) based on text
+- Returns detected tone and confidence score
+- *Implementation: AWS SageMaker emotion-distilroberta model*
+
+**Uncertainty**
+- Generates a response with token-level logprobs and calculates uncertainty using max surprisal
+- Returns answer + uncertainty score
+- *Implementation: GPT-4o-mini with logprobs enabled*
+
+---
 
 ## Custom Evaluators
 
@@ -105,7 +222,9 @@ In addition to the pre-built evaluators, you can create custom evaluators tailor
 
 **Custom LLM Judge**
 - Create custom evaluations using LLM-as-a-judge
-- Leverage AI models to assess outputs against custom criteria
+- Accepts custom prompt with `{{completion}}`, `{{question}}`, `{{context}}` placeholders
+- Returns pass/fail with reason
+- *Implementation: Custom GPT-4o prompt with structured output parsing*
 
 ### Inputs
 - **string**: Text-based input parameters
@@ -114,6 +233,20 @@ In addition to the pre-built evaluators, you can create custom evaluators tailor
 ### Outputs
 - **results**: String-based evaluation results
 - **pass**: Boolean indicator for pass/fail status
+
+---
+
+## Implementation Summary
+
+| Category | Count | Libraries/Solutions |
+|----------|-------|---------------------|
+| **Ragas Metrics** | 7 | AgentGoalAccuracy, RubricsScore, AnswerCorrectness, AnswerSimilarity, answer_relevancy, Faithfulness, SemanticSimilarity, TopicAdherenceScore |
+| **DeepEval Metrics** | 5 | ConversationCompletenessMetric, TurnRelevancyMetric, KnowledgeRetentionMetric, ContextualRelevancyMetric, PromptAlignmentMetric |
+| **SageMaker Models** | 4 | Prompt Injection (DeBERTa-v3), Toxicity (toxic-bert), Sexism (toxic-bert), Tone (distilroberta) |
+| **Custom LLM Prompts** | 5 | Agent Efficiency, Agent Flow Quality, Tool Error Detector, LLM Judge, Custom LLM Judge |
+| **In-memory/Local** | 12 | JSON/SQL/Regex validators, Word/Char counts, Perplexity, Profanity, PII, Secrets |
+
+---
 
 ## Usage
 
