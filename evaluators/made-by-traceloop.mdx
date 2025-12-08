@@ -51,6 +51,10 @@ Each evaluator comes with a predefined input and output schema. When using an ev
     Evaluate factual accuracy by comparing answers against ground truth.
   </Card>
 
+  <Card title="Answer Completeness" icon="circle-check">
+    Measure how completely responses use relevant context to ensure all relevant information is addressed.
+  </Card>
+
   <Card title="Topic Adherence" icon="hashtag">
     Validate topic adherence to ensure responses stay focused on the specified subject matter.
   </Card>
@@ -59,12 +63,28 @@ Each evaluator comes with a predefined input and output schema. When using an ev
     Validate semantic similarity between expected and actual responses to measure content alignment.
   </Card>
 
+  <Card title="Instruction Adherence" icon="clipboard-check">
+    Measure how well the LLM response follows given instructions to ensure compliance with specified requirements.
+  </Card>
+
   <Card title="Prompt Perplexity" icon="brain">
     Measure how predictable/familiar a prompt is to a language model.
   </Card>
 
   <Card title="Measure Perplexity" icon="hashtag">
     Measure text perplexity from logprobs to assess the predictability and coherence of generated text.
+  </Card>
+
+  <Card title="Uncertainty Detector" icon="gauge">
+    Generate responses and measure model uncertainty from logprobs to identify when the model is less confident in its outputs.
+  </Card>
+
+  <Card title="Conversation Quality" icon="message-square">
+    Evaluate conversation quality based on tone, clarity, flow, responsiveness, and transparency.
+  </Card>
+
+  <Card title="Intent Change" icon="repeat">
+    Detect whether the user's primary intent or workflow changed significantly during a conversation.
   </Card>
 </CardGroup>
 
@@ -121,5 +141,25 @@ Each evaluator comes with a predefined input and output schema. When using an ev
 <CardGroup cols={3}>
   <Card title="Agent Goal Accuracy" icon="bullseye">
     Validate agent goal accuracy to ensure AI systems achieve their intended objectives effectively.
+  </Card>
+
+  <Card title="Agent Tool Error Detector" icon="wrench">
+    Detect errors or failures during tool execution to monitor agent tool performance.
+  </Card>
+
+  <Card title="Agent Flow Quality" icon="route">
+    Validate agent trajectories against user-defined natural language tests to assess agent decision-making paths.
+  </Card>
+
+  <Card title="Agent Efficiency" icon="zap">
+    Evaluate agent efficiency by checking for redundant calls and optimal paths to optimize agent performance.
+  </Card>
+
+  <Card title="Agent Goal Completeness" icon="circle-check">
+    Measure whether the agent successfully accomplished all user goals to verify comprehensive goal achievement.
+  </Card>
+
+  <Card title="Intent Change" icon="repeat">
+    Detect whether the user's primary intent or workflow changed significantly during a conversation.
   </Card>
 </CardGroup>
