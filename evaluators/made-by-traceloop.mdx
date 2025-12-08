@@ -34,10 +34,6 @@ Each evaluator comes with a predefined input and output schema. When using an ev
   <Card title="Word Count Ratio" icon="hashtag">
     Measure the ratio of words to the input to compare input/output verbosity and expansion patterns.
   </Card>
-
-  <Card title="Tone Detection" icon="smile">
-    Classify emotional tone of responses (joy, anger, sadness, etc.).
-  </Card>
 </CardGroup>
 
 ### Quality & Correctness
@@ -55,8 +51,8 @@ Each evaluator comes with a predefined input and output schema. When using an ev
     Evaluate factual accuracy by comparing answers against ground truth.
   </Card>
 
-  <Card title="Answer Completeness" icon="check-circle">
-    Measure how completely responses use relevant context.
+  <Card title="Answer Completeness" icon="circle-check">
+    Measure how completely responses use relevant context to ensure all relevant information is addressed.
   </Card>
 
   <Card title="Topic Adherence" icon="hashtag">
@@ -65,6 +61,10 @@ Each evaluator comes with a predefined input and output schema. When using an ev
 
   <Card title="Semantic Similarity" icon="hashtag">
     Validate semantic similarity between expected and actual responses to measure content alignment.
+  </Card>
+
+  <Card title="Instruction Adherence" icon="clipboard-check">
+    Measure how well the LLM response follows given instructions to ensure compliance with specified requirements.
   </Card>
 
   <Card title="Prompt Perplexity" icon="brain">
@@ -76,7 +76,11 @@ Each evaluator comes with a predefined input and output schema. When using an ev
   </Card>
 
   <Card title="Uncertainty Detector" icon="gauge">
-    Generate responses and measure model uncertainty from logprobs.
+    Generate responses and measure model uncertainty from logprobs to identify when the model is less confident in its outputs.
+  </Card>
+
+  <Card title="Conversation Quality" icon="comments">
+    Evaluate conversation quality based on tone, clarity, flow, responsiveness, and transparency.
   </Card>
 </CardGroup>
 
@@ -133,5 +137,25 @@ Each evaluator comes with a predefined input and output schema. When using an ev
 <CardGroup cols={3}>
   <Card title="Agent Goal Accuracy" icon="bullseye">
     Validate agent goal accuracy to ensure AI systems achieve their intended objectives effectively.
+  </Card>
+
+  <Card title="Agent Tool Error Detector" icon="wrench">
+    Detect errors or failures during tool execution to monitor agent tool performance.
+  </Card>
+
+  <Card title="Agent Flow Quality" icon="route">
+    Validate agent trajectories against user-defined natural language tests to assess agent decision-making paths.
+  </Card>
+
+  <Card title="Agent Efficiency" icon="zap">
+    Evaluate agent efficiency by checking for redundant calls and optimal paths to optimize agent performance.
+  </Card>
+
+  <Card title="Agent Goal Completeness" icon="circle-check">
+    Measure whether the agent successfully accomplished all user goals to verify comprehensive goal achievement.
+  </Card>
+
+  <Card title="Intent Change" icon="repeat">
+    Detect whether the user's primary intent or workflow changed significantly during a conversation.
   </Card>
 </CardGroup>
