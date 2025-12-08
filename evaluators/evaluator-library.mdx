@@ -59,15 +59,59 @@ Traceloop provides several pre-configured evaluators for common assessment tasks
 - Monitor for sensitive information leakage
 - Prevent accidental exposure of credentials
 
+### Formatting Evaluators
+
+**SQL Validation**
+- Validate SQL queries
+- Ensure syntactically correct SQL output
+
+**JSON Validation**
+- Validate JSON responses
+- Ensure properly formatted JSON structures
+
+**Regex Validation**
+- Validate regex patterns
+- Verify pattern matching requirements
+
+**Placeholder Regex**
+- Validate placeholder regex patterns
+- Check for expected placeholders in responses
+
+### Advanced Quality Evaluators
+
+**Semantic Similarity**
+- Validate semantic similarity between texts
+- Compare meaning and context alignment
+
+**Agent Goal Accuracy**
+- Validate agent goal accuracy
+- Measure how well agent achieves defined goals
+
+**Topic Adherence**
+- Validate topic adherence
+- Ensure responses stay within specified topics
+
+**Measure Perplexity**
+- Measure text perplexity from logprobs
+- Assess response predictability and coherence
+
 ## Custom Evaluators
 
-In addition to the pre-built evaluators, you can create custom evaluators with:
+In addition to the pre-built evaluators, you can create custom evaluators tailored to your specific needs:
+
+**Custom Metric**
+- Create custom metric evaluations
+- Define your own evaluation logic and scoring
+
+**Custom LLM Judge**
+- Create custom evaluations using LLM-as-a-judge
+- Leverage AI models to assess outputs against custom criteria
 
 ### Inputs
 - **string**: Text-based input parameters
 - Support for multiple input types
 
-### Outputs  
+### Outputs
 - **results**: String-based evaluation results
 - **pass**: Boolean indicator for pass/fail status
 
