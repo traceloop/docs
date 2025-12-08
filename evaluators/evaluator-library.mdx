@@ -220,12 +220,6 @@ In addition to the pre-built evaluators, you can create custom evaluators tailor
 - Create custom metric evaluations
 - Define your own evaluation logic and scoring
 
-**Custom LLM Judge**
-- Create custom evaluations using LLM-as-a-judge
-- Accepts custom prompt with `{{completion}}`, `{{question}}`, `{{context}}` placeholders
-- Returns pass/fail with reason
-- *Implementation: Custom GPT-4o prompt with structured output parsing*
-
 ### Inputs
 - **string**: Text-based input parameters
 - Support for multiple input types
@@ -233,18 +227,6 @@ In addition to the pre-built evaluators, you can create custom evaluators tailor
 ### Outputs
 - **results**: String-based evaluation results
 - **pass**: Boolean indicator for pass/fail status
-
----
-
-## Implementation Summary
-
-| Category | Count | Libraries/Solutions |
-|----------|-------|---------------------|
-| **Ragas Metrics** | 7 | AgentGoalAccuracy, RubricsScore, AnswerCorrectness, AnswerSimilarity, answer_relevancy, Faithfulness, SemanticSimilarity, TopicAdherenceScore |
-| **DeepEval Metrics** | 5 | ConversationCompletenessMetric, TurnRelevancyMetric, KnowledgeRetentionMetric, ContextualRelevancyMetric, PromptAlignmentMetric |
-| **SageMaker Models** | 4 | Prompt Injection (DeBERTa-v3), Toxicity (toxic-bert), Sexism (toxic-bert), Tone (distilroberta) |
-| **Custom LLM Prompts** | 5 | Agent Efficiency, Agent Flow Quality, Tool Error Detector, LLM Judge, Custom LLM Judge |
-| **In-memory/Local** | 12 | JSON/SQL/Regex validators, Word/Char counts, Perplexity, Profanity, PII, Secrets |
 
 ---
 
