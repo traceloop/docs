@@ -7,7 +7,7 @@ sidebarTitle: "Dynatrace"
   <img src="/img/integrations/dynatrace.png" />
 </Frame>
 
-Analyze all collected LLM traces within Dynatrace by using the native OpenTelemetry ingest endpoint of your Dynatrace environment.
+Analyze all collected LLM traces and logs within Dynatrace by using the native OpenTelemetry ingest endpoint of your Dynatrace environment.
 
 Go to your Dynatrace environment and create a new access token under **Manage Access Tokens**.  
 The access token needs the following permission scopes that allow the ingest of OpenTelemetry spans, metrics and logs
@@ -25,4 +25,6 @@ Set the `TRACELOOP_HEADERS` environment variable to include your previously crea
 TRACELOOP_HEADERS=Authorization=Api-Token%20<YOUR_ACCESS_TOKEN>
 ```
 
-Done! All the exported spans along with their span attributes will show up within the Dynatrace trace view.
+Done! All exported spans, along with their span attributes, will appear within the [Dynatrace trace view](https://wkf10640.apps.dynatrace.com/ui/apps/dynatrace.genai.observability).
+
+
