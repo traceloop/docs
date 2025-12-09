@@ -1,0 +1,302 @@
+---
+title: "Guardrails"
+description: "Real-time evaluation and safety checks for LLM applications"
+---
+
+Guardrails are real-time evaluators that run inline with your application code, providing immediate safety checks, policy enforcement, and quality validation before outputs reach users. Unlike post-hoc evaluation in playgrounds, experiments, or monitors, guardrails execute synchronously during runtime to prevent issues before they occur.
+
+## What Are Guardrails?
+
+Guardrails act as protective middleware layers that intercept and validate LLM inputs and outputs in real-time. They enable you to:
+
+- **Prevent harmful outputs** - Block inappropriate, biased, or unsafe content before it reaches users
+- **Enforce business policies** - Ensure responses comply with company guidelines and regulatory requirements
+- **Validate quality** - Check for hallucinations, factual accuracy, and relevance in real-time
+- **Control behavior** - Enforce tone, style, and format requirements consistently
+- **Protect sensitive data** - Detect and prevent leakage of PII, credentials, or confidential information
+
+## How Guardrails Differ from Other Evaluators
+
+| Feature | Guardrails | Experiments | Monitors | Playgrounds |
+|---------|-----------|-------------|----------|-------------|
+| **Timing** | Real-time (inline) | Post-hoc (batch) | Post-hoc (continuous) | Interactive (manual) |
+| **Execution** | Synchronous with code | Programmatic via SDK | Automated on production data | User-triggered |
+| **Purpose** | Prevention & blocking | Systematic testing | Quality tracking | Development & testing |
+| **Latency Impact** | Yes - adds to response time | No | No | N/A |
+| **Can Block Output** | Yes | No | No | No |
+
+The key distinction is that guardrails run **before** outputs are returned to users, allowing you to intercept and modify or block responses based on evaluation results.
+
+## Use Cases
+
+### Safety and Content Filtering
+Prevent toxic, harmful, or inappropriate content from reaching users:
+- Detect hate speech, profanity, or offensive language
+- Block outputs containing violent or explicit content
+- Filter responses that could cause psychological harm
+
+### Regulatory Compliance
+Ensure outputs meet legal and regulatory requirements:
+- HIPAA compliance for medical information
+- GDPR compliance for personal data handling
+- Financial services regulations (e.g., avoiding financial advice)
+- Industry-specific content guidelines
+
+### Data Protection
+Prevent sensitive information leakage:
+- Detect PII (personally identifiable information)
+- Block API keys, passwords, or credentials in responses
+- Prevent disclosure of proprietary business information
+- Ensure customer data confidentiality
+
+### Quality Assurance
+Maintain output quality standards:
+- Detect hallucinations and factual errors
+- Verify response relevance to user queries
+- Enforce minimum quality thresholds
+- Validate structured output formats
+
+### Brand and Tone Control
+Ensure consistent brand voice:
+- Enforce communication style guidelines
+- Maintain appropriate tone for audience
+- Prevent off-brand language or messaging
+- Control formality levels
+
+## Implementation
+
+### Basic Setup
+
+First, initialize the Traceloop SDK in your application:
+
+```python
+from traceloop.sdk import Traceloop
+
+Traceloop.init(app_name="your-app-name")
+```
+
+### Using the @guardrail Decorator
+
+Apply the `@guardrail` decorator to functions that interact with LLMs:
+
+```python
+from traceloop.sdk.decorators import guardrail
+from openai import AsyncOpenAI
+
+client = AsyncOpenAI()
+
+@guardrail(slug="content_safety_check")
+async def get_ai_response(user_message: str) -> str:
+    response = await client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": user_message}
+        ],
+        temperature=0.7
+    )
+    return response.choices[0].message.content
+```
+
+The `slug` parameter identifies which guardrail evaluator to apply. This corresponds to an evaluator you've defined in the Traceloop dashboard.
+
+### Medical Chat Example
+
+Here's a complete example showing guardrails for a medical chatbot:
+
+```python
+import asyncio
+import os
+from openai import AsyncOpenAI
+from traceloop.sdk import Traceloop
+from traceloop.sdk.decorators import guardrail
+
+Traceloop.init(app_name="medical-chat-example")
+
+client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+@guardrail(slug="valid_medical_chat")
+async def get_doctor_response(conversation_history: list) -> str:
+    response = await client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {
+                "role": "system",
+                "content": """You are a medical information assistant.
+                You can provide general health information but you are NOT
+                a replacement for professional medical advice.
+                Always recommend consulting with qualified healthcare providers
+                for specific medical concerns."""
+            },
+            *conversation_history
+        ],
+        temperature=0,
+        max_tokens=500
+    )
+    return response.choices[0].message.content
+
+async def medical_chat_session():
+    conversation_history = []
+
+    print("Medical Chat Assistant (type 'quit' to exit)")
+    print("-" * 50)
+
+    while True:
+        user_input = input("\nYou: ").strip()
+
+        if user_input.lower() in ['quit', 'exit', 'q']:
+            print("Thank you for using Medical Chat Assistant. Stay healthy!")
+            break
+
+        conversation_history.append({"role": "user", "content": user_input})
+
+        try:
+            response = await get_doctor_response(conversation_history)
+            print(f"\nAssistant: {response}")
+            conversation_history.append({"role": "assistant", "content": response})
+        except Exception as e:
+            print(f"Error: {e}")
+            conversation_history.pop()
+
+if __name__ == "__main__":
+    asyncio.run(medical_chat_session())
+```
+
+### Multiple Guardrails
+
+You can apply multiple guardrails to the same function for layered protection:
+
+```python
+@guardrail(slug="content_safety")
+@guardrail(slug="pii_detection")
+@guardrail(slug="factual_accuracy")
+async def generate_response(prompt: str) -> str:
+    # Your LLM call here
+    pass
+```
+
+Guardrails execute in the order they're declared (bottom to top in the decorator stack).
+
+## Creating Guardrail Evaluators
+
+Guardrails use the same evaluator system as experiments and monitors. To create a guardrail evaluator:
+
+1. Navigate to the **Evaluator Library** in your Traceloop dashboard
+2. Click **New Evaluator** or select a pre-built evaluator
+3. Define your evaluation criteria:
+   - For safety checks: Specify content categories to detect and block
+   - For compliance: Define regulatory requirements and policies
+   - For quality: Set thresholds for relevance, accuracy, or completeness
+
+4. Test the evaluator in a playground to validate behavior
+5. Note the evaluator's **slug** for use in your code
+6. Apply the evaluator using `@guardrail(slug="your-evaluator-slug")`
+
+See [Custom Evaluators](./custom-evaluator) for detailed instructions on creating evaluators.
+
+## Best Practices
+
+### Performance Considerations
+
+Guardrails add latency to your application since they run synchronously:
+
+- **Use selectively** - Apply guardrails only where needed, not to every function
+- **Choose efficient evaluators** - Simpler checks run faster than complex LLM-based evaluations
+- **Consider async execution** - Use async/await patterns to maximize throughput
+- **Monitor latency** - Track guardrail execution times and optimize slow evaluators
+- **Cache when possible** - Cache evaluation results for identical inputs
+
+### Error Handling
+
+Implement robust error handling for guardrail failures:
+
+```python
+from traceloop.sdk.decorators import guardrail
+
+@guardrail(slug="safety_check")
+async def get_response(prompt: str) -> str:
+    try:
+        # Your LLM call
+        response = await generate_llm_response(prompt)
+        return response
+    except Exception as e:
+        # Log the error
+        logger.error(f"Guardrail or LLM error: {e}")
+        # Return safe fallback
+        return "I apologize, but I cannot process this request at the moment."
+```
+
+### Layered Protection
+
+Use multiple layers of guardrails for critical applications:
+
+1. **Input validation** - Check user inputs before processing
+2. **Output validation** - Verify LLM responses before returning
+3. **Context validation** - Ensure proper use of retrieved information
+4. **Post-processing** - Final safety check on formatted outputs
+
+### Testing Guardrails
+
+Before deploying to production:
+
+- **Test in playgrounds** - Validate evaluator behavior with sample inputs
+- **Run experiments** - Test guardrails against diverse datasets
+- **Monitor false positives** - Track blocked outputs that should have been allowed
+- **Monitor false negatives** - Watch for policy violations that weren't caught
+- **A/B test** - Compare user experience with and without specific guardrails
+
+### Compliance and Auditing
+
+For regulated industries:
+
+- **Log all evaluations** - Traceloop automatically tracks all guardrail executions
+- **Document policies** - Maintain clear documentation of what each guardrail checks
+- **Version control** - Track changes to guardrail configurations over time
+- **Regular audits** - Review guardrail effectiveness and update as needed
+- **Incident response** - Have procedures for when guardrails detect violations
+
+## Configuration Options
+
+When applying guardrails, you can configure behavior:
+
+```python
+@guardrail(
+    slug="safety_check",
+    # Additional configuration options
+    blocking=True,        # Whether to block on evaluation failure
+    timeout_ms=5000,      # Maximum evaluation time
+    fallback="safe"       # Behavior on timeout or error
+)
+async def get_response(prompt: str) -> str:
+    # Your implementation
+    pass
+```
+
+## Monitoring Guardrail Performance
+
+Track guardrail effectiveness in your Traceloop dashboard:
+
+- **Execution frequency** - How often each guardrail runs
+- **Block rate** - Percentage of requests blocked by guardrails
+- **Latency impact** - Time added by guardrail evaluation
+- **Error rate** - Guardrail failures or timeouts
+- **Policy violations** - Trends in detected issues over time
+
+Use this data to optimize guardrail configuration and identify emerging safety concerns.
+
+## Integration with Experiments and Monitors
+
+Guardrails complement other evaluation workflows:
+
+- **Experiments** - Test guardrail effectiveness on historical data before deployment
+- **Monitors** - Continuously track guardrail performance in production
+- **Playgrounds** - Develop and refine guardrail evaluators interactively
+
+This integrated approach ensures comprehensive quality control across development, testing, and production environments.
+
+## Next Steps
+
+- [Create custom evaluators](./custom-evaluator) for your specific guardrail needs
+- [Explore pre-built evaluators](./made-by-traceloop) for common safety and quality checks
+- [Set up experiments](../experiments/introduction) to test guardrails before production
+- [Configure monitors](../monitoring/introduction) to track guardrail performance over time

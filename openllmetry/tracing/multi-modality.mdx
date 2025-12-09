@@ -1,0 +1,412 @@
+---
+title: "Multi-Modality Support"
+description: "Automatic logging and visualization of multi-modal LLM interactions"
+---
+
+OpenLLMetry automatically captures and logs multi-modal content from your LLM interactions, including images, audio, video, and other media types. This enables comprehensive tracing and debugging of applications that work with vision models, audio processing, and other multi-modal AI capabilities.
+
+<Note>
+  Multi-modality logging and visualization is currently only available when using [Traceloop](/openllmetry/integrations/traceloop) as your observability backend. Support for other platforms may be added in the future.
+</Note>
+
+## What is Multi-Modality Support?
+
+Multi-modality support means that OpenLLMetry automatically detects and logs all types of content in your LLM requests and responses:
+
+- **Images** - Vision model inputs, generated images, screenshots, diagrams
+- **Audio** - Speech-to-text inputs, text-to-speech outputs, audio analysis
+- **Video** - Video analysis, frame extraction, video understanding
+- **Documents** - PDFs, presentations, structured documents
+- **Mixed content** - Combinations of text, images, audio in a single request
+
+When you send multi-modal content to supported LLM providers, OpenLLMetry captures the full context automatically without requiring additional configuration.
+
+## How It Works
+
+OpenLLMetry instruments supported LLM SDKs to detect multi-modal content in API calls. When multi-modal data is present, it:
+
+1. **Captures the content** - Extracts images, audio, video, and other media from requests
+2. **Logs metadata** - Records content types, sizes, formats, and relationships
+3. **Preserves context** - Maintains the full conversation flow with all modalities
+4. **Enables visualization** - Makes content viewable in the Traceloop dashboard
+
+All of this happens automatically with zero additional code required.
+
+## Supported Models and Frameworks
+
+Multi-modality logging works with any LLM provider and framework that OpenLLMetry instruments. Common examples include:
+
+### Vision Models
+- **OpenAI GPT-4 Vision** - Image understanding and analysis
+- **Anthropic Claude 3** - Image, document, and chart analysis
+- **Google Gemini** - Multi-modal understanding across images, video, and audio
+- **Azure OpenAI** - Vision-enabled models
+
+### Audio Models
+- **OpenAI Whisper** - Speech-to-text transcription
+- **OpenAI TTS** - Text-to-speech generation
+- **ElevenLabs** - Voice synthesis and cloning
+
+### Multi-Modal Frameworks
+- **LangChain** - Multi-modal chains and agents
+- **LlamaIndex** - Multi-modal document indexing and retrieval
+- **Framework-agnostic** - Direct API calls to any provider
+
+## Usage Examples
+
+Multi-modality logging is automatic. Simply use your LLM provider as normal:
+
+### Image Analysis with OpenAI
+
+<Tabs>
+<Tab title="Python">
+
+```python
+import os
+from openai import OpenAI
+from traceloop.sdk import Traceloop
+
+Traceloop.init(app_name="vision-app")
+
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+response = client.chat.completions.create(
+    model="gpt-4-vision-preview",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "What's in this image?"},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": "https://example.com/image.jpg"
+                    }
+                }
+            ]
+        }
+    ],
+    max_tokens=300
+)
+
+print(response.choices[0].message.content)
+```
+
+The image URL and the model's response are automatically logged to Traceloop, where you can view the image alongside the conversation.
+
+</Tab>
+<Tab title="TypeScript">
+
+```typescript
+import OpenAI from "openai";
+import * as traceloop from "@traceloop/node-server-sdk";
+
+traceloop.initialize({ appName: "vision-app" });
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+async function analyzeImage() {
+  const response = await openai.chat.completions.create({
+    model: "gpt-4-vision-preview",
+    messages: [
+      {
+        role: "user",
+        content: [
+          { type: "text", text: "What's in this image?" },
+          {
+            type: "image_url",
+            image_url: {
+              url: "https://example.com/image.jpg"
+            }
+          }
+        ]
+      }
+    ],
+    max_tokens: 300
+  });
+
+  console.log(response.choices[0].message.content);
+}
+
+analyzeImage();
+```
+
+</Tab>
+</Tabs>
+
+### Image Analysis with Base64
+
+You can also send images as base64-encoded data:
+
+```python
+import base64
+from openai import OpenAI
+from traceloop.sdk import Traceloop
+
+Traceloop.init(app_name="vision-app")
+
+client = OpenAI()
+
+def encode_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
+
+image_data = encode_image("path/to/image.jpg")
+
+response = client.chat.completions.create(
+    model="gpt-4-vision-preview",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "Describe this diagram in detail"},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/jpeg;base64,{image_data}"
+                    }
+                }
+            ]
+        }
+    ]
+)
+```
+
+Base64-encoded images are automatically captured and can be viewed in the Traceloop dashboard.
+
+### Multi-Image Analysis
+
+Analyze multiple images in a single request:
+
+```python
+from openai import OpenAI
+from traceloop.sdk import Traceloop
+
+Traceloop.init(app_name="multi-image-analysis")
+
+client = OpenAI()
+
+response = client.chat.completions.create(
+    model="gpt-4-vision-preview",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "Compare these two images and describe the differences"},
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "https://example.com/before.jpg"}
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "https://example.com/after.jpg"}
+                }
+            ]
+        }
+    ]
+)
+```
+
+All images in the conversation are logged and viewable in sequence.
+
+### Audio Transcription
+
+```python
+from openai import OpenAI
+from traceloop.sdk import Traceloop
+
+Traceloop.init(app_name="audio-app")
+
+client = OpenAI()
+
+audio_file = open("speech.mp3", "rb")
+transcript = client.audio.transcriptions.create(
+    model="whisper-1",
+    file=audio_file
+)
+
+print(transcript.text)
+```
+
+Audio files and their transcriptions are automatically logged.
+
+### Text-to-Speech
+
+```python
+from openai import OpenAI
+from traceloop.sdk import Traceloop
+
+Traceloop.init(app_name="tts-app")
+
+client = OpenAI()
+
+response = client.audio.speech.create(
+    model="tts-1",
+    voice="alloy",
+    input="Welcome to our application!"
+)
+
+response.stream_to_file("output.mp3")
+```
+
+The input text and generated audio metadata are captured automatically.
+
+### Multi-Modal with Anthropic Claude
+
+```python
+import anthropic
+from traceloop.sdk import Traceloop
+
+Traceloop.init(app_name="claude-vision")
+
+client = anthropic.Anthropic()
+
+message = client.messages.create(
+    model="claude-3-opus-20240229",
+    max_tokens=1024,
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "image",
+                    "source": {
+                        "type": "url",
+                        "url": "https://example.com/chart.png"
+                    }
+                },
+                {
+                    "type": "text",
+                    "text": "Analyze the trends in this chart"
+                }
+            ]
+        }
+    ]
+)
+```
+
+### Using with LangChain
+
+Multi-modality logging works seamlessly with LangChain:
+
+```python
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage
+from traceloop.sdk import Traceloop
+
+Traceloop.init(app_name="langchain-vision")
+
+llm = ChatOpenAI(model="gpt-4-vision-preview")
+
+message = HumanMessage(
+    content=[
+        {"type": "text", "text": "What's in this image?"},
+        {
+            "type": "image_url",
+            "image_url": {"url": "https://example.com/photo.jpg"}
+        }
+    ]
+)
+
+response = llm.invoke([message])
+```
+
+## Viewing Multi-Modal Content in Traceloop
+
+When you view traces in the Traceloop dashboard:
+
+1. **Navigate to your trace** - Find the specific LLM call in your traces
+2. **View the conversation** - See the full context including all modalities
+3. **Inspect media content** - Click on images, audio, or video to view them inline
+4. **Analyze relationships** - Understand how different content types interact
+5. **Debug issues** - Identify problems with content formatting or model responses
+
+The Traceloop dashboard provides a rich, visual interface for exploring multi-modal interactions that would be difficult to debug from logs alone.
+
+## Privacy and Content Control
+
+Multi-modal content may include sensitive or proprietary information. You have full control over what gets logged:
+
+### Disable Content Tracing
+
+To prevent logging of any content (including multi-modal data):
+
+<CodeGroup>
+```bash Environment Variable
+TRACELOOP_TRACE_CONTENT=false
+```
+
+```python Python
+Traceloop.init(trace_content=False)
+```
+
+```js TypeScript / JavaScript
+Traceloop.initialize({ traceContent: false });
+```
+</CodeGroup>
+
+When content tracing is disabled, OpenLLMetry only logs metadata (model name, token counts, latency) without capturing the actual prompts, images, audio, or responses.
+
+### Selective Content Filtering
+
+For more granular control, you can filter specific types of content or implement custom redaction logic. See our [Privacy documentation](/openllmetry/privacy/traces) for detailed options.
+
+## Best Practices
+
+### Storage and Performance
+
+Multi-modal content can be large. Consider these best practices:
+
+- **Monitor storage usage** - Large images and audio files increase trace storage requirements
+- **Use appropriate image sizes** - Resize images before sending to LLMs when possible
+- **Consider content tracing settings** - Disable content logging in high-volume production environments if not needed
+- **Review retention policies** - Configure appropriate data retention in your Traceloop settings
+
+### Debugging Multi-Modal Applications
+
+Multi-modality logging is particularly valuable for:
+
+- **Image quality issues** - See exactly what images were sent to the model
+- **Format problems** - Verify that content is properly encoded and transmitted
+- **Model behavior** - Understand how models respond to different types of content
+- **User experience** - Review actual user-submitted content to improve handling
+- **Compliance** - Audit what content is being processed by your application
+
+### Security Considerations
+
+When logging multi-modal content:
+
+- **Review data policies** - Ensure compliance with data protection regulations
+- **Filter sensitive content** - Don't log PII, confidential documents, or sensitive images
+- **Access controls** - Limit who can view traces with multi-modal content
+- **Encryption** - Traceloop encrypts all data in transit and at rest
+- **Retention** - Set appropriate retention periods for multi-modal traces
+
+## Limitations
+
+Current limitations of multi-modality support:
+
+- **Traceloop only** - Multi-modal visualization is currently exclusive to the Traceloop platform. When exporting to other observability tools (Datadog, Honeycomb, etc.), multi-modal content metadata is logged but visualization is not available.
+- **Storage limits** - Very large media files (>10MB) may be truncated or linked rather than embedded
+- **Format support** - Common formats (JPEG, PNG, MP3, MP4, PDF) are fully supported; exotic formats may have limited visualization
+
+## Supported Content Types
+
+OpenLLMetry automatically detects and logs these content types:
+
+| Content Type | Format Examples | Visualization |
+|--------------|----------------|---------------|
+| Images | JPEG, PNG, GIF, WebP, SVG | Inline preview |
+| Audio | MP3, WAV, OGG, M4A | Playback controls |
+| Video | MP4, WebM, MOV | Video player |
+| Documents | PDF, DOCX (when supported by model) | Document viewer |
+| Base64 Encoded | Any of the above as data URIs | Automatic decoding |
+
+## Next Steps
+
+- Learn about [privacy controls](/openllmetry/privacy/traces) for multi-modal content
+- Explore [supported models and frameworks](/openllmetry/tracing/supported)
+- Set up [workflow annotations](/openllmetry/tracing/annotations) for complex multi-modal pipelines
+- Configure [Traceloop integration](/openllmetry/integrations/traceloop) to enable multi-modal visualization

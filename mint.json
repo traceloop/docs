@@ -92,6 +92,7 @@
       "group": "Tracing",
       "pages": [
         "openllmetry/tracing/supported",
+        "openllmetry/tracing/multi-modality",
         "openllmetry/tracing/annotations",
         "openllmetry/tracing/versions",
         "openllmetry/tracing/association",
@@ -167,6 +168,7 @@
       "group": "Evaluators",
       "pages": [
         "evaluators/intro",
+        "evaluators/guardrails",
         "evaluators/custom-evaluator",
         "evaluators/made-by-traceloop"
       ]
