@@ -1,0 +1,36 @@
+---
+title: "LLM Observability with groundcover and OpenLLMetry"
+sidebarTitle: "groundcover"
+---
+
+<Frame>
+  <img src="/img/integrations/groundcover.png" />
+</Frame>
+
+[groundcover](https://www.groundcover.com) is a BYOC, eBPF-powered, OpenTelemetry-native complete observability platform.
+
+You have two options for sending traces to groundcover:
+
+## Option 1 - Send directly to the groundcover sensor
+
+No API key required. Saves on networking costs.
+
+```bash
+TRACELOOP_BASE_URL=http://groundcover-sensor.groundcover.svc.cluster.local:4318
+```
+
+## Option 2 - Send directly to the groundcover BYOC endpoint
+
+Allows sending traces from any runtime, e.g., Docker, serverless, ECS, etc. Requires an ingestion key.
+
+First, [create an ingestion key](https://docs.groundcover.com/use-groundcover/remote-access-and-apis/ingestion-keys#creating-an-ingestion-key).
+
+Then, set the following environment variables:
+
+```bash
+TRACELOOP_BASE_URL=https://<GROUNDCOVER_BYOC_ENDPOINT>
+TRACELOOP_HEADERS="apikey=<GROUNDCOVER_INGESTION_KEY>"
+```
+
+For more information, check out the [groundcover OpenTelemetry documentation](https://docs.groundcover.com/integrations/data-sources/opentelemetry).
+
