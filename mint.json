@@ -118,6 +118,7 @@
         "openllmetry/integrations/elasticsearch-apm",
         "openllmetry/integrations/gcp",
         "openllmetry/integrations/grafana",
+        "openllmetry/integrations/groundcover",
         "openllmetry/integrations/highlight",
         "openllmetry/integrations/honeycomb",
         "openllmetry/integrations/hyperdx",
