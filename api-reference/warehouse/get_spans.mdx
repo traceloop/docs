@@ -248,11 +248,13 @@ To paginate through results:
 3. Continue until `next_cursor` is empty or you've retrieved all needed data
 
 ```bash
-# First request
-curl "https://api.traceloop.com/v2/warehouse/spans?from_timestamp_sec=1702900800&limit=50" \
+# Example Filter: [{"id":"llm.vendor","operator":"equals","value":"openai"}]
+#
+# First request with filter (URL-encoded)
+curl "https://api.traceloop.com/v2/warehouse/spans?from_timestamp_sec=1702900800&limit=50&filters=%5B%7B%22id%22%3A%22llm.vendor%22%2C%22operator%22%3A%22equals%22%2C%22value%22%3A%22openai%22%7D%5D" \
   -H "Authorization: Bearer YOUR_API_KEY"
 
 # Next page (using next_cursor from previous response)
-curl "https://api.traceloop.com/v2/warehouse/spans?from_timestamp_sec=1702900800&limit=50&cursor=1765190766599" \
+curl "https://api.traceloop.com/v2/warehouse/spans?from_timestamp_sec=1702900800&limit=50&cursor=1734451200000&filters=%5B%7B%22id%22%3A%22llm.vendor%22%2C%22operator%22%3A%22equals%22%2C%22value%22%3A%22openai%22%7D%5D" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
