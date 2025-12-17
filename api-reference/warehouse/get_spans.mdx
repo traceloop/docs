@@ -23,6 +23,12 @@ Retrieve spans from the data warehouse with flexible filtering and pagination op
   Filter spans by span name.
 </ParamField>
 
+<ParamField query="attributes" type="map[string]string">
+  Simple key-value attribute filtering. Any query parameter not matching a known field is treated as an attribute filter.
+
+  **Example:** `?llm.vendor=openai&llm.request.model=gpt-4`
+</ParamField>
+
 <ParamField query="sort_order" type="string">
   Sort order for results. Accepted values: `ASC` or `DESC`. Defaults to `ASC`.
 </ParamField>
