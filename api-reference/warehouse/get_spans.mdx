@@ -7,23 +7,11 @@ Retrieve spans from the data warehouse with flexible filtering and pagination op
 
 ## Request Parameters
 
-<ParamField query="env" type="string">
-  The environment name.
-</ParamField>
-
-<ParamField query="environments" type="string[]">
-  List of environment names to filter by.
-</ParamField>
-
-<ParamField query="envProjectIDs" type="string[]">
-  List of environment project IDs to filter by.
-</ParamField>
-
 <ParamField query="from_timestamp_sec" type="int64" required>
   Start time in Unix seconds timestamp.
 </ParamField>
 
-<ParamField query="to_timestamp_sec" type="int64" required>
+<ParamField query="to_timestamp_sec" type="int64">
   End time in Unix seconds timestamp.
 </ParamField>
 
@@ -31,71 +19,109 @@ Retrieve spans from the data warehouse with flexible filtering and pagination op
   Filter spans by workflow name.
 </ParamField>
 
-<ParamField query="attributes" type="map[string]string">
-  Key-value pairs of attributes to filter by.
-</ParamField>
-
 <ParamField query="span_name" type="string">
   Filter spans by span name.
 </ParamField>
 
 <ParamField query="sort_order" type="string">
-  Sort order for results. Accepted values: `asc` or `desc`.
+  Sort order for results. Accepted values: `ASC` or `DESC`. Defaults to `ASC`.
 </ParamField>
 
-<ParamField query="sortBy" type="string">
-  Field to sort by (e.g., `timestamp`, `duration`).
+<ParamField query="sort_by" type="string">
+  Field to sort by. Supported values:
+  - `timestamp` - Span creation time
+  - `duration_ms` - Span duration in milliseconds
+  - `span_name` - Name of the span
+  - `trace_id` - Trace identifier
+  - `total_tokens` - Total token count
+  - `traceloop_workflow_name` - Workflow name
+  - `traceloop_entity_name` - Entity name
+  - `llm_usage_total_tokens` - LLM token usage
+  - `llm_response_model` - LLM model used
 </ParamField>
 
 <ParamField query="cursor" type="int64">
-  **Deprecated:** Use `compositeCursor` instead. Pagination cursor for fetching
-  the next set of results.
-</ParamField>
-
-<ParamField query="compositeCursor" type="CompositeCursor">
-  Advanced pagination cursor for fetching the next set of results.
+  Pagination cursor for fetching the next set of results. Use the `next_cursor` value from the previous response.
 </ParamField>
 
 <ParamField query="limit" type="int">
-  Maximum number of spans to return.
+  Maximum number of spans to return per page.
 </ParamField>
 
 <ParamField query="filters" type="FilterCondition[]">
-  Array of filter conditions to apply to the query. Each filter should have `id`, `value`, and `operator` fields. Filters must be URL-encoded.
+  Array of filter conditions to apply to the query. Each filter should have `id`, `value`, and `operator` fields. Filters must be URL-encoded JSON.
 
-  Supported operators: `equals`, `not_equals`, `greater_than`, `less_than`, `exists`, `not_exists`, `contains`, `starts_with`
+  **Filter structure:**
+  ```json
+  [{"id": "field_name", "operator": "equals", "value": "value"}]
+  ```
+
+  **Supported operators:**
+  | Operator | Description |
+  |----------|-------------|
+  | `equals` | Exact match |
+  | `not_equals` | Not equal to value |
+  | `greater_than` | Greater than (numeric) |
+  | `greater_than_or_equal` | Greater than or equal (numeric) |
+  | `less_than` | Less than (numeric) |
+  | `less_than_or_equal` | Less than or equal (numeric) |
+  | `contains` | String contains value |
+  | `starts_with` | String starts with value |
+  | `in` | Value in list (use with array) |
+  | `not_in` | Value not in list (use with array) |
+  | `exists` | Field exists (no value needed) |
+  | `not_exists` | Field does not exist (no value needed) |
+
+  **Example - Filter by LLM vendor:**
+  ```
+  ?filters=[{"id":"llm.vendor","operator":"equals","value":"openai"}]
+  ```
 </ParamField>
-
 
 ## Response
 
-Returns an array of Span objects:
+Returns a paginated response containing span objects:
 
-<ResponseField name="organizationId" type="string">
-  The organization ID associated with the span.
+<ResponseField name="spans" type="object">
+  <Expandable title="spans object">
+    <ResponseField name="data" type="Span[]">
+      Array of span objects.
+    </ResponseField>
+    <ResponseField name="page_size" type="int">
+      Number of spans returned in this page.
+    </ResponseField>
+    <ResponseField name="total_results" type="int64">
+      Total number of matching spans.
+    </ResponseField>
+    <ResponseField name="next_cursor" type="string">
+      Cursor to use for fetching the next page of results.
+    </ResponseField>
+  </Expandable>
 </ResponseField>
+
+### Span Object
 
 <ResponseField name="environment" type="string">
   The environment where the span was captured.
 </ResponseField>
 
-<ResponseField name="timestamp" type="timestamp">
-  The timestamp when the span was created.
+<ResponseField name="timestamp" type="int64">
+  The timestamp when the span was created (Unix milliseconds).
 </ResponseField>
 
-<ResponseField name="traceId" type="string">
+<ResponseField name="trace_id" type="string">
   The unique trace identifier.
 </ResponseField>
 
-<ResponseField name="spanId" type="string">
+<ResponseField name="span_id" type="string">
   The unique span identifier.
 </ResponseField>
 
-<ResponseField name="parentSpanId" type="string">
+<ResponseField name="parent_span_id" type="string">
   The parent span identifier.
 </ResponseField>
 
-<ResponseField name="traceState" type="string">
+<ResponseField name="trace_state" type="string">
   The trace state information.
 </ResponseField>
 
@@ -103,60 +129,48 @@ Returns an array of Span objects:
   The name of the span.
 </ResponseField>
 
-<ResponseField name="spanKind" type="string">
-  The kind of span (e.g., CLIENT, SERVER, INTERNAL).
+<ResponseField name="span_kind" type="string">
+  The kind of span (e.g., `SPAN_KIND_CLIENT`, `SPAN_KIND_INTERNAL`).
 </ResponseField>
 
-<ResponseField name="serviceName" type="string">
+<ResponseField name="service_name" type="string">
   The name of the service that generated the span.
 </ResponseField>
 
-<ResponseField name="resourceAttributes" type="map">
+<ResponseField name="resource_attributes" type="map">
   Key-value pairs of resource attributes.
 </ResponseField>
 
-<ResponseField name="scopeName" type="string">
+<ResponseField name="scope_name" type="string">
   The instrumentation scope name.
 </ResponseField>
 
-<ResponseField name="scopeVersion" type="string">
+<ResponseField name="scope_version" type="string">
   The instrumentation scope version.
 </ResponseField>
 
-<ResponseField name="spanAttributes" type="map">
-  Key-value pairs of span attributes.
-</ResponseField>
-
-<ResponseField name="workflowName" type="string">
-  The workflow name associated with the span.
+<ResponseField name="span_attributes" type="map">
+  Key-value pairs of span attributes (e.g., `llm.vendor`, `llm.request.model`).
 </ResponseField>
 
 <ResponseField name="duration" type="int64">
-  The duration of the span in nanoseconds.
+  The duration of the span in milliseconds.
 </ResponseField>
 
-<ResponseField name="statusCode" type="string">
-  The status code of the span (e.g., OK, ERROR).
+<ResponseField name="status_code" type="string">
+  The status code of the span (e.g., `STATUS_CODE_UNSET`, `STATUS_CODE_ERROR`).
 </ResponseField>
 
-<ResponseField name="statusMessage" type="string">
+<ResponseField name="status_message" type="string">
   The status message providing additional context.
 </ResponseField>
 
-<ResponseField name="eventsName" type="string[]">
-  Array of event names associated with the span.
-</ResponseField>
-
-<ResponseField name="eventsAttributes" type="map[]">
-  Array of event attributes as key-value pairs.
-</ResponseField>
-
 <ResponseField name="prompts" type="map">
-  Prompt data associated with the span.
+  Prompt data associated with the span (for LLM calls).
 </ResponseField>
 
 <ResponseField name="completions" type="map">
-  Completion data associated with the span.
+  Completion data associated with the span (for LLM calls).
 </ResponseField>
 
 <ResponseField name="input" type="string">
@@ -170,50 +184,75 @@ Returns an array of Span objects:
 ## Example Response
 
 ```json
-[
-  {
-    "organizationId": "org_123",
-    "environment": "production",
-    "timestamp": "2025-11-01T12:00:00Z",
-    "traceId": "trace_abc123",
-    "spanId": "span_def456",
-    "parentSpanId": "span_parent_789",
-    "traceState": "",
-    "spanName": "llm.completion",
-    "spanKind": "CLIENT",
-    "serviceName": "chat-service",
-    "resourceAttributes": {
-      "service.version": "1.0.0"
-    },
-    "scopeName": "opentelemetry",
-    "scopeVersion": "1.0.0",
-    "spanAttributes": {
-      "llm.model": "gpt-4",
-      "llm.provider": "openai"
-    },
-    "workflowName": "chat-workflow",
-    "duration": 1500000000,
-    "statusCode": "OK",
-    "statusMessage": "",
-    "eventsName": ["start", "end"],
-    "eventsAttributes": [
+{
+  "spans": {
+    "data": [
       {
-        "event.type": "start"
-      },
-      {
-        "event.type": "end"
+        "environment": "production",
+        "timestamp": 1734451200000,
+        "trace_id": "a1b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7",
+        "span_id": "1a2b3c4d5e6f7a8b",
+        "parent_span_id": "9f8e7d6c5b4a3210",
+        "trace_state": "",
+        "span_name": "openai.chat",
+        "span_kind": "SPAN_KIND_CLIENT",
+        "service_name": "my-llm-app",
+        "resource_attributes": {
+          "service.name": "my-llm-app",
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.38.0"
+        },
+        "scope_name": "opentelemetry.instrumentation.openai.v1",
+        "scope_version": "0.47.5",
+        "span_attributes": {
+          "llm.vendor": "openai",
+          "llm.request.model": "gpt-4",
+          "llm.response.model": "gpt-4-0125-preview",
+          "llm.usage.input_tokens": "150",
+          "llm.usage.output_tokens": "85",
+          "llm.usage.total_tokens": "235",
+          "traceloop.workflow.name": "customer_support"
+        },
+        "duration": 1850,
+        "status_code": "STATUS_CODE_UNSET",
+        "status_message": "",
+        "prompts": {
+          "llm.prompts.0.role": "system",
+          "llm.prompts.0.content": "You are a helpful assistant.",
+          "llm.prompts.1.role": "user",
+          "llm.prompts.1.content": "What is the weather like today?"
+        },
+        "completions": {
+          "llm.completions.0.role": "assistant",
+          "llm.completions.0.content": "I don't have access to real-time weather data...",
+          "llm.completions.0.finish_reason": "stop"
+        },
+        "input": "",
+        "output": ""
       }
     ],
-    "prompts": {
-      "role": "user",
-      "content": "Hello, how are you?"
-    },
-    "completions": {
-      "role": "assistant",
-      "content": "I'm doing well, thank you!"
-    },
-    "input": "Hello, how are you?",
-    "output": "I'm doing well, thank you!"
+    "page_size": 50,
+    "total_results": 1250,
+    "next_cursor": "1734451200000"
   }
-]
+}
+```
+
+## Pagination
+
+To paginate through results:
+
+1. Make an initial request without a cursor
+2. Use the `next_cursor` value from the response in subsequent requests
+3. Continue until `next_cursor` is empty or you've retrieved all needed data
+
+```bash
+# First request
+curl "https://api.traceloop.com/v2/warehouse/spans?from_timestamp_sec=1702900800&limit=50" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+# Next page (using next_cursor from previous response)
+curl "https://api.traceloop.com/v2/warehouse/spans?from_timestamp_sec=1702900800&limit=50&cursor=1765190766599" \
+  -H "Authorization: Bearer YOUR_API_KEY"
 ```
