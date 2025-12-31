@@ -1,0 +1,62 @@
+---
+title: "Agent Efficiency"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/agent-efficiency"
+---
+
+Evaluate agent efficiency - detect redundant calls, unnecessary follow-ups
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="trajectory_completions" type="string" required>
+  Example: `["User found", "Email updated", "Changes saved"]`
+</ParamField>
+
+<ParamField body="trajectory_prompts" type="string" required>
+  Example: `["Find user info", "Update email", "Save changes"]`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="step_efficiency_reason" type="string">
+  Example: `Agent completed task with minimal redundant steps`
+</ResponseField>
+
+<ResponseField name="step_efficiency_score" type="number">
+  Example: `0.85`
+</ResponseField>
+
+<ResponseField name="task_completion_reason" type="string">
+  Example: `All required tasks were completed successfully`
+</ResponseField>
+
+<ResponseField name="task_completion_score" type="number">
+  Example: `0.92`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "trajectory_completions": "[\"User found\", \"Email updated\", \"Changes saved\"]",
+    "trajectory_prompts": "[\"Find user info\", \"Update email\", \"Save changes\"]"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "step_efficiency_reason": "Agent completed task with minimal redundant steps",
+  "step_efficiency_score": 0.85,
+  "task_completion_reason": "All required tasks were completed successfully",
+  "task_completion_score": 0.92
+}
+```

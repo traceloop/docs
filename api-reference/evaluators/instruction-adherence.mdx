@@ -1,0 +1,49 @@
+---
+title: "Instruction Adherence"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/instruction-adherence"
+---
+
+Evaluate how well responses follow given instructions
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="instructions" type="string" required>
+  Example: `Respond in exactly 3 bullet points and use formal language.`
+</ParamField>
+
+<ParamField body="response" type="string" required>
+  Example: `- First point about the topic
+- Second relevant consideration
+- Final concluding thought`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="instruction_adherence_score" type="number">
+  Example: `0.87`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "instructions": "Respond in exactly 3 bullet points and use formal language.",
+    "response": "- First point about the topic\n- Second relevant consideration\n- Final concluding thought"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "instruction_adherence_score": 0.87
+}
+```

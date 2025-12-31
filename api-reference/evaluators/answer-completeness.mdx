@@ -1,0 +1,52 @@
+---
+title: "Answer Completeness"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/answer-completeness"
+---
+
+Evaluate whether the answer is complete and contains all the necessary information
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="completion" type="string" required>
+  Example: `Paris.`
+</ParamField>
+
+<ParamField body="context" type="string" required>
+  Example: `The capital of France is Paris.`
+</ParamField>
+
+<ParamField body="question" type="string" required>
+  Example: `What is the capital of France?`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="answer_completeness_score" type="number">
+  Example: `0.95`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "completion": "Paris.",
+    "context": "The capital of France is Paris.",
+    "question": "What is the capital of France?"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "answer_completeness_score": 0.95
+}
+```

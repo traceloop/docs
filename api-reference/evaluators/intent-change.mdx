@@ -1,0 +1,68 @@
+---
+title: "Intent Change"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/intent-change"
+---
+
+Detect changes in user intent between prompts and completions
+
+## Request Body
+
+<ParamField body="config" type="object">
+  <Expandable title="config object">
+<ParamField body="model" type="string">
+  Example: `gpt-4o`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="completions" type="string" required>
+  Example: `["Sure, I can help with hotel booking", "No problem, let me search for flights"]`
+</ParamField>
+
+<ParamField body="prompts" type="string" required>
+  Example: `["I want to book a hotel", "Actually, I need a flight instead"]`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="pass" type="boolean">
+  Example: `True`
+</ResponseField>
+
+<ResponseField name="reason" type="string">
+  Example: `User intent remained consistent throughout the conversation`
+</ResponseField>
+
+<ResponseField name="score" type="integer">
+  Example: `1`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "config": {
+    "model": "gpt-4o"
+  },
+  "input": {
+    "completions": "[\"Sure, I can help with hotel booking\", \"No problem, let me search for flights\"]",
+    "prompts": "[\"I want to book a hotel\", \"Actually, I need a flight instead\"]"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "pass": true,
+  "reason": "User intent remained consistent throughout the conversation",
+  "score": 1
+}
+```

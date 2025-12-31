@@ -1,0 +1,40 @@
+---
+title: "Profanity Detector"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/profanity-detector"
+---
+
+Detect profanity in text
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="text" type="string" required>
+  Example: `This is a clean and professional message.`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="has_profanity" type="boolean"></ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "text": "This is a clean and professional message."
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "has_profanity": false
+}
+```

@@ -1,0 +1,52 @@
+---
+title: "Agent Goal Accuracy"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/agent-goal-accuracy"
+---
+
+Evaluate agent goal accuracy
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="completion" type="string" required>
+  Example: `I have booked your flight from New York to Los Angeles departing Monday at 9am.`
+</ParamField>
+
+<ParamField body="question" type="string" required>
+  Example: `Book a flight from NYC to LA for next Monday`
+</ParamField>
+
+<ParamField body="reference" type="string" required>
+  Example: `Flight booked: NYC to LA, Monday departure`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="accuracy_score" type="number">
+  Example: `0.88`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "completion": "I have booked your flight from New York to Los Angeles departing Monday at 9am.",
+    "question": "Book a flight from NYC to LA for next Monday",
+    "reference": "Flight booked: NYC to LA, Monday departure"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "accuracy_score": 0.88
+}
+```

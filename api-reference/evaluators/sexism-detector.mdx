@@ -1,0 +1,53 @@
+---
+title: "Sexism Detector"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/sexism-detector"
+---
+
+Detect sexist language and bias
+
+## Request Body
+
+<ParamField body="config" type="object">
+  <Expandable title="config object">
+<ParamField body="threshold" type="number">
+  Example: `0.5`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="text" type="string" required>
+  Example: `All team members should be treated equally regardless of gender.`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="is_safe" type="string">
+  Example: `safe`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "config": {
+    "threshold": 0.5
+  },
+  "input": {
+    "text": "All team members should be treated equally regardless of gender."
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "is_safe": "safe"
+}
+```

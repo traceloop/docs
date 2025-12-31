@@ -1,0 +1,42 @@
+---
+title: "Prompt Perplexity"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/prompt-perplexity"
+---
+
+Measure prompt perplexity to detect potential injection attempts
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="prompt" type="string" required>
+  Example: `What is the capital of France?`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="perplexity_score" type="number">
+  Example: `8.3`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "prompt": "What is the capital of France?"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "perplexity_score": 8.3
+}
+```

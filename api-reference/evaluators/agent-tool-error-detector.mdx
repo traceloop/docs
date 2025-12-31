@@ -1,0 +1,52 @@
+---
+title: "Agent Tool Error Detector"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/agent-tool-error-detector"
+---
+
+Detect errors or failures during tool execution
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="tool_input" type="string" required>
+  Example: `{"action": "search", "query": "flights to Paris"}`
+</ParamField>
+
+<ParamField body="tool_output" type="string" required>
+  Example: `{"status": "success", "results": [{"flight": "AF123", "price": 450}]}`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="reason" type="string">
+  Example: `Tool executed successfully without errors`
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  Example: `success`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "tool_input": "{\"action\": \"search\", \"query\": \"flights to Paris\"}",
+    "tool_output": "{\"status\": \"success\", \"results\": [{\"flight\": \"AF123\", \"price\": 450}]}"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "reason": "Tool executed successfully without errors",
+  "result": "success"
+}
+```

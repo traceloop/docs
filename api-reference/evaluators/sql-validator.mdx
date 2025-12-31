@@ -1,0 +1,42 @@
+---
+title: "Sql Validator"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/sql-validator"
+---
+
+Validate SQL query syntax
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="text" type="string" required>
+  Example: `SELECT * FROM users WHERE id = 1;`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="is_valid_sql" type="boolean">
+  Example: `True`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "text": "SELECT * FROM users WHERE id = 1;"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "is_valid_sql": true
+}
+```

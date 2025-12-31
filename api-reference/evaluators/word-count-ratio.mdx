@@ -1,0 +1,47 @@
+---
+title: "Word Count Ratio"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/word-count-ratio"
+---
+
+Calculate the ratio of words between two texts
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="denominator_text" type="string" required>
+  Example: `This is a longer input text for comparison`
+</ParamField>
+
+<ParamField body="numerator_text" type="string" required>
+  Example: `Short response`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="word_ratio" type="number">
+  Example: `0.85`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "denominator_text": "This is a longer input text for comparison",
+    "numerator_text": "Short response"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "word_ratio": 0.85
+}
+```

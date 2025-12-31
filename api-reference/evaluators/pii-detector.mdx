@@ -1,0 +1,51 @@
+---
+title: "Pii Detector"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/pii-detector"
+---
+
+Detect personally identifiable information in text
+
+## Request Body
+
+<ParamField body="config" type="object">
+  <Expandable title="config object">
+<ParamField body="probability_threshold" type="number">
+  Example: `0.8`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="text" type="string" required>
+  Example: `Please contact John Smith at john.smith@email.com or call 555-123-4567.`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="has_pii" type="boolean"></ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "config": {
+    "probability_threshold": 0.8
+  },
+  "input": {
+    "text": "Please contact John Smith at john.smith@email.com or call 555-123-4567."
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "has_pii": false
+}
+```

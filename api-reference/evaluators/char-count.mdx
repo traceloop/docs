@@ -1,0 +1,42 @@
+---
+title: "Char Count"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/char-count"
+---
+
+Count the number of characters in text
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="text" type="string" required>
+  Example: `Hello, world! This is a sample text.`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="char_count" type="integer">
+  Example: `42`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "text": "Hello, world! This is a sample text."
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "char_count": 42
+}
+```

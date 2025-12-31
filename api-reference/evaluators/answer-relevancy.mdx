@@ -1,0 +1,47 @@
+---
+title: "Answer Relevancy"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/answer-relevancy"
+---
+
+Check if an answer is relevant to a question
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="answer" type="string" required>
+  Example: `The capital of France is Paris.`
+</ParamField>
+
+<ParamField body="question" type="string" required>
+  Example: `What is the capital of France?`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="is_relevant" type="boolean">
+  Example: `True`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "answer": "The capital of France is Paris.",
+    "question": "What is the capital of France?"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "is_relevant": true
+}
+```

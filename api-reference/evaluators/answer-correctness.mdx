@@ -1,0 +1,52 @@
+---
+title: "Answer Correctness"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/answer-correctness"
+---
+
+Evaluate factual accuracy by comparing answers against ground truth
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="completion" type="string" required>
+  Example: `World War II ended in 1945.`
+</ParamField>
+
+<ParamField body="ground_truth" type="string" required>
+  Example: `1945`
+</ParamField>
+
+<ParamField body="question" type="string" required>
+  Example: `What year did World War II end?`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="correctness_score" type="number">
+  Example: `0.91`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "completion": "World War II ended in 1945.",
+    "ground_truth": "1945",
+    "question": "What year did World War II end?"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "correctness_score": 0.91
+}
+```

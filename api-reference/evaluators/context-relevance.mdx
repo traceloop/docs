@@ -1,0 +1,58 @@
+---
+title: "Context Relevance"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/context-relevance"
+---
+
+Evaluate whether retrieved context contains sufficient information to answer the query
+
+## Request Body
+
+<ParamField body="config" type="object">
+  <Expandable title="config object">
+<ParamField body="model" type="string">
+  Example: `gpt-4o`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="context" type="string" required>
+  Example: `Our store is open Monday to Friday from 9am to 6pm, and Saturday from 10am to 4pm. We are closed on Sundays.`
+</ParamField>
+
+<ParamField body="query" type="string" required>
+  Example: `What are the business hours?`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="relevance_score" type="number">
+  Example: `0.88`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "config": {
+    "model": "gpt-4o"
+  },
+  "input": {
+    "context": "Our store is open Monday to Friday from 9am to 6pm, and Saturday from 10am to 4pm. We are closed on Sundays.",
+    "query": "What are the business hours?"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "relevance_score": 0.88
+}
+```

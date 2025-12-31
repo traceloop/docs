@@ -1,0 +1,58 @@
+---
+title: "Conversation Quality"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/conversation-quality"
+---
+
+Evaluate conversation quality based on tone, clarity, flow, responsiveness, and transparency
+
+## Request Body
+
+<ParamField body="config" type="object">
+  <Expandable title="config object">
+<ParamField body="model" type="string">
+  Example: `gpt-4o`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="completions" type="string" required>
+  Example: `["Hi! I'd be happy to assist you today.", "We offer consulting, development, and support services."]`
+</ParamField>
+
+<ParamField body="prompts" type="string" required>
+  Example: `["Hello, how can I help?", "What services do you offer?"]`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="conversation_quality_score" type="number">
+  Example: `0.82`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "config": {
+    "model": "gpt-4o"
+  },
+  "input": {
+    "completions": "[\"Hi! I'd be happy to assist you today.\", \"We offer consulting, development, and support services.\"]",
+    "prompts": "[\"Hello, how can I help?\", \"What services do you offer?\"]"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "conversation_quality_score": 0.82
+}
+```

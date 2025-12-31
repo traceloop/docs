@@ -1,0 +1,47 @@
+---
+title: "Tone Detection"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/tone-detection"
+---
+
+Detect the tone of the text
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="text" type="string" required>
+  Example: `The capital of France is Paris.`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="score" type="number">
+  Example: `0.95`
+</ResponseField>
+
+<ResponseField name="tone" type="string">
+  Example: `neutral`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "text": "The capital of France is Paris."
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "score": 0.95,
+  "tone": "neutral"
+}
+```

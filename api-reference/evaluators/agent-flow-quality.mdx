@@ -1,0 +1,76 @@
+---
+title: "Agent Flow Quality"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/agent-flow-quality"
+---
+
+Validate agent trajectory against user-defined conditions
+
+## Request Body
+
+<ParamField body="config" type="object">
+  <Expandable title="config object">
+<ParamField body="conditions" type="string[]" required>
+  Example: `['no tools called', 'agent completed task']`
+</ParamField>
+
+<ParamField body="threshold" type="number" required>
+  Example: `0.5`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="trajectory_completions" type="string" required>
+  Example: `["Found 5 flights", "Selected $299 flight", "Booking confirmed"]`
+</ParamField>
+
+<ParamField body="trajectory_prompts" type="string" required>
+  Example: `["Search for flights", "Select the cheapest option", "Confirm booking"]`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="reason" type="string">
+  Example: `Agent followed the expected flow correctly`
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  Example: `pass`
+</ResponseField>
+
+<ResponseField name="score" type="number">
+  Example: `0.89`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "config": {
+    "conditions": [
+      "no tools called",
+      "agent completed task"
+    ],
+    "threshold": 0.5
+  },
+  "input": {
+    "trajectory_completions": "[\"Found 5 flights\", \"Selected $299 flight\", \"Booking confirmed\"]",
+    "trajectory_prompts": "[\"Search for flights\", \"Select the cheapest option\", \"Confirm booking\"]"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "reason": "Agent followed the expected flow correctly",
+  "result": "pass",
+  "score": 0.89
+}
+```

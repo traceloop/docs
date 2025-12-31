@@ -1,0 +1,58 @@
+---
+title: "Json Validator"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/json-validator"
+---
+
+Validate JSON syntax
+
+## Request Body
+
+<ParamField body="config" type="object">
+  <Expandable title="config object">
+<ParamField body="enable_schema_validation" type="boolean">
+  Example: `True`
+</ParamField>
+
+<ParamField body="schema_string" type="string">
+  Example: `{}`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="text" type="string" required>
+  Example: `{"name": "John", "age": 30}`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="is_valid_json" type="boolean">
+  Example: `True`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "config": {
+    "enable_schema_validation": true,
+    "schema_string": "{}"
+  },
+  "input": {
+    "text": "{\"name\": \"John\", \"age\": 30}"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "is_valid_json": true
+}
+```

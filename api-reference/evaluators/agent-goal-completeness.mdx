@@ -1,0 +1,68 @@
+---
+title: "Agent Goal Completeness"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/agent-goal-completeness"
+---
+
+Measure if agent accomplished all user goals
+
+## Request Body
+
+<ParamField body="config" type="object">
+  <Expandable title="config object">
+<ParamField body="threshold" type="number" required>
+  Example: `0.5`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="trajectory_completions" type="string" required>
+  Example: `["Account created", "Preferences saved", "Notifications enabled"]`
+</ParamField>
+
+<ParamField body="trajectory_prompts" type="string" required>
+  Example: `["Create new account", "Set preferences", "Enable notifications"]`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="reason" type="string">
+  Example: `All user goals were accomplished`
+</ResponseField>
+
+<ResponseField name="result" type="string">
+  Example: `complete`
+</ResponseField>
+
+<ResponseField name="score" type="number">
+  Example: `0.95`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "config": {
+    "threshold": 0.5
+  },
+  "input": {
+    "trajectory_completions": "[\"Account created\", \"Preferences saved\", \"Notifications enabled\"]",
+    "trajectory_prompts": "[\"Create new account\", \"Set preferences\", \"Enable notifications\"]"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "reason": "All user goals were accomplished",
+  "result": "complete",
+  "score": 0.95
+}
+```

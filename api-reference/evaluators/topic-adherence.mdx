@@ -1,0 +1,52 @@
+---
+title: "Topic Adherence"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/topic-adherence"
+---
+
+Evaluate topic adherence
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="completion" type="string" required>
+  Example: `Machine learning is a subset of AI that enables systems to learn from data.`
+</ParamField>
+
+<ParamField body="question" type="string" required>
+  Example: `Tell me about machine learning`
+</ParamField>
+
+<ParamField body="reference_topics" type="string" required>
+  Example: `artificial intelligence, data science, algorithms`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="adherence_score" type="number">
+  Example: `0.95`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "completion": "Machine learning is a subset of AI that enables systems to learn from data.",
+    "question": "Tell me about machine learning",
+    "reference_topics": "artificial intelligence, data science, algorithms"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "adherence_score": 0.95
+}
+```

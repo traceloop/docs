@@ -1,0 +1,47 @@
+---
+title: "Semantic Similarity"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/semantic-similarity"
+---
+
+Calculate semantic similarity between completion and reference
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="completion" type="string" required>
+  Example: `The cat sat on the mat.`
+</ParamField>
+
+<ParamField body="reference" type="string" required>
+  Example: `A feline was resting on the rug.`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="similarity_score" type="number">
+  Example: `0.92`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "completion": "The cat sat on the mat.",
+    "reference": "A feline was resting on the rug."
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "similarity_score": 0.92
+}
+```

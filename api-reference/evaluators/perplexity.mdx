@@ -1,0 +1,42 @@
+---
+title: "Perplexity"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/perplexity"
+---
+
+Measure text perplexity from logprobs
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="logprobs" type="string" required>
+  Example: `[-2.3, -1.5, -0.8, -1.2, -0.5]`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="perplexity_score" type="number">
+  Example: `12.5`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "logprobs": "[-2.3, -1.5, -0.8, -1.2, -0.5]"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "perplexity_score": 12.5
+}
+```

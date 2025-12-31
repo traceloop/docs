@@ -1,0 +1,73 @@
+---
+title: "Placeholder Regex"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/placeholder-regex"
+---
+
+Validate text against a placeholder regex pattern
+
+## Request Body
+
+<ParamField body="config" type="object">
+  <Expandable title="config object">
+<ParamField body="case_sensitive" type="boolean">
+  Example: `True`
+</ParamField>
+
+<ParamField body="dot_include_nl" type="boolean">
+  Example: `True`
+</ParamField>
+
+<ParamField body="multi_line" type="boolean">
+  Example: `True`
+</ParamField>
+
+<ParamField body="should_match" type="boolean">
+  Example: `True`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="placeholder_value" type="string" required>
+  Example: `[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}`
+</ParamField>
+
+<ParamField body="text" type="string" required>
+  Example: `user@example.com`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="is_valid_regex" type="boolean">
+  Example: `True`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "config": {
+    "case_sensitive": true,
+    "dot_include_nl": true,
+    "multi_line": true,
+    "should_match": true
+  },
+  "input": {
+    "placeholder_value": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}",
+    "text": "user@example.com"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "is_valid_regex": true
+}
+```

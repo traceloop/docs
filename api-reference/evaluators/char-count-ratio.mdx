@@ -1,0 +1,47 @@
+---
+title: "Char Count Ratio"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/char-count-ratio"
+---
+
+Calculate the ratio of characters between two texts
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="denominator_text" type="string" required>
+  Example: `This is a longer text for comparison`
+</ParamField>
+
+<ParamField body="numerator_text" type="string" required>
+  Example: `Short text`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="char_ratio" type="number">
+  Example: `0.75`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "denominator_text": "This is a longer text for comparison",
+    "numerator_text": "Short text"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "char_ratio": 0.75
+}
+```

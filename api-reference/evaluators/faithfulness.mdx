@@ -1,0 +1,52 @@
+---
+title: "Faithfulness"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/faithfulness"
+---
+
+Check if a completion is faithful to the provided context
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="completion" type="string" required>
+  Example: `The Eiffel Tower is located in Paris and was built in 1889.`
+</ParamField>
+
+<ParamField body="context" type="string" required>
+  Example: `The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France. It was constructed from 1887 to 1889.`
+</ParamField>
+
+<ParamField body="question" type="string" required>
+  Example: `When was the Eiffel Tower built?`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="is_faithful" type="boolean">
+  Example: `True`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "completion": "The Eiffel Tower is located in Paris and was built in 1889.",
+    "context": "The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France. It was constructed from 1887 to 1889.",
+    "question": "When was the Eiffel Tower built?"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "is_faithful": true
+}
+```

@@ -1,0 +1,47 @@
+---
+title: "Uncertainty Detector"
+api: "POST https://api.traceloop.com/v2/evaluators/execute/uncertainty-detector"
+---
+
+Detect uncertainty in the text
+
+## Request Body
+
+<ParamField body="input" type="object" required>
+  <Expandable title="input object">
+<ParamField body="prompt" type="string" required>
+  Example: `I am not sure, I think the capital of France is Paris.`
+</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="answer" type="string">
+  Example: `Paris`
+</ResponseField>
+
+<ResponseField name="uncertainty" type="number">
+  Example: `0.95`
+</ResponseField>
+
+## Example
+
+### Request
+
+```json
+{
+  "input": {
+    "prompt": "I am not sure, I think the capital of France is Paris."
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "answer": "Paris",
+  "uncertainty": 0.95
+}
+```
