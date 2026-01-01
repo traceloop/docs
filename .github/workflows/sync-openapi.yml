@@ -69,6 +69,11 @@ jobs:
             "openapi-whitelist.yaml" \
             "openapi.json"
 
+      - name: Generate MDX files
+        run: |
+          echo "Generating MDX files from OpenAPI spec..."
+          npx @mintlify/scraping@latest openapi-file openapi.json -o api-reference
+
       - name: Clean up temporary files
         run: |
           rm -rf api-service node_modules package.json package-lock.json
