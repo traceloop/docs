@@ -49,8 +49,8 @@ jobs:
       - name: Read whitelist configuration
         id: config
         run: |
-          # Extract source path from whitelist config
-          SOURCE_PATH=$(grep -A1 'path:' openapi-whitelist.yaml | tail -1 | sed 's/.*: *//' | tr -d '"' | tr -d "'" | xargs)
+          # Extract source path from whitelist config using Node.js
+          SOURCE_PATH=$(node -e "const yaml = require('js-yaml'); const fs = require('fs'); const config = yaml.load(fs.readFileSync('openapi-whitelist.yaml', 'utf8')); console.log(config.source.path);")
           echo "source_path=$SOURCE_PATH" >> $GITHUB_OUTPUT
           echo "Source spec path: $SOURCE_PATH"
 
