@@ -1,5 +1,6 @@
 {
   "name": "traceloop",
+  "openapi": "openapi.json",
   "favicon": "/favicon.png",
   "logo": {
     "light": "/logo/traceloop-light.png",
