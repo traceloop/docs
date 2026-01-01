@@ -74,16 +74,23 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          if [ ! -f openapi.json ]; then
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "New openapi.json file will be created"
-          elif git diff --quiet openapi.json 2>/dev/null; then
+          # Check if file is new (untracked) or modified
+          if ! git ls-files --error-unmatch openapi.json 2>/dev/null; then
+            # File is not tracked by git - it's new
+            if [ -f openapi.json ]; then
+              echo "has_changes=true" >> $GITHUB_OUTPUT
+              echo "New openapi.json file will be created"
+            else
+              echo "has_changes=false" >> $GITHUB_OUTPUT
+              echo "Error: openapi.json was not generated"
+            fi
+          elif git diff --quiet openapi.json; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
             echo "No changes detected in OpenAPI spec"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
             echo "Changes detected in OpenAPI spec"
-            git diff --stat openapi.json 2>/dev/null || echo "New file"
+            git diff --stat openapi.json
           fi
 
       - name: Create Pull Request
