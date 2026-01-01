@@ -44,8 +44,7 @@ function getGroupsFromSpec(spec) {
 
 /**
  * Update mint.json with new API reference navigation
- * Only manages groups AFTER the "API Reference" intro group
- * Groups before it are preserved untouched
+ * Only updates/adds groups from the spec, preserves other API groups
  */
 function updateMintJson(mintPath, groups) {
   const mint = JSON.parse(fs.readFileSync(mintPath, "utf8"));
@@ -60,18 +59,26 @@ function updateMintJson(mintPath, groups) {
     process.exit(1);
   }
 
-  // Remove all groups after "API Reference" intro (these are the API endpoint groups)
-  const removedGroups = mint.navigation.splice(apiRefIntroIndex + 1);
-  console.log(`  Removed ${removedGroups.length} existing API groups`);
+  // Process each group from the spec
+  for (const [groupName, pages] of Object.entries(groups)) {
+    // Look for existing group with same name AFTER the API Reference intro
+    const existingIndex = mint.navigation.findIndex(
+      (g, i) => i > apiRefIntroIndex && g.group === groupName
+    );
 
-  // Add new groups from the spec
-  const newGroups = Object.entries(groups).map(([groupName, pages]) => ({
-    group: groupName,
-    pages: pages.sort(),
-  }));
-
-  mint.navigation.push(...newGroups);
-  console.log(`  Added ${newGroups.length} API groups from spec`);
+    if (existingIndex !== -1) {
+      // Replace existing group's pages
+      mint.navigation[existingIndex].pages = pages.sort();
+      console.log(`  Updated: ${groupName} (${pages.length} pages)`);
+    } else {
+      // Add new group at the end
+      mint.navigation.push({
+        group: groupName,
+        pages: pages.sort(),
+      });
+      console.log(`  Added: ${groupName} (${pages.length} pages)`);
+    }
+  }
 
   fs.writeFileSync(mintPath, JSON.stringify(mint, null, 2) + "\n");
   console.log(`\nUpdated mint.json navigation`);
