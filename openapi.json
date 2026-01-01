@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.3",
   "info": {
     "contact": {},
     "title": "Traceloop API",
@@ -8,117 +8,130 @@
   "paths": {
     "/v2/organizations": {
       "post": {
-        "consumes": [
-          "application/json"
-        ],
         "description": "Create a new organization with environments and API keys. Requires LaunchDarkly feature flag permission.",
-        "parameters": [
-          {
-            "description": "Organization creation request",
-            "in": "body",
-            "name": "request",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/request.CreateOrganizationRequest"
-            }
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "parameters": [],
         "responses": {
           "201": {
             "description": "Created",
-            "schema": {
-              "$ref": "#/definitions/response.CreateOrganizationResponse"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.CreateOrganizationResponse"
+                }
+              }
             }
           },
           "400": {
             "description": "Invalid request body or validation error",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
             }
           },
           "403": {
             "description": "Not allowed to create organizations",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/response.ErrorResponse"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
             }
           }
         },
         "summary": "Create a new organization",
         "tags": [
           "organizations"
-        ]
+        ],
+        "requestBody": {
+          "description": "Organization creation request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.CreateOrganizationRequest"
+              }
+            }
+          }
+        }
       }
     }
   },
-  "definitions": {
-    "request.CreateOrganizationRequest": {
-      "properties": {
-        "envs": {
-          "items": {
+  "components": {
+    "schemas": {
+      "request.CreateOrganizationRequest": {
+        "properties": {
+          "envs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "org_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "org_name"
+        ],
+        "type": "object"
+      },
+      "response.CreateOrganizationResponse": {
+        "properties": {
+          "environments": {
+            "items": {
+              "$ref": "#/components/schemas/response.EnvironmentWithKeyResponse"
+            },
+            "type": "array"
+          },
+          "org_id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.EnvironmentWithKeyResponse": {
+        "properties": {
+          "api_key": {
             "type": "string"
           },
-          "type": "array"
+          "slug": {
+            "type": "string"
+          }
         },
-        "org_name": {
-          "type": "string"
-        }
+        "type": "object"
       },
-      "required": [
-        "org_name"
-      ],
-      "type": "object"
-    },
-    "response.CreateOrganizationResponse": {
-      "properties": {
-        "environments": {
-          "items": {
-            "$ref": "#/definitions/response.EnvironmentWithKeyResponse"
-          },
-          "type": "array"
+      "response.ErrorResponse": {
+        "description": "Standard error response structure",
+        "properties": {
+          "error": {
+            "example": "error message",
+            "type": "string"
+          }
         },
-        "org_id": {
-          "type": "string"
-        }
-      },
-      "type": "object"
+        "type": "object"
+      }
     },
-    "response.EnvironmentWithKeyResponse": {
-      "properties": {
-        "api_key": {
-          "type": "string"
-        },
-        "slug": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "response.ErrorResponse": {
-      "description": "Standard error response structure",
-      "properties": {
-        "error": {
-          "example": "error message",
-          "type": "string"
-        }
-      },
-      "type": "object"
-    }
-  },
-  "securityDefinitions": {
-    "BearerAuth": {
-      "description": "Type \"Bearer\" followed by a space and JWT token.",
-      "in": "header",
-      "name": "Authorization",
-      "type": "apiKey"
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Type \"Bearer\" followed by a space and JWT token."
+      }
     }
   }
 }
