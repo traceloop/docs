@@ -44,44 +44,90 @@ function getGroupsFromSpec(spec) {
 
 /**
  * Update mint.json with new API reference navigation
+ * Only manages api-reference/* pages, preserving other pages in groups
  */
 function updateMintJson(mintPath, groups) {
   const mint = JSON.parse(fs.readFileSync(mintPath, "utf8"));
 
-  // Find the "API Reference" intro group index
-  const apiRefIntroIndex = mint.navigation.findIndex(
-    (g) => g.group === "API Reference" && g.pages?.includes("api-reference/introduction")
-  );
+  let updatedCount = 0;
+  let addedCount = 0;
+  let removedCount = 0;
 
-  // Remove all existing API reference groups (except intro)
-  const apiGroupNames = Object.keys(groups);
-  mint.navigation = mint.navigation.filter((g) => {
-    // Keep non-API groups
-    if (!apiGroupNames.includes(g.group) && g.group !== "API Reference") return true;
-    // Keep the API Reference intro group
-    if (g.group === "API Reference" && g.pages?.includes("api-reference/introduction")) return true;
-    return false;
-  });
+  // Get all group names from the spec
+  const specGroupNames = new Set(Object.keys(groups));
 
-  // Find where to insert (after API Reference intro)
-  let insertIndex = mint.navigation.findIndex(
-    (g) => g.group === "API Reference"
-  );
-  if (insertIndex === -1) insertIndex = mint.navigation.length;
-  else insertIndex += 1;
+  // Process existing navigation groups
+  for (let i = mint.navigation.length - 1; i >= 0; i--) {
+    const navGroup = mint.navigation[i];
+    const existingPages = navGroup.pages || [];
 
-  // Add new groups
-  const newGroups = Object.entries(groups).map(([group, pages]) => ({
-    group,
-    pages: pages.sort(),
-  }));
+    // Check if this group has any api-reference pages
+    const hasApiRefPages = existingPages.some(
+      (p) => typeof p === "string" && p.startsWith("api-reference/")
+    );
 
-  mint.navigation.splice(insertIndex, 0, ...newGroups);
+    if (!hasApiRefPages) continue; // Skip groups without api-reference pages
+
+    // Separate api-reference pages from other pages
+    const nonApiRefPages = existingPages.filter(
+      (p) => typeof p !== "string" || !p.startsWith("api-reference/")
+    );
+
+    if (specGroupNames.has(navGroup.group)) {
+      // Group exists in spec - replace api-reference pages with new ones
+      const newApiRefPages = groups[navGroup.group] || [];
+      const mergedPages = [...nonApiRefPages, ...newApiRefPages].sort();
+
+      if (mergedPages.length > 0) {
+        mint.navigation[i].pages = mergedPages;
+        console.log(`  Updated: ${navGroup.group} (${newApiRefPages.length} api-ref pages)`);
+        updatedCount++;
+      } else {
+        // No pages left - remove group
+        mint.navigation.splice(i, 1);
+        console.log(`  Removed: ${navGroup.group} (empty)`);
+        removedCount++;
+      }
+
+      // Mark as processed
+      specGroupNames.delete(navGroup.group);
+    } else {
+      // Group not in spec - remove only api-reference pages
+      if (nonApiRefPages.length > 0) {
+        mint.navigation[i].pages = nonApiRefPages;
+        console.log(`  Cleaned: ${navGroup.group} (removed api-ref pages)`);
+      } else {
+        // Only had api-reference pages - remove entire group
+        mint.navigation.splice(i, 1);
+        console.log(`  Removed: ${navGroup.group} (only had api-ref pages)`);
+        removedCount++;
+      }
+    }
+  }
+
+  // Add new groups that don't exist yet
+  for (const groupName of specGroupNames) {
+    const pages = groups[groupName];
+    if (pages.length === 0) continue;
+
+    // Find where to insert (after API Reference intro)
+    const apiRefIndex = mint.navigation.findIndex(
+      (g) => g.group === "API Reference" && g.pages?.includes("api-reference/introduction")
+    );
+    const insertIndex = apiRefIndex !== -1 ? apiRefIndex + 1 : mint.navigation.length;
+
+    mint.navigation.splice(insertIndex, 0, {
+      group: groupName,
+      pages: pages.sort(),
+    });
+    console.log(`  Added: ${groupName} (${pages.length} pages)`);
+    addedCount++;
+  }
 
   fs.writeFileSync(mintPath, JSON.stringify(mint, null, 2) + "\n");
-  console.log(`Updated mint.json with ${newGroups.length} API groups`);
+  console.log(`\nUpdated mint.json: ${updatedCount} updated, ${addedCount} added, ${removedCount} removed`);
 
-  return newGroups;
+  return groups;
 }
 
 function main() {
@@ -106,7 +152,7 @@ function main() {
     console.log(`  ${group}: ${pages.length} pages`);
   }
 
-  const updated = updateMintJson(mintPath, groups);
+  updateMintJson(mintPath, groups);
   console.log("\nNavigation updated successfully!");
 }
 
