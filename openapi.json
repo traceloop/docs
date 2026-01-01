@@ -54,7 +54,9 @@
     }
   },
   "info": {
-    "contact": {}
+    "contact": {},
+    "title": "Traceloop API",
+    "version": "1.0.0"
   },
   "paths": {
     "/v2/organizations": {

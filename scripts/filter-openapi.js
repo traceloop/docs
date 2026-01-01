@@ -188,6 +188,17 @@ function filterOpenAPISpec(spec, config) {
     paths: filteredPaths,
   };
 
+  // Ensure required info fields exist (Swagger 2.0 / OpenAPI 3.0)
+  if (!filteredSpec.info) {
+    filteredSpec.info = {};
+  }
+  if (!filteredSpec.info.title) {
+    filteredSpec.info.title = "Traceloop API";
+  }
+  if (!filteredSpec.info.version) {
+    filteredSpec.info.version = "1.0.0";
+  }
+
   // Filter tags to only include those used by included paths
   if (spec.tags && includedTags.size > 0) {
     filteredSpec.tags = spec.tags.filter((tag) => includedTags.has(tag.name));
