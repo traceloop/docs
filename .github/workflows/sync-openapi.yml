@@ -49,8 +49,19 @@ jobs:
       - name: Read whitelist configuration
         id: config
         run: |
-          # Extract source path from whitelist config
-          SOURCE_PATH=$(grep -A1 'path:' openapi-whitelist.yaml | tail -1 | sed 's/.*: *//' | tr -d '"' | tr -d "'" | xargs)
+          # Debug: show the file content
+          echo "=== openapi-whitelist.yaml content ==="
+          cat openapi-whitelist.yaml
+          echo "=== end of file ==="
+
+          # Extract source path from whitelist config (under source: section)
+          SOURCE_PATH=$(grep -E '^\s+path:' openapi-whitelist.yaml | head -1 | sed 's/.*path:\s*//' | tr -d '"' | tr -d "'" | xargs)
+
+          if [ -z "$SOURCE_PATH" ]; then
+            echo "Error: Could not extract source path from openapi-whitelist.yaml"
+            exit 1
+          fi
+
           echo "source_path=$SOURCE_PATH" >> $GITHUB_OUTPUT
           echo "Source spec path: $SOURCE_PATH"
 
