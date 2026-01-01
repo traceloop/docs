@@ -71,6 +71,10 @@ jobs:
             "openapi-whitelist.yaml" \
             "openapi.json"
 
+      - name: Clean up npm artifacts
+        run: |
+          rm -rf node_modules package.json package-lock.json
+
       - name: Check for changes
         id: changes
         run: |
