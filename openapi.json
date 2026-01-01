@@ -1950,6 +1950,11 @@
       }
     }
   },
+  "servers": [
+    {
+      "url": "https://api.traceloop.com"
+    }
+  ],
   "components": {
     "securitySchemes": {
       "BearerAuth": {
