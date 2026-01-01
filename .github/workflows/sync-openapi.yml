@@ -25,7 +25,7 @@ jobs:
       - name: Checkout docs repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Checkout api-service repository
         uses: actions/checkout@v4
@@ -90,7 +90,7 @@ jobs:
         if: steps.changes.outputs.has_changes == 'true' && github.event.inputs.dry_run != 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
           commit-message: "docs: Update OpenAPI spec from api-service"
           title: "docs: Update OpenAPI specification"
           body: |
