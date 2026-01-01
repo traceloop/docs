@@ -39,12 +39,19 @@ function matchesPatterns(apiPath, patterns) {
 
 /**
  * Find all $ref references in an object
+ * Supports both OpenAPI 3.0 (#/components/schemas/) and Swagger 2.0 (#/definitions/)
  */
 function findRefs(obj, refs = new Set()) {
   if (!obj || typeof obj !== "object") return refs;
 
   if (obj.$ref && typeof obj.$ref === "string") {
-    const match = obj.$ref.match(/#\/components\/schemas\/(.+)/);
+    // OpenAPI 3.0 format
+    let match = obj.$ref.match(/#\/components\/schemas\/(.+)/);
+    if (match) {
+      refs.add(match[1]);
+    }
+    // Swagger 2.0 format
+    match = obj.$ref.match(/#\/definitions\/(.+)/);
     if (match) {
       refs.add(match[1]);
     }
@@ -77,7 +84,29 @@ function findAllReferencedSchemas(schemas, initialRefs) {
 }
 
 /**
- * Filter components to only include schemas referenced by included paths
+ * Filter definitions/components to only include schemas referenced by included paths
+ * Supports both Swagger 2.0 (definitions) and OpenAPI 3.0 (components/schemas)
+ */
+function filterDefinitions(definitions, paths) {
+  if (!definitions) return undefined;
+
+  const referencedSchemas = findRefs(paths);
+  const allReferencedSchemas = findAllReferencedSchemas(definitions, referencedSchemas);
+
+  if (allReferencedSchemas.size === 0) return undefined;
+
+  const filteredDefinitions = {};
+  for (const [name, schema] of Object.entries(definitions)) {
+    if (allReferencedSchemas.has(name)) {
+      filteredDefinitions[name] = schema;
+    }
+  }
+
+  return Object.keys(filteredDefinitions).length > 0 ? filteredDefinitions : undefined;
+}
+
+/**
+ * Filter components to only include schemas referenced by included paths (OpenAPI 3.0)
  */
 function filterComponents(components, paths) {
   if (!components) return undefined;
@@ -166,13 +195,23 @@ function filterOpenAPISpec(spec, config) {
     filteredSpec.tags = spec.tags.filter((tag) => includedTags.has(tag.name));
   }
 
-  // Filter components to only include referenced schemas
+  // Filter components/definitions to only include referenced schemas
+  // OpenAPI 3.0 uses components.schemas, Swagger 2.0 uses definitions
   if (spec.components) {
     const filteredComponents = filterComponents(spec.components, filteredPaths);
     if (filteredComponents) {
       filteredSpec.components = filteredComponents;
     } else {
       delete filteredSpec.components;
+    }
+  }
+
+  if (spec.definitions) {
+    const filteredDefs = filterDefinitions(spec.definitions, filteredPaths);
+    if (filteredDefs) {
+      filteredSpec.definitions = filteredDefs;
+    } else {
+      delete filteredSpec.definitions;
     }
   }
 
