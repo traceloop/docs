@@ -69,9 +69,9 @@ jobs:
             "openapi-whitelist.yaml" \
             "openapi.json"
 
-      - name: Clean up npm artifacts
+      - name: Clean up temporary files
         run: |
-          rm -rf node_modules package.json package-lock.json
+          rm -rf api-service node_modules package.json package-lock.json
 
       - name: Check for changes
         id: changes
