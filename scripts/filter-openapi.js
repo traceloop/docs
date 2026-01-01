@@ -107,6 +107,11 @@ function filterSpec(spec, config) {
     },
   };
 
+  // Add servers from config base_url
+  if (config.base_url) {
+    result.servers = [{ url: config.base_url }];
+  }
+
   // Filter tags
   if (spec.tags && includedTags.size > 0) {
     result.tags = spec.tags.filter((tag) => includedTags.has(tag.name));
@@ -168,6 +173,11 @@ async function main() {
     console.log("\nConverting Swagger 2.0 to OpenAPI 3.0...");
     const result = await converter.convertObj(filteredSpec, { patch: true, warnOnly: true });
     outputSpec = result.openapi;
+
+    // Re-apply base_url after conversion (converter may override servers)
+    if (config.base_url) {
+      outputSpec.servers = [{ url: config.base_url }];
+    }
   }
 
   fs.writeFileSync(outputPath, JSON.stringify(outputSpec, null, 2));
