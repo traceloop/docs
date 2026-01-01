@@ -17,6 +17,7 @@ source:
 include_paths:
   - /v2/metrics_hwm
   - /v2/organizations
+  - /v2/evaluators/execute/*
 
 # Paths to explicitly exclude (processed after include)
 exclude_paths: []
