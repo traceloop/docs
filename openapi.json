@@ -1,58 +1,5 @@
 {
-  "definitions": {
-    "request.CreateOrganizationRequest": {
-      "properties": {
-        "envs": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "org_name": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "org_name"
-      ],
-      "type": "object"
-    },
-    "response.CreateOrganizationResponse": {
-      "properties": {
-        "environments": {
-          "items": {
-            "$ref": "#/definitions/response.EnvironmentWithKeyResponse"
-          },
-          "type": "array"
-        },
-        "org_id": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "response.EnvironmentWithKeyResponse": {
-      "properties": {
-        "api_key": {
-          "type": "string"
-        },
-        "slug": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "response.ErrorResponse": {
-      "description": "Standard error response structure",
-      "properties": {
-        "error": {
-          "example": "error message",
-          "type": "string"
-        }
-      },
-      "type": "object"
-    }
-  },
+  "swagger": "2.0",
   "info": {
     "contact": {},
     "title": "Traceloop API",
@@ -112,6 +59,60 @@
       }
     }
   },
+  "definitions": {
+    "request.CreateOrganizationRequest": {
+      "properties": {
+        "envs": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "org_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "org_name"
+      ],
+      "type": "object"
+    },
+    "response.CreateOrganizationResponse": {
+      "properties": {
+        "environments": {
+          "items": {
+            "$ref": "#/definitions/response.EnvironmentWithKeyResponse"
+          },
+          "type": "array"
+        },
+        "org_id": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "response.EnvironmentWithKeyResponse": {
+      "properties": {
+        "api_key": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "response.ErrorResponse": {
+      "description": "Standard error response structure",
+      "properties": {
+        "error": {
+          "example": "error message",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
   "securityDefinitions": {
     "BearerAuth": {
       "description": "Type \"Bearer\" followed by a space and JWT token.",
@@ -119,6 +120,5 @@
       "name": "Authorization",
       "type": "apiKey"
     }
-  },
-  "swagger": "2.0"
+  }
 }

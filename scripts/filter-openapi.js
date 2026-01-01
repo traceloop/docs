@@ -349,8 +349,19 @@ async function main() {
   console.log("");
   console.log(`Result: ${filteredPathCount} paths included`);
 
-  // Write output as JSON
-  fs.writeFileSync(outputPath, JSON.stringify(filteredSpec, null, 2));
+  // Write output as JSON with fields in correct order for Swagger 2.0
+  const orderedSpec = {
+    swagger: filteredSpec.swagger,
+    info: filteredSpec.info,
+    ...(filteredSpec.host && { host: filteredSpec.host }),
+    ...(filteredSpec.basePath && { basePath: filteredSpec.basePath }),
+    ...(filteredSpec.schemes && { schemes: filteredSpec.schemes }),
+    paths: filteredSpec.paths,
+    ...(filteredSpec.definitions && { definitions: filteredSpec.definitions }),
+    ...(filteredSpec.securityDefinitions && { securityDefinitions: filteredSpec.securityDefinitions }),
+    ...(filteredSpec.tags && { tags: filteredSpec.tags }),
+  };
+  fs.writeFileSync(outputPath, JSON.stringify(orderedSpec, null, 2));
   console.log(`Written to: ${outputPath}`);
 
   // Generate MDX files for each endpoint
