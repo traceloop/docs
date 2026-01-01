@@ -1,5 +1,6 @@
 {
   "name": "traceloop",
+  "openapi": "openapi.json",
   "favicon": "/favicon.png",
   "logo": {
     "light": "/logo/traceloop-light.png",
@@ -61,7 +62,9 @@
   "navigation": [
     {
       "group": "Learn",
-      "pages": ["introduction"]
+      "pages": [
+        "introduction"
+      ]
     },
     {
       "group": "Self-host",
@@ -74,7 +77,9 @@
     },
     {
       "group": "Introduction",
-      "pages": ["openllmetry/introduction"]
+      "pages": [
+        "openllmetry/introduction"
+      ]
     },
     {
       "group": "Quick Start",
@@ -141,15 +146,24 @@
     },
     {
       "group": "Privacy",
-      "pages": ["openllmetry/privacy/traces", "openllmetry/privacy/telemetry"]
+      "pages": [
+        "openllmetry/privacy/traces",
+        "openllmetry/privacy/telemetry"
+      ]
     },
     {
       "group": "Quick Start",
-      "pages": ["hub/getting-started", "hub/configuration"]
+      "pages": [
+        "hub/getting-started",
+        "hub/configuration"
+      ]
     },
     {
       "group": "Datasets",
-      "pages": ["datasets/quick-start", "datasets/sdk-usage"]
+      "pages": [
+        "datasets/quick-start",
+        "datasets/sdk-usage"
+      ]
     },
     {
       "group": "Playgrounds",
@@ -192,7 +206,11 @@
     },
     {
       "group": "Prompt Management",
-      "pages": ["prompts/quick-start", "prompts/registry", "prompts/sdk-usage"]
+      "pages": [
+        "prompts/quick-start",
+        "prompts/registry",
+        "prompts/sdk-usage"
+      ]
     },
     {
       "group": "Settings",
@@ -207,7 +225,6 @@
         "integrations/posthog",
         "integrations/slack",
         "integrations/github"
-
       ]
     },
     {
@@ -220,7 +237,9 @@
     },
     {
       "group": "API Reference",
-      "pages": ["api-reference/introduction"]
+      "pages": [
+        "api-reference/introduction"
+      ]
     },
     {
       "group": "Tracing",
@@ -239,11 +258,65 @@
     },
     {
       "group": "Costs",
-      "pages": ["api-reference/costs/property_costs"]
+      "pages": [
+        "api-reference/costs/property_costs"
+      ]
     },
     {
       "group": "Warehouse",
-      "pages": ["api-reference/warehouse/get_spans"]
+      "pages": [
+        "api-reference/warehouse/get_spans"
+      ]
+    },
+    {
+      "group": "Organizations",
+      "pages": [
+        "api-reference/organizations/create-a-new-organization"
+      ]
+    },
+    {
+      "group": "Evaluators",
+      "pages": [
+        "api-reference/evaluators/execute-agent-efficiency-evaluator",
+        "api-reference/evaluators/execute-agent-flow-quality-evaluator",
+        "api-reference/evaluators/execute-agent-goal-accuracy-evaluator",
+        "api-reference/evaluators/execute-agent-goal-completeness-evaluator",
+        "api-reference/evaluators/execute-agent-tool-error-detector-evaluator",
+        "api-reference/evaluators/execute-answer-completeness-evaluator",
+        "api-reference/evaluators/execute-answer-correctness-evaluator",
+        "api-reference/evaluators/execute-answer-relevancy-evaluator",
+        "api-reference/evaluators/execute-char-count-evaluator",
+        "api-reference/evaluators/execute-char-count-ratio-evaluator",
+        "api-reference/evaluators/execute-context-relevance-evaluator",
+        "api-reference/evaluators/execute-conversation-quality-evaluator",
+        "api-reference/evaluators/execute-faithfulness-evaluator",
+        "api-reference/evaluators/execute-instruction-adherence-evaluator",
+        "api-reference/evaluators/execute-intent-change-evaluator",
+        "api-reference/evaluators/execute-json-validator-evaluator",
+        "api-reference/evaluators/execute-perplexity-evaluator",
+        "api-reference/evaluators/execute-pii-detector-evaluator",
+        "api-reference/evaluators/execute-placeholder-regex-evaluator",
+        "api-reference/evaluators/execute-profanity-detector-evaluator",
+        "api-reference/evaluators/execute-prompt-injection-evaluator",
+        "api-reference/evaluators/execute-prompt-perplexity-evaluator",
+        "api-reference/evaluators/execute-regex-validator-evaluator",
+        "api-reference/evaluators/execute-secrets-detector-evaluator",
+        "api-reference/evaluators/execute-semantic-similarity-evaluator",
+        "api-reference/evaluators/execute-sexism-detector-evaluator",
+        "api-reference/evaluators/execute-sql-validator-evaluator",
+        "api-reference/evaluators/execute-tone-detection-evaluator",
+        "api-reference/evaluators/execute-topic-adherence-evaluator",
+        "api-reference/evaluators/execute-toxicity-detector-evaluator",
+        "api-reference/evaluators/execute-uncertainty-detector-evaluator",
+        "api-reference/evaluators/execute-word-count-evaluator",
+        "api-reference/evaluators/execute-word-count-ratio-evaluator"
+      ]
+    },
+    {
+      "group": "Metrics",
+      "pages": [
+        "api-reference/metrics/get-metrics-high-water-mark"
+      ]
     }
   ],
   "redirects": [

@@ -24,8 +24,6 @@ jobs:
     steps:
       - name: Checkout docs repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Checkout api-service repository
         uses: actions/checkout@v4
@@ -44,24 +42,13 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: npm install js-yaml
+        run: npm install js-yaml swagger2openapi
 
       - name: Read whitelist configuration
         id: config
         run: |
-          # Debug: show the file content
-          echo "=== openapi-whitelist.yaml content ==="
-          cat openapi-whitelist.yaml
-          echo "=== end of file ==="
-
-          # Extract source path from whitelist config (under source: section)
-          SOURCE_PATH=$(grep -E '^\s+path:' openapi-whitelist.yaml | head -1 | sed 's/.*path:\s*//' | tr -d '"' | tr -d "'" | xargs)
-
-          if [ -z "$SOURCE_PATH" ]; then
-            echo "Error: Could not extract source path from openapi-whitelist.yaml"
-            exit 1
-          fi
-
+          # Extract source path from whitelist config using Node.js
+          SOURCE_PATH=$(node -e "const yaml = require('js-yaml'); const fs = require('fs'); const config = yaml.load(fs.readFileSync('openapi-whitelist.yaml', 'utf8')); console.log(config.source.path);")
           echo "source_path=$SOURCE_PATH" >> $GITHUB_OUTPUT
           echo "Source spec path: $SOURCE_PATH"
 
@@ -82,19 +69,32 @@ jobs:
             "openapi-whitelist.yaml" \
             "openapi.json"
 
+      - name: Generate MDX files
+        run: |
+          echo "Generating MDX files from OpenAPI spec..."
+          npx @mintlify/scraping@latest openapi-file openapi.json -o api-reference
+
+      - name: Update mint.json navigation
+        run: |
+          echo "Updating mint.json navigation..."
+          node scripts/update-mint-navigation.js openapi.json
+
+      - name: Clean up temporary files
+        run: |
+          rm -rf api-service node_modules package.json package-lock.json
+
       - name: Check for changes
         id: changes
         run: |
-          if [ ! -f openapi.json ]; then
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "New openapi.json file will be created"
-          elif git diff --quiet openapi.json 2>/dev/null; then
+          # Check for any changes (new files, modified files)
+          git add -A
+          if git diff --cached --quiet; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "No changes detected in OpenAPI spec"
+            echo "No changes detected"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "Changes detected in OpenAPI spec"
-            git diff --stat openapi.json 2>/dev/null || echo "New file"
+            echo "Changes detected:"
+            git diff --cached --stat
           fi
 
       - name: Create Pull Request

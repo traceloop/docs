@@ -1,0 +1,3474 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Traceloop API",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "paths": {
+    "/v2/evaluators/execute/agent-efficiency": {
+      "post": {
+        "description": "Evaluate agent efficiency - detect redundant calls, unnecessary follow-ups\n\n**Request Body:**\n- `input.trajectory_prompts` (string, required): JSON array of prompts in the agent trajectory\n- `input.trajectory_completions` (string, required): JSON array of completions in the agent trajectory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.AgentEfficiencyRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.AgentEfficiencyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute agent-efficiency evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/agent-flow-quality": {
+      "post": {
+        "description": "Validate agent trajectory against user-defined conditions\n\n**Request Body:**\n- `input.trajectory_prompts` (string, required): JSON array of prompts in the agent trajectory\n- `input.trajectory_completions` (string, required): JSON array of completions in the agent trajectory\n- `config.conditions` (array of strings, required): Array of evaluation conditions/rules to validate against\n- `config.threshold` (number, required): Score threshold for pass/fail determination (0.0-1.0)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.AgentFlowQualityRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.AgentFlowQualityResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute agent-flow-quality evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/agent-goal-accuracy": {
+      "post": {
+        "description": "Evaluate agent goal accuracy\n\n**Request Body:**\n- `input.question` (string, required): The original question or goal\n- `input.completion` (string, required): The agent's completion/response\n- `input.reference` (string, required): The expected reference answer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.AgentGoalAccuracyRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.AgentGoalAccuracyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute agent-goal-accuracy evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/agent-goal-completeness": {
+      "post": {
+        "description": "Measure if agent accomplished all user goals\n\n**Request Body:**\n- `input.trajectory_prompts` (string, required): JSON array of prompts in the agent trajectory\n- `input.trajectory_completions` (string, required): JSON array of completions in the agent trajectory\n- `config.threshold` (number, required): Score threshold for pass/fail determination (0.0-1.0)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.AgentGoalCompletenessRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.AgentGoalCompletenessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute agent-goal-completeness evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/agent-tool-error-detector": {
+      "post": {
+        "description": "Detect errors or failures during tool execution\n\n**Request Body:**\n- `input.tool_input` (string, required): JSON string of the tool input\n- `input.tool_output` (string, required): JSON string of the tool output",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.AgentToolErrorDetectorRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.AgentToolErrorDetectorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute agent-tool-error-detector evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/answer-completeness": {
+      "post": {
+        "description": "Evaluate whether the answer is complete and contains all the necessary information\n\n**Request Body:**\n- `input.question` (string, required): The original question\n- `input.completion` (string, required): The completion to evaluate for completeness\n- `input.context` (string, required): The context that provides the complete information",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.AnswerCompletenessRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.AnswerCompletenessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute answer-completeness evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/answer-correctness": {
+      "post": {
+        "description": "Evaluate factual accuracy by comparing answers against ground truth\n\n**Request Body:**\n- `input.question` (string, required): The original question\n- `input.completion` (string, required): The completion to evaluate\n- `input.ground_truth` (string, required): The expected correct answer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.AnswerCorrectnessRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.AnswerCorrectnessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute answer-correctness evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/answer-relevancy": {
+      "post": {
+        "description": "Check if an answer is relevant to a question\n\n**Request Body:**\n- `input.answer` (string, required): The answer to evaluate for relevancy\n- `input.question` (string, required): The question that the answer should be relevant to",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.AnswerRelevancyRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.AnswerRelevancyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute answer-relevancy evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/char-count": {
+      "post": {
+        "description": "Count the number of characters in text\n\n**Request Body:**\n- `input.text` (string, required): The text to count characters in",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.CharCountRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.CharCountResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute char-count evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/char-count-ratio": {
+      "post": {
+        "description": "Calculate the ratio of characters between two texts\n\n**Request Body:**\n- `input.numerator_text` (string, required): The numerator text (will be divided by denominator)\n- `input.denominator_text` (string, required): The denominator text (divides the numerator)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.CharCountRatioRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.CharCountRatioResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute char-count-ratio evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/context-relevance": {
+      "post": {
+        "description": "Evaluate whether retrieved context contains sufficient information to answer the query\n\n**Request Body:**\n- `input.query` (string, required): The query/question to evaluate context relevance for\n- `input.context` (string, required): The context to evaluate for relevance to the query\n- `config.model` (string, optional): Model to use for evaluation (default: gpt-4o)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.ContextRelevanceRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ContextRelevanceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute context-relevance evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/conversation-quality": {
+      "post": {
+        "description": "Evaluate conversation quality based on tone, clarity, flow, responsiveness, and transparency\n\n**Request Body:**\n- `input.prompts` (string, required): JSON array of prompts in the conversation\n- `input.completions` (string, required): JSON array of completions in the conversation\n- `config.model` (string, optional): Model to use for evaluation (default: gpt-4o)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.ConversationQualityRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ConversationQualityResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute conversation-quality evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/faithfulness": {
+      "post": {
+        "description": "Check if a completion is faithful to the provided context\n\n**Request Body:**\n- `input.completion` (string, required): The LLM completion to check for faithfulness\n- `input.context` (string, required): The context that the completion should be faithful to\n- `input.question` (string, required): The original question asked",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.FaithfulnessRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.FaithfulnessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute faithfulness evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/instruction-adherence": {
+      "post": {
+        "description": "Evaluate how well responses follow given instructions\n\n**Request Body:**\n- `input.instructions` (string, required): The instructions that should be followed\n- `input.response` (string, required): The response to evaluate for instruction adherence",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.InstructionAdherenceRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.InstructionAdherenceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute instruction-adherence evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/intent-change": {
+      "post": {
+        "description": "Detect changes in user intent between prompts and completions\n\n**Request Body:**\n- `input.prompts` (string, required): JSON array of prompts in the conversation\n- `input.completions` (string, required): JSON array of completions in the conversation\n- `config.model` (string, optional): Model to use for evaluation (default: gpt-4o)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.IntentChangeRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.IntentChangeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute intent-change evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/json-validator": {
+      "post": {
+        "description": "Validate JSON syntax\n\n**Request Body:**\n- `input.text` (string, required): The text to validate as JSON\n- `config.enable_schema_validation` (bool, optional): Enable JSON schema validation\n- `config.schema_string` (string, optional): JSON schema to validate against",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.JSONValidatorRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.JSONValidatorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute json-validator evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/perplexity": {
+      "post": {
+        "description": "Measure text perplexity from logprobs\n\n**Request Body:**\n- `input.logprobs` (string, required): JSON array of log probabilities from the model",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.PerplexityRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.PerplexityResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute perplexity evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/pii-detector": {
+      "post": {
+        "description": "Detect personally identifiable information in text\n\n**Request Body:**\n- `input.text` (string, required): The text to scan for personally identifiable information\n- `config.probability_threshold` (float, optional): Detection threshold (default: 0.8)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.PIIDetectorRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.PIIDetectorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute pii-detector evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/placeholder-regex": {
+      "post": {
+        "description": "Validate text against a placeholder regex pattern\n\n**Request Body:**\n- `input.placeholder_value` (string, required): The regex pattern to match against\n- `input.text` (string, required): The text to validate against the regex pattern\n- `config.should_match` (bool, optional): Whether the text should match the regex\n- `config.case_sensitive` (bool, optional): Case-sensitive matching\n- `config.dot_include_nl` (bool, optional): Dot matches newlines\n- `config.multi_line` (bool, optional): Multi-line mode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.PlaceholderRegexRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.PlaceholderRegexResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute placeholder-regex evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/profanity-detector": {
+      "post": {
+        "description": "Detect profanity in text\n\n**Request Body:**\n- `input.text` (string, required): The text to scan for profanity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.ProfanityDetectorRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ProfanityDetectorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute profanity-detector evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/prompt-injection": {
+      "post": {
+        "description": "Detect prompt injection attempts\n\n**Request Body:**\n- `input.prompt` (string, required): The prompt to check for injection attempts\n- `config.threshold` (float, optional): Detection threshold (default: 0.5)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.PromptInjectionRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.PromptInjectionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute prompt-injection evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/prompt-perplexity": {
+      "post": {
+        "description": "Measure prompt perplexity to detect potential injection attempts\n\n**Request Body:**\n- `input.prompt` (string, required): The prompt to calculate perplexity for",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.PromptPerplexityRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.PromptPerplexityResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute prompt-perplexity evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/regex-validator": {
+      "post": {
+        "description": "Validate text against a regex pattern\n\n**Request Body:**\n- `input.text` (string, required): The text to validate against a regex pattern\n- `config.regex` (string, optional): The regex pattern to match against\n- `config.should_match` (bool, optional): Whether the text should match the regex\n- `config.case_sensitive` (bool, optional): Case-sensitive matching\n- `config.dot_include_nl` (bool, optional): Dot matches newlines\n- `config.multi_line` (bool, optional): Multi-line mode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.RegexValidatorRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.RegexValidatorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute regex-validator evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/secrets-detector": {
+      "post": {
+        "description": "Detect secrets and credentials in text\n\n**Request Body:**\n- `input.text` (string, required): The text to scan for secrets (API keys, passwords, etc.)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.SecretsDetectorRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.SecretsDetectorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute secrets-detector evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/semantic-similarity": {
+      "post": {
+        "description": "Calculate semantic similarity between completion and reference\n\n**Request Body:**\n- `input.completion` (string, required): The completion text to compare\n- `input.reference` (string, required): The reference text to compare against",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.SemanticSimilarityRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.SemanticSimilarityResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute semantic-similarity evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/sexism-detector": {
+      "post": {
+        "description": "Detect sexist language and bias\n\n**Request Body:**\n- `input.text` (string, required): The text to scan for sexist content\n- `config.threshold` (float, optional): Detection threshold (default: 0.5)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.SexismDetectorRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.SexismDetectorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute sexism-detector evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/sql-validator": {
+      "post": {
+        "description": "Validate SQL query syntax\n\n**Request Body:**\n- `input.text` (string, required): The text to validate as SQL",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.SQLValidatorRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.SQLValidatorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute sql-validator evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/tone-detection": {
+      "post": {
+        "description": "Detect the tone of the text\n\n**Request Body:**\n- `input.text` (string, required): The text to detect the tone of",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.ToneDetectionRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ToneDetectionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute tone-detection evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/topic-adherence": {
+      "post": {
+        "description": "Evaluate topic adherence\n\n**Request Body:**\n- `input.question` (string, required): The original question\n- `input.completion` (string, required): The completion to evaluate\n- `input.reference_topics` (string, required): Comma-separated list of expected topics",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.TopicAdherenceRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.TopicAdherenceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute topic-adherence evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/toxicity-detector": {
+      "post": {
+        "description": "Detect toxic or harmful language\n\n**Request Body:**\n- `input.text` (string, required): The text to scan for toxic content\n- `config.threshold` (float, optional): Detection threshold (default: 0.5)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.ToxicityDetectorRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ToxicityDetectorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute toxicity-detector evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/uncertainty-detector": {
+      "post": {
+        "description": "Detect uncertainty in the text\n\n**Request Body:**\n- `input.prompt` (string, required): The text to detect uncertainty in",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.UncertaintyDetectorRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.UncertaintyDetectorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute uncertainty-detector evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/word-count": {
+      "post": {
+        "description": "Count the number of words in text\n\n**Request Body:**\n- `input.text` (string, required): The text to count words in",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.WordCountRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.WordCountResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute word-count evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/evaluators/execute/word-count-ratio": {
+      "post": {
+        "description": "Calculate the ratio of words between two texts\n\n**Request Body:**\n- `input.numerator_text` (string, required): The numerator text (will be divided by denominator)\n- `input.denominator_text` (string, required): The denominator text (divides the numerator)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.WordCountRatioRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.WordCountRatioResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute word-count-ratio evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
+    "/v2/metrics_hwm": {
+      "get": {
+        "description": "Returns the timestamp of the last successfully processed evaluation (high water mark)",
+        "operationId": "get-metrics-hwm",
+        "responses": {
+          "200": {
+            "description": "High water mark timestamp in milliseconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.MetricsHWMResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get metrics high water mark",
+        "tags": [
+          "metrics"
+        ]
+      }
+    },
+    "/v2/organizations": {
+      "post": {
+        "description": "Create a new organization with environments and API keys.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.CreateOrganizationRequest"
+              }
+            }
+          },
+          "description": "Organization creation request",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.CreateOrganizationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body or validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not allowed to create organizations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a new organization",
+        "tags": [
+          "organizations"
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.traceloop.com"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "description": "Type \"Bearer\" followed by a space and JWT token.",
+        "in": "header",
+        "name": "Authorization",
+        "type": "apiKey"
+      }
+    },
+    "schemas": {
+      "request.AgentEfficiencyInput": {
+        "properties": {
+          "trajectory_completions": {
+            "example": "[\"User found\", \"Email updated\", \"Changes saved\"]",
+            "type": "string"
+          },
+          "trajectory_prompts": {
+            "example": "[\"Find user info\", \"Update email\", \"Save changes\"]",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trajectory_completions",
+          "trajectory_prompts"
+        ],
+        "type": "object"
+      },
+      "request.AgentEfficiencyRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.AgentEfficiencyInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.AgentFlowQualityConfigRequest": {
+        "properties": {
+          "conditions": {
+            "example": [
+              "no tools called",
+              "agent completed task"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "threshold": {
+            "example": 0.5,
+            "type": "number"
+          }
+        },
+        "required": [
+          "conditions",
+          "threshold"
+        ],
+        "type": "object"
+      },
+      "request.AgentFlowQualityInput": {
+        "properties": {
+          "trajectory_completions": {
+            "example": "[\"Found 5 flights\", \"Selected $299 flight\", \"Booking confirmed\"]",
+            "type": "string"
+          },
+          "trajectory_prompts": {
+            "example": "[\"Search for flights\", \"Select the cheapest option\", \"Confirm booking\"]",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trajectory_completions",
+          "trajectory_prompts"
+        ],
+        "type": "object"
+      },
+      "request.AgentFlowQualityRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/request.AgentFlowQualityConfigRequest"
+          },
+          "input": {
+            "$ref": "#/components/schemas/request.AgentFlowQualityInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.AgentGoalAccuracyInput": {
+        "properties": {
+          "completion": {
+            "example": "I have booked your flight from New York to Los Angeles departing Monday at 9am.",
+            "type": "string"
+          },
+          "question": {
+            "example": "Book a flight from NYC to LA for next Monday",
+            "type": "string"
+          },
+          "reference": {
+            "example": "Flight booked: NYC to LA, Monday departure",
+            "type": "string"
+          }
+        },
+        "required": [
+          "completion",
+          "question",
+          "reference"
+        ],
+        "type": "object"
+      },
+      "request.AgentGoalAccuracyRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.AgentGoalAccuracyInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.AgentGoalCompletenessConfigRequest": {
+        "properties": {
+          "threshold": {
+            "example": 0.5,
+            "type": "number"
+          }
+        },
+        "required": [
+          "threshold"
+        ],
+        "type": "object"
+      },
+      "request.AgentGoalCompletenessInput": {
+        "properties": {
+          "trajectory_completions": {
+            "example": "[\"Account created\", \"Preferences saved\", \"Notifications enabled\"]",
+            "type": "string"
+          },
+          "trajectory_prompts": {
+            "example": "[\"Create new account\", \"Set preferences\", \"Enable notifications\"]",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trajectory_completions",
+          "trajectory_prompts"
+        ],
+        "type": "object"
+      },
+      "request.AgentGoalCompletenessRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/request.AgentGoalCompletenessConfigRequest"
+          },
+          "input": {
+            "$ref": "#/components/schemas/request.AgentGoalCompletenessInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.AgentToolErrorDetectorInput": {
+        "properties": {
+          "tool_input": {
+            "example": "{\"action\": \"search\", \"query\": \"flights to Paris\"}",
+            "type": "string"
+          },
+          "tool_output": {
+            "example": "{\"status\": \"success\", \"results\": [{\"flight\": \"AF123\", \"price\": 450}]}",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tool_input",
+          "tool_output"
+        ],
+        "type": "object"
+      },
+      "request.AgentToolErrorDetectorRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.AgentToolErrorDetectorInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.AnswerCompletenessInput": {
+        "properties": {
+          "completion": {
+            "example": "Paris.",
+            "type": "string"
+          },
+          "context": {
+            "example": "The capital of France is Paris.",
+            "type": "string"
+          },
+          "question": {
+            "example": "What is the capital of France?",
+            "type": "string"
+          }
+        },
+        "required": [
+          "completion",
+          "context",
+          "question"
+        ],
+        "type": "object"
+      },
+      "request.AnswerCompletenessRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.AnswerCompletenessInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.AnswerCorrectnessInput": {
+        "properties": {
+          "completion": {
+            "example": "World War II ended in 1945.",
+            "type": "string"
+          },
+          "ground_truth": {
+            "example": "1945",
+            "type": "string"
+          },
+          "question": {
+            "example": "What year did World War II end?",
+            "type": "string"
+          }
+        },
+        "required": [
+          "completion",
+          "ground_truth",
+          "question"
+        ],
+        "type": "object"
+      },
+      "request.AnswerCorrectnessRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.AnswerCorrectnessInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.AnswerRelevancyInput": {
+        "properties": {
+          "answer": {
+            "example": "The capital of France is Paris.",
+            "type": "string"
+          },
+          "question": {
+            "example": "What is the capital of France?",
+            "type": "string"
+          }
+        },
+        "required": [
+          "answer",
+          "question"
+        ],
+        "type": "object"
+      },
+      "request.AnswerRelevancyRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.AnswerRelevancyInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.CharCountInput": {
+        "properties": {
+          "text": {
+            "example": "Hello, world! This is a sample text.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "request.CharCountRatioInput": {
+        "properties": {
+          "denominator_text": {
+            "example": "This is a longer text for comparison",
+            "type": "string"
+          },
+          "numerator_text": {
+            "example": "Short text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "denominator_text",
+          "numerator_text"
+        ],
+        "type": "object"
+      },
+      "request.CharCountRatioRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.CharCountRatioInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.CharCountRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.CharCountInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.ContextRelevanceConfigRequest": {
+        "properties": {
+          "model": {
+            "example": "gpt-4o",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "request.ContextRelevanceInput": {
+        "properties": {
+          "context": {
+            "example": "Our store is open Monday to Friday from 9am to 6pm, and Saturday from 10am to 4pm. We are closed on Sundays.",
+            "type": "string"
+          },
+          "query": {
+            "example": "What are the business hours?",
+            "type": "string"
+          }
+        },
+        "required": [
+          "context",
+          "query"
+        ],
+        "type": "object"
+      },
+      "request.ContextRelevanceRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/request.ContextRelevanceConfigRequest"
+          },
+          "input": {
+            "$ref": "#/components/schemas/request.ContextRelevanceInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.ConversationQualityConfigRequest": {
+        "properties": {
+          "model": {
+            "example": "gpt-4o",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "request.ConversationQualityInput": {
+        "properties": {
+          "completions": {
+            "example": "[\"Hi! I'd be happy to assist you today.\", \"We offer consulting, development, and support services.\"]",
+            "type": "string"
+          },
+          "prompts": {
+            "example": "[\"Hello, how can I help?\", \"What services do you offer?\"]",
+            "type": "string"
+          }
+        },
+        "required": [
+          "completions",
+          "prompts"
+        ],
+        "type": "object"
+      },
+      "request.ConversationQualityRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/request.ConversationQualityConfigRequest"
+          },
+          "input": {
+            "$ref": "#/components/schemas/request.ConversationQualityInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.CreateOrganizationRequest": {
+        "properties": {
+          "envs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "org_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "org_name"
+        ],
+        "type": "object"
+      },
+      "request.FaithfulnessInput": {
+        "properties": {
+          "completion": {
+            "example": "The Eiffel Tower is located in Paris and was built in 1889.",
+            "type": "string"
+          },
+          "context": {
+            "example": "The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France. It was constructed from 1887 to 1889.",
+            "type": "string"
+          },
+          "question": {
+            "example": "When was the Eiffel Tower built?",
+            "type": "string"
+          }
+        },
+        "required": [
+          "completion",
+          "context",
+          "question"
+        ],
+        "type": "object"
+      },
+      "request.FaithfulnessRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.FaithfulnessInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.InstructionAdherenceInput": {
+        "properties": {
+          "instructions": {
+            "example": "Respond in exactly 3 bullet points and use formal language.",
+            "type": "string"
+          },
+          "response": {
+            "example": "- First point about the topic\n- Second relevant consideration\n- Final concluding thought",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instructions",
+          "response"
+        ],
+        "type": "object"
+      },
+      "request.InstructionAdherenceRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.InstructionAdherenceInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.IntentChangeConfigRequest": {
+        "properties": {
+          "model": {
+            "example": "gpt-4o",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "request.IntentChangeInput": {
+        "properties": {
+          "completions": {
+            "example": "[\"Sure, I can help with hotel booking\", \"No problem, let me search for flights\"]",
+            "type": "string"
+          },
+          "prompts": {
+            "example": "[\"I want to book a hotel\", \"Actually, I need a flight instead\"]",
+            "type": "string"
+          }
+        },
+        "required": [
+          "completions",
+          "prompts"
+        ],
+        "type": "object"
+      },
+      "request.IntentChangeRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/request.IntentChangeConfigRequest"
+          },
+          "input": {
+            "$ref": "#/components/schemas/request.IntentChangeInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.JSONValidatorConfigRequest": {
+        "properties": {
+          "enable_schema_validation": {
+            "example": true,
+            "type": "boolean"
+          },
+          "schema_string": {
+            "example": "{}",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "request.JSONValidatorInput": {
+        "properties": {
+          "text": {
+            "example": "{\"name\": \"John\", \"age\": 30}",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "request.JSONValidatorRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/request.JSONValidatorConfigRequest"
+          },
+          "input": {
+            "$ref": "#/components/schemas/request.JSONValidatorInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.PIIDetectorConfigRequest": {
+        "properties": {
+          "probability_threshold": {
+            "example": 0.8,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "request.PIIDetectorInput": {
+        "properties": {
+          "text": {
+            "example": "Please contact John Smith at john.smith@email.com or call 555-123-4567.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "request.PIIDetectorRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/request.PIIDetectorConfigRequest"
+          },
+          "input": {
+            "$ref": "#/components/schemas/request.PIIDetectorInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.PerplexityInput": {
+        "properties": {
+          "logprobs": {
+            "example": "[-2.3, -1.5, -0.8, -1.2, -0.5]",
+            "type": "string"
+          }
+        },
+        "required": [
+          "logprobs"
+        ],
+        "type": "object"
+      },
+      "request.PerplexityRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.PerplexityInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.PlaceholderRegexConfigRequest": {
+        "properties": {
+          "case_sensitive": {
+            "example": true,
+            "type": "boolean"
+          },
+          "dot_include_nl": {
+            "example": true,
+            "type": "boolean"
+          },
+          "multi_line": {
+            "example": true,
+            "type": "boolean"
+          },
+          "should_match": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "request.PlaceholderRegexInput": {
+        "properties": {
+          "placeholder_value": {
+            "example": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}",
+            "type": "string"
+          },
+          "text": {
+            "example": "user@example.com",
+            "type": "string"
+          }
+        },
+        "required": [
+          "placeholder_value",
+          "text"
+        ],
+        "type": "object"
+      },
+      "request.PlaceholderRegexRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/request.PlaceholderRegexConfigRequest"
+          },
+          "input": {
+            "$ref": "#/components/schemas/request.PlaceholderRegexInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.ProfanityDetectorInput": {
+        "properties": {
+          "text": {
+            "example": "This is a clean and professional message.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "request.ProfanityDetectorRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.ProfanityDetectorInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.PromptInjectionConfigRequest": {
+        "properties": {
+          "threshold": {
+            "example": 0.5,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "request.PromptInjectionInput": {
+        "properties": {
+          "prompt": {
+            "example": "What is the weather like today?",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "type": "object"
+      },
+      "request.PromptInjectionRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/request.PromptInjectionConfigRequest"
+          },
+          "input": {
+            "$ref": "#/components/schemas/request.PromptInjectionInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.PromptPerplexityInput": {
+        "properties": {
+          "prompt": {
+            "example": "What is the capital of France?",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "type": "object"
+      },
+      "request.PromptPerplexityRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.PromptPerplexityInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.RegexValidatorConfigRequest": {
+        "properties": {
+          "case_sensitive": {
+            "example": true,
+            "type": "boolean"
+          },
+          "dot_include_nl": {
+            "example": true,
+            "type": "boolean"
+          },
+          "multi_line": {
+            "example": true,
+            "type": "boolean"
+          },
+          "regex": {
+            "example": ".*",
+            "type": "string"
+          },
+          "should_match": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "request.RegexValidatorInput": {
+        "properties": {
+          "text": {
+            "example": "user@example.com",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "request.RegexValidatorRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/request.RegexValidatorConfigRequest"
+          },
+          "input": {
+            "$ref": "#/components/schemas/request.RegexValidatorInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.SQLValidatorInput": {
+        "properties": {
+          "text": {
+            "example": "SELECT * FROM users WHERE id = 1;",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "request.SQLValidatorRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.SQLValidatorInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.SecretsDetectorInput": {
+        "properties": {
+          "text": {
+            "example": "Here is some text without any API keys or passwords.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "request.SecretsDetectorRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.SecretsDetectorInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.SemanticSimilarityInput": {
+        "properties": {
+          "completion": {
+            "example": "The cat sat on the mat.",
+            "type": "string"
+          },
+          "reference": {
+            "example": "A feline was resting on the rug.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "completion",
+          "reference"
+        ],
+        "type": "object"
+      },
+      "request.SemanticSimilarityRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.SemanticSimilarityInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.SexismDetectorConfigRequest": {
+        "properties": {
+          "threshold": {
+            "example": 0.5,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "request.SexismDetectorInput": {
+        "properties": {
+          "text": {
+            "example": "All team members should be treated equally regardless of gender.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "request.SexismDetectorRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/request.SexismDetectorConfigRequest"
+          },
+          "input": {
+            "$ref": "#/components/schemas/request.SexismDetectorInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.ToneDetectionInput": {
+        "properties": {
+          "text": {
+            "example": "The capital of France is Paris.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "request.ToneDetectionRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.ToneDetectionInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.TopicAdherenceInput": {
+        "properties": {
+          "completion": {
+            "example": "Machine learning is a subset of AI that enables systems to learn from data.",
+            "type": "string"
+          },
+          "question": {
+            "example": "Tell me about machine learning",
+            "type": "string"
+          },
+          "reference_topics": {
+            "example": "artificial intelligence, data science, algorithms",
+            "type": "string"
+          }
+        },
+        "required": [
+          "completion",
+          "question",
+          "reference_topics"
+        ],
+        "type": "object"
+      },
+      "request.TopicAdherenceRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.TopicAdherenceInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.ToxicityDetectorConfigRequest": {
+        "properties": {
+          "threshold": {
+            "example": 0.5,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "request.ToxicityDetectorInput": {
+        "properties": {
+          "text": {
+            "example": "Thank you for your help with this project.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "request.ToxicityDetectorRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/request.ToxicityDetectorConfigRequest"
+          },
+          "input": {
+            "$ref": "#/components/schemas/request.ToxicityDetectorInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.UncertaintyDetectorInput": {
+        "properties": {
+          "prompt": {
+            "example": "I am not sure, I think the capital of France is Paris.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "type": "object"
+      },
+      "request.UncertaintyDetectorRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.UncertaintyDetectorInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.WordCountInput": {
+        "properties": {
+          "text": {
+            "example": "This is a sample text with several words.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "request.WordCountRatioInput": {
+        "properties": {
+          "denominator_text": {
+            "example": "This is a longer input text for comparison",
+            "type": "string"
+          },
+          "numerator_text": {
+            "example": "Short response",
+            "type": "string"
+          }
+        },
+        "required": [
+          "denominator_text",
+          "numerator_text"
+        ],
+        "type": "object"
+      },
+      "request.WordCountRatioRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.WordCountRatioInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "request.WordCountRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.WordCountInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
+      "response.AgentEfficiencyResponse": {
+        "properties": {
+          "step_efficiency_reason": {
+            "example": "Agent completed task with minimal redundant steps",
+            "type": "string"
+          },
+          "step_efficiency_score": {
+            "example": 0.85,
+            "type": "number"
+          },
+          "task_completion_reason": {
+            "example": "All required tasks were completed successfully",
+            "type": "string"
+          },
+          "task_completion_score": {
+            "example": 0.92,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.AgentFlowQualityResponse": {
+        "properties": {
+          "reason": {
+            "example": "Agent followed the expected flow correctly",
+            "type": "string"
+          },
+          "result": {
+            "example": "pass",
+            "type": "string"
+          },
+          "score": {
+            "example": 0.89,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.AgentGoalAccuracyResponse": {
+        "properties": {
+          "accuracy_score": {
+            "example": 0.88,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.AgentGoalCompletenessResponse": {
+        "properties": {
+          "reason": {
+            "example": "All user goals were accomplished",
+            "type": "string"
+          },
+          "result": {
+            "example": "complete",
+            "type": "string"
+          },
+          "score": {
+            "example": 0.95,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.AgentToolErrorDetectorResponse": {
+        "properties": {
+          "reason": {
+            "example": "Tool executed successfully without errors",
+            "type": "string"
+          },
+          "result": {
+            "example": "success",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.AnswerCompletenessResponse": {
+        "properties": {
+          "answer_completeness_score": {
+            "example": 0.95,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.AnswerCorrectnessResponse": {
+        "properties": {
+          "correctness_score": {
+            "example": 0.91,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.AnswerRelevancyResponse": {
+        "properties": {
+          "is_relevant": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "response.CharCountRatioResponse": {
+        "properties": {
+          "char_ratio": {
+            "example": 0.75,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.CharCountResponse": {
+        "properties": {
+          "char_count": {
+            "example": 42,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "response.ContextRelevanceResponse": {
+        "properties": {
+          "relevance_score": {
+            "example": 0.88,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.ConversationQualityResponse": {
+        "properties": {
+          "conversation_quality_score": {
+            "example": 0.82,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.CreateOrganizationResponse": {
+        "properties": {
+          "environments": {
+            "items": {
+              "$ref": "#/components/schemas/response.EnvironmentWithKeyResponse"
+            },
+            "type": "array"
+          },
+          "org_id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.EnvironmentWithKeyResponse": {
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.ErrorResponse": {
+        "description": "Standard error response structure",
+        "properties": {
+          "error": {
+            "example": "error message",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.FaithfulnessResponse": {
+        "properties": {
+          "is_faithful": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "response.InstructionAdherenceResponse": {
+        "properties": {
+          "instruction_adherence_score": {
+            "example": 0.87,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.IntentChangeResponse": {
+        "properties": {
+          "pass": {
+            "example": true,
+            "type": "boolean"
+          },
+          "reason": {
+            "example": "User intent remained consistent throughout the conversation",
+            "type": "string"
+          },
+          "score": {
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "response.JSONValidatorResponse": {
+        "properties": {
+          "is_valid_json": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "response.MetricsHWMResponse": {
+        "properties": {
+          "high_water_mark": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "response.PIIDetectorResponse": {
+        "properties": {
+          "has_pii": {
+            "example": false,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "response.PerplexityResponse": {
+        "properties": {
+          "perplexity_score": {
+            "example": 12.5,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.PlaceholderRegexResponse": {
+        "properties": {
+          "is_valid_regex": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "response.ProfanityDetectorResponse": {
+        "properties": {
+          "has_profanity": {
+            "example": false,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "response.PromptInjectionResponse": {
+        "properties": {
+          "has_injection": {
+            "example": "safe",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.PromptPerplexityResponse": {
+        "properties": {
+          "perplexity_score": {
+            "example": 8.3,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.RegexValidatorResponse": {
+        "properties": {
+          "is_valid_regex": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "response.SQLValidatorResponse": {
+        "properties": {
+          "is_valid_sql": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "response.SecretsDetectorResponse": {
+        "properties": {
+          "has_secret": {
+            "example": false,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "response.SemanticSimilarityResponse": {
+        "properties": {
+          "similarity_score": {
+            "example": 0.92,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.SexismDetectorResponse": {
+        "properties": {
+          "is_safe": {
+            "example": "safe",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.ToneDetectionResponse": {
+        "properties": {
+          "score": {
+            "example": 0.95,
+            "type": "number"
+          },
+          "tone": {
+            "example": "neutral",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.TopicAdherenceResponse": {
+        "properties": {
+          "adherence_score": {
+            "example": 0.95,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.ToxicityDetectorResponse": {
+        "properties": {
+          "is_safe": {
+            "example": "safe",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.UncertaintyDetectorResponse": {
+        "properties": {
+          "answer": {
+            "example": "Paris",
+            "type": "string"
+          },
+          "uncertainty": {
+            "example": 0.95,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.WordCountRatioResponse": {
+        "properties": {
+          "word_ratio": {
+            "example": 0.85,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.WordCountResponse": {
+        "properties": {
+          "word_count": {
+            "example": 10,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
+}

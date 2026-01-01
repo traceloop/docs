@@ -12,11 +12,15 @@ source:
   branch: main
   path: docs/swagger.json
 
+# Base URL for the API server
+base_url: https://api.traceloop.com
+
 # Path patterns to include (glob-style)
 # Paths NOT matching any pattern will be excluded
 include_paths:
   - /v2/metrics_hwm
   - /v2/organizations
+  - /v2/evaluators/execute/*
 
 # Paths to explicitly exclude (processed after include)
 exclude_paths: []
