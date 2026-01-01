@@ -311,6 +311,12 @@
         "api-reference/evaluators/execute-word-count-evaluator",
         "api-reference/evaluators/execute-word-count-ratio-evaluator"
       ]
+    },
+    {
+      "group": "Metrics",
+      "pages": [
+        "api-reference/metrics/get-metrics-high-water-mark"
+      ]
     }
   ],
   "redirects": [

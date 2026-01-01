@@ -1887,9 +1887,41 @@
         ]
       }
     },
+    "/v2/metrics_hwm": {
+      "get": {
+        "description": "Returns the timestamp of the last successfully processed evaluation (high water mark)",
+        "operationId": "get-metrics-hwm",
+        "responses": {
+          "200": {
+            "description": "High water mark timestamp in milliseconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.MetricsHWMResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get metrics high water mark",
+        "tags": [
+          "metrics"
+        ]
+      }
+    },
     "/v2/organizations": {
       "post": {
-        "description": "Create a new organization with environments and API keys. Requires LaunchDarkly feature flag permission.",
+        "description": "Create a new organization with environments and API keys.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3264,6 +3296,14 @@
           "is_valid_json": {
             "example": true,
             "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "response.MetricsHWMResponse": {
+        "properties": {
+          "high_water_mark": {
+            "type": "integer"
           }
         },
         "type": "object"
