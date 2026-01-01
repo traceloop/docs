@@ -1,137 +1,136 @@
 {
-    "openapi": "3.0.3",
-    "info": {
-        "contact": {},
-        "title": "Traceloop API",
-        "version": "1.0.0"
-    },
-    "paths": {
-        "/v2/organizations": {
-            "post": {
-                "description": "Create a new organization with environments and API keys. Requires LaunchDarkly feature flag permission.",
-                "parameters": [],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/response.CreateOrganizationResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body or validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/response.ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Not allowed to create organizations",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/response.ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/response.ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "summary": "Create a new organization",
-                "tags": [
-                    "organizations"
-                ],
-                "requestBody": {
-                    "description": "Organization creation request",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/request.CreateOrganizationRequest"
-                            }
-                        }
-                    }
-                }
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Traceloop API",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "paths": {
+    "/v2/organizations": {
+      "post": {
+        "description": "Create a new organization with environments and API keys. Requires LaunchDarkly feature flag permission.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.CreateOrganizationRequest"
+              }
             }
-        }
-    },
-    "components": {
-        "schemas": {
-            "request.CreateOrganizationRequest": {
-                "properties": {
-                    "envs": {
-                        "items": {
-                            "type": "string"
-                        },
-                        "type": "array"
-                    },
-                    "org_name": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "org_name"
-                ],
-                "type": "object"
-            },
-            "response.CreateOrganizationResponse": {
-                "properties": {
-                    "environments": {
-                        "items": {
-                            "$ref": "#/components/schemas/response.EnvironmentWithKeyResponse"
-                        },
-                        "type": "array"
-                    },
-                    "org_id": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "response.EnvironmentWithKeyResponse": {
-                "properties": {
-                    "api_key": {
-                        "type": "string"
-                    },
-                    "slug": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "response.ErrorResponse": {
-                "description": "Standard error response structure",
-                "properties": {
-                    "error": {
-                        "example": "error message",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            }
+          },
+          "description": "Organization creation request",
+          "required": true
         },
-        "securitySchemes": {
-            "BearerAuth": {
-                "type": "apiKey",
-                "in": "header",
-                "name": "Authorization",
-                "description": "Type \"Bearer\" followed by a space and JWT token."
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.CreateOrganizationResponse"
+                }
+              }
             }
-        }
+          },
+          "400": {
+            "description": "Invalid request body or validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not allowed to create organizations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a new organization",
+        "tags": [
+          "organizations"
+        ]
+      }
     }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "description": "Type \"Bearer\" followed by a space and JWT token.",
+        "in": "header",
+        "name": "Authorization",
+        "type": "apiKey"
+      }
+    },
+    "schemas": {
+      "request.CreateOrganizationRequest": {
+        "properties": {
+          "envs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "org_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "org_name"
+        ],
+        "type": "object"
+      },
+      "response.CreateOrganizationResponse": {
+        "properties": {
+          "environments": {
+            "items": {
+              "$ref": "#/components/schemas/response.EnvironmentWithKeyResponse"
+            },
+            "type": "array"
+          },
+          "org_id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.EnvironmentWithKeyResponse": {
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.ErrorResponse": {
+        "description": "Standard error response structure",
+        "properties": {
+          "error": {
+            "example": "error message",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
 }
