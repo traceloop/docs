@@ -12,174 +12,7 @@
 const fs = require("fs");
 const path = require("path");
 const yaml = require("js-yaml");
-
-/**
- * Convert Swagger 2.0 to OpenAPI 3.0
- */
-function convertSwagger2ToOpenAPI3(swagger) {
-  if (!swagger.swagger || !swagger.swagger.startsWith("2.")) {
-    // Already OpenAPI 3.x or not Swagger
-    return swagger;
-  }
-
-  const openapi = {
-    openapi: "3.0.3",
-    info: swagger.info || { title: "API", version: "1.0.0" },
-    paths: {},
-  };
-
-  // Convert host/basePath/schemes to servers
-  if (swagger.host || swagger.basePath) {
-    const scheme = swagger.schemes?.[0] || "https";
-    const host = swagger.host || "api.example.com";
-    const basePath = swagger.basePath || "";
-    openapi.servers = [{ url: `${scheme}://${host}${basePath}` }];
-  }
-
-  // Convert paths
-  for (const [pathKey, pathItem] of Object.entries(swagger.paths || {})) {
-    openapi.paths[pathKey] = {};
-
-    for (const [method, operation] of Object.entries(pathItem)) {
-      if (["get", "post", "put", "patch", "delete", "options", "head"].includes(method)) {
-        const newOp = { ...operation };
-
-        // Convert parameters
-        if (newOp.parameters) {
-          newOp.parameters = newOp.parameters.filter((p) => p.in !== "body").map((p) => {
-            if (p.type) {
-              return {
-                name: p.name,
-                in: p.in,
-                description: p.description,
-                required: p.required,
-                schema: { type: p.type, format: p.format, enum: p.enum },
-              };
-            }
-            return p;
-          });
-
-          // Convert body parameter to requestBody
-          const bodyParam = operation.parameters?.find((p) => p.in === "body");
-          if (bodyParam) {
-            newOp.requestBody = {
-              description: bodyParam.description,
-              required: bodyParam.required,
-              content: {
-                "application/json": {
-                  schema: convertSchemaRef(bodyParam.schema),
-                },
-              },
-            };
-          }
-        }
-
-        // Convert responses
-        if (newOp.responses) {
-          for (const [code, response] of Object.entries(newOp.responses)) {
-            if (response.schema) {
-              newOp.responses[code] = {
-                description: response.description || "",
-                content: {
-                  "application/json": {
-                    schema: convertSchemaRef(response.schema),
-                  },
-                },
-              };
-            }
-          }
-        }
-
-        // Remove Swagger 2.0 specific fields
-        delete newOp.consumes;
-        delete newOp.produces;
-
-        openapi.paths[pathKey][method] = newOp;
-      } else {
-        openapi.paths[pathKey][method] = pathItem[method];
-      }
-    }
-  }
-
-  // Convert definitions to components/schemas
-  if (swagger.definitions) {
-    openapi.components = openapi.components || {};
-    openapi.components.schemas = {};
-    for (const [name, schema] of Object.entries(swagger.definitions)) {
-      openapi.components.schemas[name] = convertSchemaRefs(schema);
-    }
-  }
-
-  // Convert securityDefinitions to components/securitySchemes
-  if (swagger.securityDefinitions) {
-    openapi.components = openapi.components || {};
-    openapi.components.securitySchemes = {};
-    for (const [name, def] of Object.entries(swagger.securityDefinitions)) {
-      if (def.type === "apiKey") {
-        openapi.components.securitySchemes[name] = {
-          type: "apiKey",
-          in: def.in,
-          name: def.name,
-          description: def.description,
-        };
-      } else if (def.type === "oauth2") {
-        openapi.components.securitySchemes[name] = {
-          type: "oauth2",
-          flows: {
-            implicit: {
-              authorizationUrl: def.authorizationUrl,
-              scopes: def.scopes || {},
-            },
-          },
-        };
-      } else if (def.type === "basic") {
-        openapi.components.securitySchemes[name] = {
-          type: "http",
-          scheme: "basic",
-        };
-      }
-    }
-  }
-
-  // Copy tags
-  if (swagger.tags) {
-    openapi.tags = swagger.tags;
-  }
-
-  return openapi;
-}
-
-/**
- * Convert $ref from #/definitions/ to #/components/schemas/
- */
-function convertSchemaRef(schema) {
-  if (!schema) return schema;
-  if (schema.$ref) {
-    return { $ref: schema.$ref.replace("#/definitions/", "#/components/schemas/") };
-  }
-  return convertSchemaRefs(schema);
-}
-
-/**
- * Recursively convert all $refs in a schema
- */
-function convertSchemaRefs(obj) {
-  if (!obj || typeof obj !== "object") return obj;
-
-  if (Array.isArray(obj)) {
-    return obj.map(convertSchemaRefs);
-  }
-
-  const result = {};
-  for (const [key, value] of Object.entries(obj)) {
-    if (key === "$ref" && typeof value === "string") {
-      result[key] = value.replace("#/definitions/", "#/components/schemas/");
-    } else {
-      result[key] = convertSchemaRefs(value);
-    }
-  }
-  return result;
-}
+const converter = require("swagger2openapi");
 
 /**
  * Convert a glob pattern to a RegExp
@@ -420,6 +253,7 @@ function pathToGroupName(apiPath) {
 
 /**
  * Generate MDX files for each endpoint in the filtered spec
+ * Uses openapi: frontmatter for Mintlify auto-generation
  */
 function generateMdxFiles(filteredSpec, outputDir) {
   const apiRefDir = path.join(outputDir, "api-reference");
@@ -448,11 +282,10 @@ function generateMdxFiles(filteredSpec, outputDir) {
         .replace(/^_|_$/g, "");
 
       const mdxPath = path.join(groupDir, `${filename}.mdx`);
-      const title = operation.summary || `${method.toUpperCase()} ${apiPath}`;
 
+      // Use openapi: frontmatter for Mintlify auto-generation
       const mdxContent = `---
-title: "${title}"
-api: "${method.toUpperCase()} ${apiPath}"
+openapi: ${method} ${apiPath}
 ---
 `;
 
@@ -517,12 +350,13 @@ async function main() {
   console.log("");
   console.log(`Result: ${filteredPathCount} paths included`);
 
-  // Convert Swagger 2.0 to OpenAPI 3.0 (required by Mintlify)
+  // Convert Swagger 2.0 to OpenAPI 3.0 using swagger2openapi library
   let outputSpec = filteredSpec;
   if (filteredSpec.swagger && filteredSpec.swagger.startsWith("2.")) {
     console.log("");
-    console.log("Converting Swagger 2.0 to OpenAPI 3.0...");
-    outputSpec = convertSwagger2ToOpenAPI3(filteredSpec);
+    console.log("Converting Swagger 2.0 to OpenAPI 3.0 using swagger2openapi...");
+    const result = await converter.convertObj(filteredSpec, { patch: true, warnOnly: true });
+    outputSpec = result.openapi;
   }
 
   // Write output as JSON
@@ -533,7 +367,7 @@ async function main() {
   console.log("");
   console.log("Generating MDX files...");
   const outputDir = path.dirname(outputPath);
-  const generatedPages = generateMdxFiles(filteredSpec, outputDir);
+  const generatedPages = generateMdxFiles(outputSpec, outputDir);
 
   // Output navigation config hint
   if (generatedPages.length > 0) {

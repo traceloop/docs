@@ -42,7 +42,7 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: npm install js-yaml
+        run: npm install js-yaml swagger2openapi
 
       - name: Read whitelist configuration
         id: config
