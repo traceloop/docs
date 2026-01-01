@@ -245,6 +245,10 @@
     {
       "group": "Warehouse",
       "pages": ["api-reference/warehouse/get_spans"]
+    },
+    {
+      "group": "Organizations",
+      "pages": ["api-reference/organizations/post_organizations"]
     }
   ],
   "redirects": [

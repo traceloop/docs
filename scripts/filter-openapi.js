@@ -10,6 +10,7 @@
  */
 
 const fs = require("fs");
+const path = require("path");
 const yaml = require("js-yaml");
 
 /**
@@ -228,6 +229,79 @@ function filterOpenAPISpec(spec, config) {
 }
 
 /**
+ * Convert a path like /v2/organizations to a slug like organizations
+ */
+function pathToSlug(apiPath) {
+  // Remove leading slash, split by /, take last meaningful segment
+  const parts = apiPath.split("/").filter(Boolean);
+  // Use last part, replace {param} with param
+  return parts[parts.length - 1].replace(/[{}]/g, "");
+}
+
+/**
+ * Convert a path like /v2/organizations to a group name like Organizations
+ */
+function pathToGroupName(apiPath) {
+  const slug = pathToSlug(apiPath);
+  // Capitalize first letter, replace underscores with spaces
+  return slug
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+/**
+ * Generate MDX files for each endpoint in the filtered spec
+ */
+function generateMdxFiles(filteredSpec, outputDir) {
+  const apiRefDir = path.join(outputDir, "api-reference");
+  const generatedPages = [];
+
+  for (const [apiPath, pathItem] of Object.entries(filteredSpec.paths || {})) {
+    for (const [method, operation] of Object.entries(pathItem)) {
+      // Skip non-HTTP methods (like parameters, summary, etc.)
+      if (!["get", "post", "put", "patch", "delete"].includes(method)) {
+        continue;
+      }
+
+      const slug = pathToSlug(apiPath);
+      const groupDir = path.join(apiRefDir, slug);
+
+      // Create directory if it doesn't exist
+      if (!fs.existsSync(groupDir)) {
+        fs.mkdirSync(groupDir, { recursive: true });
+      }
+
+      // Generate filename from operationId or method + path
+      const operationId = operation.operationId || `${method}_${slug}`;
+      const filename = operationId
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_|_$/g, "");
+
+      const mdxPath = path.join(groupDir, `${filename}.mdx`);
+      const title = operation.summary || `${method.toUpperCase()} ${apiPath}`;
+
+      const mdxContent = `---
+title: "${title}"
+api: "${method.toUpperCase()} ${apiPath}"
+---
+`;
+
+      fs.writeFileSync(mdxPath, mdxContent);
+      console.log(`  Generated: api-reference/${slug}/${filename}.mdx`);
+
+      generatedPages.push({
+        group: pathToGroupName(apiPath),
+        page: `api-reference/${slug}/${filename}`,
+      });
+    }
+  }
+
+  return generatedPages;
+}
+
+/**
  * Load a file as JSON or YAML based on extension
  */
 function loadFile(filePath) {
@@ -277,8 +351,27 @@ async function main() {
 
   // Write output as JSON
   fs.writeFileSync(outputPath, JSON.stringify(filteredSpec, null, 2));
-
   console.log(`Written to: ${outputPath}`);
+
+  // Generate MDX files for each endpoint
+  console.log("");
+  console.log("Generating MDX files...");
+  const outputDir = path.dirname(outputPath);
+  const generatedPages = generateMdxFiles(filteredSpec, outputDir);
+
+  // Output navigation config hint
+  if (generatedPages.length > 0) {
+    console.log("");
+    console.log("Add the following to your mint.json navigation:");
+    const groups = {};
+    for (const { group, page } of generatedPages) {
+      if (!groups[group]) groups[group] = [];
+      groups[group].push(page);
+    }
+    for (const [group, pages] of Object.entries(groups)) {
+      console.log(JSON.stringify({ group, pages }, null, 2));
+    }
+  }
 }
 
 main().catch((err) => {
