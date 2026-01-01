@@ -160,7 +160,6 @@ function filterOpenAPISpec(spec, config) {
   for (const [apiPath, pathItem] of Object.entries(spec.paths || {})) {
     // Check if path matches include patterns
     if (!matchesPatterns(apiPath, includePatterns)) {
-      console.log(`  Excluding (no match): ${apiPath}`);
       continue;
     }
 
@@ -169,7 +168,6 @@ function filterOpenAPISpec(spec, config) {
       excludePatterns.length > 0 &&
       matchesPatterns(apiPath, excludePatterns)
     ) {
-      console.log(`  Excluding (explicit): ${apiPath}`);
       continue;
     }
 
