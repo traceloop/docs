@@ -21,6 +21,10 @@ include_paths:
   - /v2/metrics_hwm
   - /v2/organizations
   - /v2/evaluators/execute/*
+  - /v2/metrics
+  - /v2/metrics_hwm
+  - /v2/auto-monitor-setups/*
+  - /v2/auto-monitor-setups
 
 # Paths to explicitly exclude (processed after include)
 exclude_paths: []
