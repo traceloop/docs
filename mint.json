@@ -315,7 +315,18 @@
     {
       "group": "Metrics",
       "pages": [
-        "api-reference/metrics/get-metrics-high-water-mark"
+        "api-reference/metrics/get-metrics-high-water-mark",
+        "api-reference/metrics/get-metrics-with-filtering-and-grouping"
+      ]
+    },
+    {
+      "group": "Auto-monitor-setups",
+      "pages": [
+        "api-reference/auto-monitor-setups/create-an-auto-monitor-setup",
+        "api-reference/auto-monitor-setups/delete-an-auto-monitor-setup",
+        "api-reference/auto-monitor-setups/get-an-auto-monitor-setup-by-id",
+        "api-reference/auto-monitor-setups/list-auto-monitor-setups",
+        "api-reference/auto-monitor-setups/update-an-auto-monitor-setup"
       ]
     }
   ],
