@@ -6,6 +6,282 @@
     "contact": {}
   },
   "paths": {
+    "/v2/auto-monitor-setups": {
+      "get": {
+        "description": "List all auto monitor setups for the organization with optional filters",
+        "parameters": [
+          {
+            "description": "Filter by entity type (e.g., agent, workflow)",
+            "in": "query",
+            "name": "entity_type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by status (e.g., pending, completed)",
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by external ID",
+            "in": "query",
+            "name": "external_id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/response.AutoMonitorSetupResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List auto monitor setups",
+        "tags": [
+          "auto-monitor-setups"
+        ]
+      },
+      "post": {
+        "description": "Create a new auto monitor setup for automatic monitor creation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.CreateAutoMonitorSetupInput"
+              }
+            }
+          },
+          "description": "Auto monitor setup configuration",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.AutoMonitorSetupResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create an auto monitor setup",
+        "tags": [
+          "auto-monitor-setups"
+        ]
+      }
+    },
+    "/v2/auto-monitor-setups/{setup_id}": {
+      "delete": {
+        "description": "Delete an auto monitor setup by ID",
+        "parameters": [
+          {
+            "description": "Auto monitor setup ID",
+            "in": "path",
+            "name": "setup_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete an auto monitor setup",
+        "tags": [
+          "auto-monitor-setups"
+        ]
+      },
+      "get": {
+        "description": "Get a specific auto monitor setup by its ID",
+        "parameters": [
+          {
+            "description": "Auto monitor setup ID",
+            "in": "path",
+            "name": "setup_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.AutoMonitorSetupResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get an auto monitor setup by ID",
+        "tags": [
+          "auto-monitor-setups"
+        ]
+      },
+      "put": {
+        "description": "Update an existing auto monitor setup by ID",
+        "parameters": [
+          {
+            "description": "Auto monitor setup ID",
+            "in": "path",
+            "name": "setup_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.UpdateAutoMonitorSetupInput"
+              }
+            }
+          },
+          "description": "Fields to update",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.AutoMonitorSetupResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update an auto monitor setup",
+        "tags": [
+          "auto-monitor-setups"
+        ]
+      }
+    },
     "/v2/evaluators/execute/agent-efficiency": {
       "post": {
         "description": "Evaluate agent efficiency - detect redundant calls, unnecessary follow-ups\n\n**Request Body:**\n- `input.trajectory_prompts` (string, required): JSON array of prompts in the agent trajectory\n- `input.trajectory_completions` (string, required): JSON array of completions in the agent trajectory",
@@ -2052,282 +2328,6 @@
         "summary": "Create a new organization",
         "tags": [
           "organizations"
-        ]
-      }
-    },
-    "/v2/projects/{project_id}/auto-monitor-setups": {
-      "get": {
-        "description": "List all auto monitor setups for the project with optional filters",
-        "parameters": [
-          {
-            "description": "Filter by entity type (e.g., agent, workflow)",
-            "in": "query",
-            "name": "entity_type",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Filter by status (e.g., pending, completed)",
-            "in": "query",
-            "name": "status",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Filter by external ID",
-            "in": "query",
-            "name": "external_id",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/response.AutoMonitorSetupResponse"
-                  },
-                  "type": "array"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "List auto monitor setups",
-        "tags": [
-          "auto-monitor-setups"
-        ]
-      },
-      "post": {
-        "description": "Create a new auto monitor setup for automatic monitor creation",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/request.CreateAutoMonitorSetupInput"
-              }
-            }
-          },
-          "description": "Auto monitor setup configuration",
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.AutoMonitorSetupResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Create an auto monitor setup",
-        "tags": [
-          "auto-monitor-setups"
-        ]
-      }
-    },
-    "/v2/projects/{project_id}/auto-monitor-setups/{id}": {
-      "delete": {
-        "description": "Delete an auto monitor setup by ID",
-        "parameters": [
-          {
-            "description": "Auto monitor setup ID",
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No content"
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Delete an auto monitor setup",
-        "tags": [
-          "auto-monitor-setups"
-        ]
-      },
-      "get": {
-        "description": "Get a specific auto monitor setup by its ID",
-        "parameters": [
-          {
-            "description": "Auto monitor setup ID",
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.AutoMonitorSetupResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get an auto monitor setup by ID",
-        "tags": [
-          "auto-monitor-setups"
-        ]
-      },
-      "put": {
-        "description": "Update an existing auto monitor setup by ID",
-        "parameters": [
-          {
-            "description": "Auto monitor setup ID",
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/request.UpdateAutoMonitorSetupInput"
-              }
-            }
-          },
-          "description": "Fields to update",
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.AutoMonitorSetupResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/response.ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Update an auto monitor setup",
-        "tags": [
-          "auto-monitor-setups"
         ]
       }
     }
