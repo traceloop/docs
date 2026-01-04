@@ -315,7 +315,8 @@
     {
       "group": "Metrics",
       "pages": [
-        "api-reference/metrics/get-metrics-high-water-mark"
+        "api-reference/metrics/get-metrics-high-water-mark",
+        "api-reference/metrics/get-metrics-with-filtering-and-grouping"
       ]
     }
   ],
