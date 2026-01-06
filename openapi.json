@@ -911,7 +911,7 @@
     },
     "/v2/evaluators/execute/conversation-quality": {
       "post": {
-        "description": "Evaluate conversation quality based on tone, clarity, flow, responsiveness, and transparency\n\n**Request Body:**\n- `input.prompts` (string, required): JSON array of prompts in the conversation\n- `input.completions` (string, required): JSON array of completions in the conversation\n- `config.model` (string, optional): Model to use for evaluation (default: gpt-4o)",
+        "description": "Evaluate conversation quality based on tone, clarity, flow, responsiveness, and transparency\n\n**Request Body:**\n- `input.prompts` (string, required): JSON array of prompts in the conversation\n- `input.completions` (string, required): JSON array of completions in the conversation",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1023,6 +1023,63 @@
         ]
       }
     },
+    "/v2/evaluators/execute/html-comparison": {
+      "post": {
+        "description": "Compare two HTML documents for structural and content similarity\n\n**Request Body:**\n- `input.html1` (string, required): The first HTML document to compare\n- `input.html2` (string, required): The second HTML document to compare",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.HtmlComparisonRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.HtmlComparisonResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute html-comparison evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
     "/v2/evaluators/execute/instruction-adherence": {
       "post": {
         "description": "Evaluate how well responses follow given instructions\n\n**Request Body:**\n- `input.instructions` (string, required): The instructions that should be followed\n- `input.response` (string, required): The response to evaluate for instruction adherence",
@@ -1082,7 +1139,7 @@
     },
     "/v2/evaluators/execute/intent-change": {
       "post": {
-        "description": "Detect changes in user intent between prompts and completions\n\n**Request Body:**\n- `input.prompts` (string, required): JSON array of prompts in the conversation\n- `input.completions` (string, required): JSON array of completions in the conversation\n- `config.model` (string, optional): Model to use for evaluation (default: gpt-4o)",
+        "description": "Detect changes in user intent between prompts and completions\n\n**Request Body:**\n- `input.prompts` (string, required): JSON array of prompts in the conversation\n- `input.completions` (string, required): JSON array of completions in the conversation",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2798,15 +2855,6 @@
         ],
         "type": "object"
       },
-      "request.ConversationQualityConfigRequest": {
-        "properties": {
-          "model": {
-            "example": "gpt-4o",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
       "request.ConversationQualityInput": {
         "properties": {
           "completions": {
@@ -2826,9 +2874,6 @@
       },
       "request.ConversationQualityRequest": {
         "properties": {
-          "config": {
-            "$ref": "#/components/schemas/request.ConversationQualityConfigRequest"
-          },
           "input": {
             "$ref": "#/components/schemas/request.ConversationQualityInput"
           }
@@ -2963,6 +3008,34 @@
         },
         "type": "object"
       },
+      "request.HtmlComparisonInput": {
+        "properties": {
+          "html1": {
+            "example": "<html><body><h1>Hello, world!</h1></body></html>",
+            "type": "string"
+          },
+          "html2": {
+            "example": "<html><body><h1>Hello, world!</h1></body></html>",
+            "type": "string"
+          }
+        },
+        "required": [
+          "html1",
+          "html2"
+        ],
+        "type": "object"
+      },
+      "request.HtmlComparisonRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.HtmlComparisonInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
       "request.InstructionAdherenceInput": {
         "properties": {
           "instructions": {
@@ -2991,15 +3064,6 @@
         ],
         "type": "object"
       },
-      "request.IntentChangeConfigRequest": {
-        "properties": {
-          "model": {
-            "example": "gpt-4o",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
       "request.IntentChangeInput": {
         "properties": {
           "completions": {
@@ -3019,9 +3083,6 @@
       },
       "request.IntentChangeRequest": {
         "properties": {
-          "config": {
-            "$ref": "#/components/schemas/request.IntentChangeConfigRequest"
-          },
           "input": {
             "$ref": "#/components/schemas/request.IntentChangeInput"
           }
@@ -3877,6 +3938,15 @@
         "properties": {
           "metrics": {
             "$ref": "#/components/schemas/response.PaginatedMetricsResponse"
+          }
+        },
+        "type": "object"
+      },
+      "response.HtmlComparisonResponse": {
+        "properties": {
+          "similarity_score": {
+            "example": 0.92,
+            "type": "number"
           }
         },
         "type": "object"

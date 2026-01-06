@@ -290,6 +290,7 @@
         "api-reference/evaluators/execute-context-relevance-evaluator",
         "api-reference/evaluators/execute-conversation-quality-evaluator",
         "api-reference/evaluators/execute-faithfulness-evaluator",
+        "api-reference/evaluators/execute-html-comparison-evaluator",
         "api-reference/evaluators/execute-instruction-adherence-evaluator",
         "api-reference/evaluators/execute-intent-change-evaluator",
         "api-reference/evaluators/execute-json-validator-evaluator",
