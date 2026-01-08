@@ -282,6 +282,7 @@
         "api-reference/evaluators/execute-agent-goal-accuracy-evaluator",
         "api-reference/evaluators/execute-agent-goal-completeness-evaluator",
         "api-reference/evaluators/execute-agent-tool-error-detector-evaluator",
+        "api-reference/evaluators/execute-agent-tool-trajectory-evaluator",
         "api-reference/evaluators/execute-answer-completeness-evaluator",
         "api-reference/evaluators/execute-answer-correctness-evaluator",
         "api-reference/evaluators/execute-answer-relevancy-evaluator",
