@@ -277,41 +277,66 @@
     {
       "group": "Evaluators",
       "pages": [
-        "api-reference/evaluators/execute-agent-efficiency-evaluator",
-        "api-reference/evaluators/execute-agent-flow-quality-evaluator",
-        "api-reference/evaluators/execute-agent-goal-accuracy-evaluator",
-        "api-reference/evaluators/execute-agent-goal-completeness-evaluator",
-        "api-reference/evaluators/execute-agent-tool-error-detector-evaluator",
-        "api-reference/evaluators/execute-agent-tool-trajectory-evaluator",
-        "api-reference/evaluators/execute-answer-completeness-evaluator",
-        "api-reference/evaluators/execute-answer-correctness-evaluator",
-        "api-reference/evaluators/execute-answer-relevancy-evaluator",
-        "api-reference/evaluators/execute-char-count-evaluator",
-        "api-reference/evaluators/execute-char-count-ratio-evaluator",
-        "api-reference/evaluators/execute-context-relevance-evaluator",
-        "api-reference/evaluators/execute-conversation-quality-evaluator",
-        "api-reference/evaluators/execute-faithfulness-evaluator",
-        "api-reference/evaluators/execute-html-comparison-evaluator",
-        "api-reference/evaluators/execute-instruction-adherence-evaluator",
-        "api-reference/evaluators/execute-intent-change-evaluator",
-        "api-reference/evaluators/execute-json-validator-evaluator",
-        "api-reference/evaluators/execute-perplexity-evaluator",
-        "api-reference/evaluators/execute-pii-detector-evaluator",
-        "api-reference/evaluators/execute-placeholder-regex-evaluator",
-        "api-reference/evaluators/execute-profanity-detector-evaluator",
-        "api-reference/evaluators/execute-prompt-injection-evaluator",
-        "api-reference/evaluators/execute-prompt-perplexity-evaluator",
-        "api-reference/evaluators/execute-regex-validator-evaluator",
-        "api-reference/evaluators/execute-secrets-detector-evaluator",
-        "api-reference/evaluators/execute-semantic-similarity-evaluator",
-        "api-reference/evaluators/execute-sexism-detector-evaluator",
-        "api-reference/evaluators/execute-sql-validator-evaluator",
-        "api-reference/evaluators/execute-tone-detection-evaluator",
-        "api-reference/evaluators/execute-topic-adherence-evaluator",
-        "api-reference/evaluators/execute-toxicity-detector-evaluator",
-        "api-reference/evaluators/execute-uncertainty-detector-evaluator",
-        "api-reference/evaluators/execute-word-count-evaluator",
-        "api-reference/evaluators/execute-word-count-ratio-evaluator"
+        {
+          "group": "Style",
+          "pages": [
+            "api-reference/evaluators/execute-char-count-evaluator",
+            "api-reference/evaluators/execute-char-count-ratio-evaluator",
+            "api-reference/evaluators/execute-word-count-evaluator",
+            "api-reference/evaluators/execute-word-count-ratio-evaluator"
+          ]
+        },
+        {
+          "group": "Quality & Correctness",
+          "pages": [
+            "api-reference/evaluators/execute-answer-relevancy-evaluator",
+            "api-reference/evaluators/execute-faithfulness-evaluator",
+            "api-reference/evaluators/execute-answer-correctness-evaluator",
+            "api-reference/evaluators/execute-answer-completeness-evaluator",
+            "api-reference/evaluators/execute-topic-adherence-evaluator",
+            "api-reference/evaluators/execute-semantic-similarity-evaluator",
+            "api-reference/evaluators/execute-instruction-adherence-evaluator",
+            "api-reference/evaluators/execute-perplexity-evaluator",
+            "api-reference/evaluators/execute-prompt-perplexity-evaluator",
+            "api-reference/evaluators/execute-uncertainty-detector-evaluator",
+            "api-reference/evaluators/execute-conversation-quality-evaluator",
+            "api-reference/evaluators/execute-context-relevance-evaluator",
+            "api-reference/evaluators/execute-tone-detection-evaluator"
+          ]
+        },
+        {
+          "group": "Security & Compliance",
+          "pages": [
+            "api-reference/evaluators/execute-pii-detector-evaluator",
+            "api-reference/evaluators/execute-profanity-detector-evaluator",
+            "api-reference/evaluators/execute-sexism-detector-evaluator",
+            "api-reference/evaluators/execute-prompt-injection-evaluator",
+            "api-reference/evaluators/execute-toxicity-detector-evaluator",
+            "api-reference/evaluators/execute-secrets-detector-evaluator"
+          ]
+        },
+        {
+          "group": "Formatting",
+          "pages": [
+            "api-reference/evaluators/execute-sql-validator-evaluator",
+            "api-reference/evaluators/execute-json-validator-evaluator",
+            "api-reference/evaluators/execute-regex-validator-evaluator",
+            "api-reference/evaluators/execute-placeholder-regex-evaluator",
+            "api-reference/evaluators/execute-html-comparison-evaluator"
+          ]
+        },
+        {
+          "group": "Agents",
+          "pages": [
+            "api-reference/evaluators/execute-agent-goal-accuracy-evaluator",
+            "api-reference/evaluators/execute-agent-tool-error-detector-evaluator",
+            "api-reference/evaluators/execute-agent-flow-quality-evaluator",
+            "api-reference/evaluators/execute-agent-efficiency-evaluator",
+            "api-reference/evaluators/execute-agent-goal-completeness-evaluator",
+            "api-reference/evaluators/execute-agent-tool-trajectory-evaluator",
+            "api-reference/evaluators/execute-intent-change-evaluator"
+          ]
+        }
       ]
     },
     {
