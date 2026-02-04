@@ -282,6 +282,63 @@
         ]
       }
     },
+    "/v2/evaluators/custom-evaluator": {
+      "post": {
+        "description": "A custom evaluator requires three main components: a prompt, an input schema, and an output schema.\n\n**Prompt**\n\nThe prompt serves as an LLM-as-a-judge, instructing the model to evaluate your data against the criteria you define. Use Jinja2 templating syntax `{{var_name}}` to reference variables from your input schema.\n\n**Input Schema**\n\nDefines the variables available to your prompt template. Each variable declared here can be referenced in your prompt using `{{var_name}}`.\n\n**Output Schema**\n\nDefines the structure of the evaluation result. The model returns its assessment as structured output matching this schema.\n\nAdditionally, you'll specify an LLM provider, model, and any provider-specific settings.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.CreateCustomEvaluatorInput"
+              }
+            }
+          },
+          "description": "Custom evaluator configuration",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.CreateEvaluatorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Create custom evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
     "/v2/evaluators/execute/agent-efficiency": {
       "post": {
         "description": "Evaluate agent efficiency - detect redundant calls, unnecessary follow-ups\n\n**Request Body:**\n- `input.trajectory_prompts` (string, required): JSON array of prompts in the agent trajectory\n- `input.trajectory_completions` (string, required): JSON array of completions in the agent trajectory",
@@ -2498,16 +2555,28 @@
       "evaluator.Property": {
         "properties": {
           "description": {
-            "type": "string"
+            "type": "string",
+            "description": "Description of the property"
           },
           "label": {
-            "type": "string"
+            "type": "string",
+            "description": "Display label for the property"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Property name (used as variable in templates)"
           },
           "type": {
-            "type": "string"
+            "type": "string",
+            "description": "Property type: string, int, float, boolean, or enum",
+            "enum": ["string", "int", "float", "boolean", "enum"]
+          },
+          "enum_values": {
+            "type": "array",
+            "description": "Allowed values if type is enum",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -4360,6 +4429,125 @@
               "type": "string"
             },
             "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "model.LLMMessage": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "Message role (system, user, assistant)"
+          },
+          "content": {
+            "type": "string",
+            "description": "Message content"
+          }
+        },
+        "required": [
+          "role",
+          "content"
+        ],
+        "type": "object"
+      },
+      "request.CreateCustomEvaluatorInput": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Display name of the evaluator"
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL-safe identifier (auto-generated if not provided)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of what the evaluator does"
+          },
+          "provider": {
+            "type": "string",
+            "description": "LLM provider (e.g., openai, anthropic)"
+          },
+          "model": {
+            "type": "string",
+            "description": "Model to use for evaluation"
+          },
+          "messages": {
+            "type": "array",
+            "description": "Prompt messages for the LLM judge",
+            "items": {
+              "$ref": "#/components/schemas/model.LLMMessage"
+            }
+          },
+          "input_schema": {
+            "type": "array",
+            "description": "Schema defining evaluator inputs",
+            "items": {
+              "$ref": "#/components/schemas/evaluator.Property"
+            }
+          },
+          "output_schema": {
+            "type": "array",
+            "description": "Schema defining evaluator outputs",
+            "items": {
+              "$ref": "#/components/schemas/evaluator.Property"
+            }
+          },
+          "temperature": {
+            "type": "number",
+            "description": "Temperature setting for the LLM"
+          },
+          "top_p": {
+            "type": "number",
+            "description": "Top P (nucleus sampling) setting"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "description": "Maximum tokens in the response"
+          },
+          "frequency_penalty": {
+            "type": "number",
+            "description": "Frequency penalty to reduce repetition"
+          },
+          "presence_penalty": {
+            "type": "number",
+            "description": "Presence penalty for topic diversity"
+          },
+          "stop": {
+            "type": "array",
+            "description": "Stop sequences",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "provider",
+          "model",
+          "messages",
+          "input_schema",
+          "output_schema"
+        ],
+        "type": "object"
+      },
+      "response.CreateEvaluatorResponse": {
+        "properties": {
+          "evaluator_id": {
+            "type": "string",
+            "description": "Unique identifier for the created evaluator"
+          },
+          "version_id": {
+            "type": "string",
+            "description": "Version identifier"
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL-safe slug for the evaluator"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the evaluator"
           }
         },
         "type": "object"

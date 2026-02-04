@@ -42,6 +42,14 @@ This allows you to refine and correct the evaluator prompt before saving the fin
 
 ## Execute Evaluator
 
-Evaluators can be executed in [playground columns](../playgrounds/columns/column-management) and in [experiments through the SDK](../experiments/running-from-code). 
+Evaluators can be executed in [playground columns](../playgrounds/columns/column-management) and in [experiments through the SDK](../experiments/running-from-code).
 
+## Create via API
 
+You can programmatically create custom LLM-as-a-judge evaluators using the API. 
+
+```
+POST /v2/evaluators/custom-evaluator
+```
+
+See the full [API reference](/api-reference/evaluators/create-custom-evaluator) for detailed parameter documentation.
