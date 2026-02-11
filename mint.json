@@ -99,6 +99,7 @@
         "openllmetry/tracing/supported",
         "openllmetry/tracing/multi-modality",
         "openllmetry/tracing/annotations",
+        "openllmetry/tracing/sessions",
         "openllmetry/tracing/versions",
         "openllmetry/tracing/association",
         "openllmetry/tracing/user-feedback",
