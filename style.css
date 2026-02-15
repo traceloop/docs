@@ -1,0 +1,12 @@
+#topbar-cta-button span,
+#topbar-cta-button svg {
+  color: #09090B !important;
+}
+
+#topbar-cta-button span.absolute {
+  border-radius: 8px !important;
+}
+
+.nav-logo {
+  width: 140px !important;
+}
