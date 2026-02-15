@@ -7,15 +7,15 @@
     "dark": "/logo/traceloop-dark.png"
   },
   "colors": {
-    "primary": "#FFB53D",
-    "light": "#FFF238",
-    "dark": "#FF3D5D",
+    "primary": "#EAB308",
+    "light": "#EAB308",
+    "dark": "#EAB308",
     "anchors": {
-      "from": "#FFF238",
-      "to": "#FF3D5D"
+      "from": "#EAB308",
+      "to": "#EAB308"
     },
     "background": {
-      "dark": "#121212"
+      "dark": "#09090B"
     }
   },
   "topbarLinks": [
