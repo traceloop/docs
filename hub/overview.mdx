@@ -117,13 +117,14 @@ When a guard evaluation fails, the system responds based on the `on_failure` set
 - Prevents the request/response from proceeding
 
 **`warn` Mode:**
-- Adds a warning header to the response
-- Logs the failure for monitoring
+- Adds an `x-traceloop-guardrail-warning` header to the response
 - Allows the request/response to continue
 
 ### Required Flag (Fail-Closed vs Fail-Open)
 
-The `required` flag determines behavior when the evaluator service is unavailable:
+The `required` flag determines behavior when the evaluator service is unavailable, times out, or errors. 
+
+**Default: `false`**
 
 **`required: true` (Fail-Closed):**
 - If evaluator is unavailable → treat as failure
@@ -137,9 +138,6 @@ The `required` flag determines behavior when the evaluator service is unavailabl
 - Prioritizes availability over enforcement
 - Example: Tone detection in internal tools
 
-<Tip>
-**Security Best Practice:** Set `required: true` for guards with `on_failure: block` in production systems to prevent security gaps during service disruptions.
-</Tip>
 
 ### Providers
 
@@ -198,38 +196,6 @@ This configuration:
 - Runs both guards concurrently for minimal latency
 - Fails closed (blocks if evaluator unavailable)
 
-## Response Formats
-
-### Blocked Request (HTTP 403)
-
-When a guard blocks a request, Hub returns:
-
-```json
-{
-  "error": {
-    "type": "guardrail_blocked",
-    "guardrail": "pii-check",
-    "message": "Request blocked by guardrail 'pii-check'",
-    "evaluation_result": {
-      "pass": false,
-      "result": {
-        "detected_pii": ["email", "phone_number"],
-        "confidence": 0.92
-      }
-    },
-    "reason": "evaluation_failed"
-  }
-}
-```
-
-### Warning Headers
-
-When a guard fails in `warn` mode, Hub adds a header:
-
-```
-X-Traceloop-Guardrail-Warning: guardrail_name="tone-check", reason="failed"
-```
-
 ## Observability
 
 Every guard evaluation creates an OpenTelemetry span with attributes:
@@ -238,9 +204,9 @@ Every guard evaluation creates an OpenTelemetry span with attributes:
 - `gen_ai.guardrail.status` - PASSED, FAILED, or ERROR
 - `gen_ai.guardrail.duration` - Execution time in milliseconds
 - `gen_ai.guardrail.error.type` - Error category (if failed)
-- `gen_ai.guardrail.input` - Input text (if trace content enabled)
+- `gen_ai.guardrail.input` - Guard input text
 
-Use these spans to monitor guardrail performance, track failures, and optimize configurations.
+The spans will be visible in the Traceloop Trace table. Use them to monitor guardrail performance, track failures, and optimize configurations.
 
 ## Next Steps
 
