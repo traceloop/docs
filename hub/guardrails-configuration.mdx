@@ -1,5 +1,5 @@
 ---
-title: "Guardrails Configuration"
+title: "Configuration"
 description: "Complete guide to configuring guardrails in Traceloop Hub"
 ---
 
@@ -34,12 +34,13 @@ pipelines:
       - <guard-name>
     plugins:
       - model-router:
-          models: [<model-list>]
+          models: 
+            - <model-name>
 ```
 
 ## Provider Configuration
 
-Providers are the services that execute guardrail evaluations. Define your providers first, then reference them in guard configurations.
+Providers are the services that can execute guardrails. Define your providers first, then reference them in guard configurations.
 
 ### Traceloop Provider
 
@@ -51,18 +52,6 @@ guardrails:
       api_key: ${TRACELOOP_API_KEY}
 ```
 
-**Provider Fields:**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `name` | string | Yes | Unique provider identifier (referenced by guards) |
-| `api_base` | string | Yes | Base URL for the evaluator API |
-| `api_key` | string | Yes | Authentication key for the API |
-
-<Tip>
-Use environment variable substitution (e.g., `${TRACELOOP_API_KEY}`) to keep secrets out of configuration files.
-</Tip>
-
 ## Guard Definition
 
 Guards are configured instances of evaluators. Each guard defines what to check, when to check it, and how to respond to failures.
@@ -73,14 +62,12 @@ Guards are configured instances of evaluators. Each guard defines what to check,
 guards:
   - name: my-guard
     provider: traceloop
-    evaluator_slug: pii-detector
+    evaluator_slug: prompt-injection
     mode: pre_call
     on_failure: block
     required: true
     params:
-      probability_threshold: 0.7
-    api_base: https://api.traceloop.com
-    api_key: ${CUSTOM_API_KEY}
+      threshold: 0.7
 ```
 
 ### Guard Fields Reference
@@ -138,6 +125,9 @@ Response when blocked:
     "type": "guardrail_blocked",
     "guardrail": "security-guard",
     "message": "Request blocked by guardrail 'security-guard'",
+    "evaluation_result": {
+          "is_safe": false
+    },
     "reason": "evaluation_failed"
   }
 }
@@ -153,12 +143,14 @@ Response when blocked:
 Response includes header:
 
 ```
-X-Traceloop-Guardrail-Warning: guardrail_name="quality-check", reason="failed"
+x-traceloop-guardrail-warning: guardrail_name="quality-check", reason="failed"
 ```
 
 ### Required: Fail-Closed vs Fail-Open
 
 The `required` flag controls behavior when the evaluator service is unavailable, times out, or errors.
+
+**Default: `false`**
 
 **`required: true` (Fail-Closed)** - Treat evaluator errors as failures:
 
@@ -180,20 +172,16 @@ If evaluator unavailable → HTTP 403 (same as evaluation failure)
 
 If evaluator unavailable → Add warning header, continue request
 
-<Tip>
-**Best Practice:** Use `required: true` for security guards with `on_failure: block` to prevent security gaps during outages.
-</Tip>
-
 ### Parameters
 
 Each evaluator accepts specific configuration parameters. Common parameters include:
 
 ```yaml
-# PII Detector with threshold
-- name: pii-strict
-  evaluator_slug: pii-detector
+# Prompt injection with threshold
+- name: probability_threshold-strict
+  evaluator_slug: prompt-injection
   params:
-    probability_threshold: 0.8  # Higher = fewer false positives
+    threshold: 0.8
 
 # Regex Validator with pattern
 - name: email-validator
@@ -217,34 +205,11 @@ Each evaluator accepts specific configuration parameters. Common parameters incl
 
 See the [Evaluators Reference](/hub/guardrails-evaluators) for complete parameter documentation for each evaluator.
 
-### Per-Guard Credentials Override
-
-Override provider credentials for specific guards:
-
-```yaml
-guardrails:
-  providers:
-    - name: traceloop
-      api_base: https://api.traceloop.com
-      api_key: ${DEFAULT_KEY}
-
-  guards:
-    # Uses default provider credentials
-    - name: guard-1
-      provider: traceloop
-      evaluator_slug: pii-detector
-
-    # Overrides with custom credentials
-    - name: guard-2
-      provider: traceloop
-      evaluator_slug: toxicity-detector
-      api_base: https://custom.api.com
-      api_key: ${CUSTOM_KEY}
-```
 
 ## Pipeline Integration
 
 Attach guards to pipelines to enable guardrails for specific endpoints.
+Each pipeline request will perform the attached guards. 
 
 ### Basic Pipeline Configuration
 
@@ -323,267 +288,24 @@ pipelines:
 
 ## Runtime Guard Control
 
-Add additional guards at runtime using the `X-Traceloop-Guardrails` header. This is **additive only** - you cannot remove pipeline guards via headers (security baseline is preserved).
+Add additional guards at runtime using the `x-traceloop-guardrails` header with a comma-separated list of guard names.
+This is **additive only** - you cannot remove pipeline guards via headers.
+
+<Info>
+You can configure pipelines with no guards and rely entirely on the header to specify which guards to run. This provides maximum flexibility for dynamic guard selection per request.
+</Info>
 
 ### Header Format
 
 ```bash
 curl https://your-hub.com/v1/chat/completions \
-  -H "X-Traceloop-Guardrails: extra-guard-1, extra-guard-2" \
+  -H "x-traceloop-guardrails: extra-guard-1, extra-guard-2" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "gpt-4",
     "messages": [{"role": "user", "content": "Hello"}]
   }'
 ```
-
-### Behavior
-
-```yaml
-pipelines:
-  - name: default
-    guards: [pii-check, injection-check]
-```
-
-**Request with header:**
-
-```
-X-Traceloop-Guardrails: tone-check, uncertainty-check
-```
-
-**Effective guards:** `[pii-check, injection-check, tone-check, uncertainty-check]`
-
-<Info>
-Guards are deduplicated by name. If a header specifies a guard already in the pipeline, it only runs once.
-</Info>
-
-## Complete Configuration Examples
-
-### Example 1: Healthcare Application (High Security)
-
-```yaml
-guardrails:
-  providers:
-    - name: traceloop
-      api_base: https://api.traceloop.com
-      api_key: ${TRACELOOP_API_KEY}
-
-  guards:
-    - name: pii-input
-      provider: traceloop
-      evaluator_slug: pii-detector
-      mode: pre_call
-      on_failure: block
-      required: true
-      params:
-        probability_threshold: 0.8
-
-    - name: pii-output
-      provider: traceloop
-      evaluator_slug: pii-detector
-      mode: post_call
-      on_failure: block
-      required: true
-      params:
-        probability_threshold: 0.6
-
-    - name: injection-defense
-      provider: traceloop
-      evaluator_slug: prompt-injection
-      mode: pre_call
-      on_failure: block
-      required: true
-
-pipelines:
-  - name: healthcare-assistant
-    type: chat
-    guards:
-      - pii-input
-      - pii-output
-      - injection-defense
-    plugins:
-      - model-router:
-          models: [gpt-4]
-```
-
-### Example 2: Customer Support (Balanced)
-
-```yaml
-guardrails:
-  providers:
-    - name: traceloop
-      api_base: https://api.traceloop.com
-      api_key: ${TRACELOOP_API_KEY}
-
-  guards:
-    - name: toxicity-monitor
-      provider: traceloop
-      evaluator_slug: toxicity-detector
-      mode: pre_call
-      on_failure: warn
-      required: false
-      params:
-        threshold: 0.7
-
-    - name: profanity-block
-      provider: traceloop
-      evaluator_slug: profanity-detector
-      mode: post_call
-      on_failure: block
-      required: true
-
-    - name: tone-check
-      provider: traceloop
-      evaluator_slug: tone-detection
-      mode: post_call
-      on_failure: warn
-      required: false
-
-pipelines:
-  - name: support-bot
-    type: chat
-    guards:
-      - toxicity-monitor
-      - profanity-block
-      - tone-check
-    plugins:
-      - model-router:
-          models: [gpt-4o-mini]
-```
-
-### Example 3: Code Generation (Output Validation)
-
-```yaml
-guardrails:
-  providers:
-    - name: traceloop
-      api_base: https://api.traceloop.com
-      api_key: ${TRACELOOP_API_KEY}
-
-  guards:
-    - name: secrets-in-code
-      provider: traceloop
-      evaluator_slug: secrets-detector
-      mode: post_call
-      on_failure: block
-      required: true
-
-    - name: sql-validation
-      provider: traceloop
-      evaluator_slug: sql-validator
-      mode: post_call
-      on_failure: warn
-      required: false
-
-    - name: json-validation
-      provider: traceloop
-      evaluator_slug: json-validator
-      mode: post_call
-      on_failure: warn
-      required: false
-
-pipelines:
-  - name: code-assistant
-    type: chat
-    guards:
-      - secrets-in-code
-      - sql-validation
-      - json-validation
-    plugins:
-      - model-router:
-          models: [gpt-4, claude-3-5-sonnet]
-```
-
-## Environment Variables
-
-Use environment variable substitution to keep secrets secure:
-
-```yaml
-guardrails:
-  providers:
-    - name: traceloop
-      api_base: ${TRACELOOP_API_BASE:-https://api.traceloop.com}
-      api_key: ${TRACELOOP_API_KEY}
-```
-
-Set variables before starting Hub:
-
-```bash
-export TRACELOOP_API_KEY="your-api-key"
-export TRACELOOP_API_BASE="https://api.traceloop.com"
-```
-
-## Best Practices
-
-### Security
-
-1. **Fail-Closed for Critical Guards**
-   ```yaml
-   - name: pii-check
-     on_failure: block
-     required: true  # Fail-closed
-   ```
-
-2. **Layer Multiple Guards**
-   ```yaml
-   guards:
-     - pii-check
-     - injection-check
-     - secrets-check
-   ```
-
-3. **Never Commit API Keys**
-   - Always use environment variables
-   - Use `${VAR_NAME}` syntax in YAML
-
-### Performance
-
-1. **Use Pre-call for Security**
-   - Prevents wasted LLM tokens when blocking
-   - Faster user feedback
-
-2. **Guards Run Concurrently**
-   - Adding more guards doesn't multiply latency
-   - Total latency ≈ slowest guard
-
-3. **Monitor Guardrail Latency**
-   - Check OpenTelemetry spans
-   - Optimize thresholds if needed
-
-### Maintainability
-
-1. **Descriptive Guard Names**
-   ```yaml
-   # Good
-   - name: pii-input-strict
-   - name: pii-output-lenient
-
-   # Bad
-   - name: guard1
-   - name: check
-   ```
-
-2. **Document Reasoning**
-   ```yaml
-   # Healthcare HIPAA compliance - strict PII blocking
-   - name: pii-input-check
-     mode: pre_call
-     on_failure: block
-     required: true
-   ```
-
-3. **Group Related Guards**
-   ```yaml
-   # === Security Layer ===
-   guards:
-     - pii-check
-     - injection-check
-     - secrets-check
-
-   # === Quality Layer ===
-     - tone-check
-     - uncertainty-check
-   ```
 
 ## Next Steps
 
@@ -596,8 +318,5 @@ export TRACELOOP_API_BASE="https://api.traceloop.com"
   </Card>
   <Card title="Troubleshooting" icon="wrench" href="/hub/guardrails-troubleshooting">
     Common configuration issues and solutions
-  </Card>
-  <Card title="Overview" icon="book" href="/hub/guardrails-overview">
-    Back to guardrails overview
   </Card>
 </CardGroup>
