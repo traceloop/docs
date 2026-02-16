@@ -1,0 +1,1380 @@
+---
+title: "Guardrails Evaluators Reference"
+description: "Complete reference for all available guardrail evaluators in Hub"
+---
+
+## Overview
+
+Traceloop Hub includes 12 built-in evaluators organized into three categories. Each evaluator can be configured to run in `pre_call` mode (on user input), `post_call` mode (on LLM output), or both depending on your security and quality requirements.
+
+## Evaluator Categories
+
+### Safety Evaluators (6)
+
+Detect harmful, malicious, or sensitive content to protect users and maintain platform safety.
+
+- [PII Detector](#pii-detector) - Detects personally identifiable information
+- [Secrets Detector](#secrets-detector) - Identifies exposed secrets and API keys
+- [Prompt Injection](#prompt-injection) - Detects prompt injection attacks
+- [Profanity Detector](#profanity-detector) - Detects profane language
+- [Sexism Detector](#sexism-detector) - Identifies sexist content
+- [Toxicity Detector](#toxicity-detector) - Detects toxic/harmful content
+
+### Validation Evaluators (3)
+
+Ensure data meets format, structure, and syntax requirements.
+
+- [Regex Validator](#regex-validator) - Custom pattern matching
+- [JSON Validator](#json-validator) - JSON structure validation
+- [SQL Validator](#sql-validator) - SQL syntax validation
+
+### Quality Evaluators (3)
+
+Assess communication quality, clarity, and confidence.
+
+- [Tone Detection](#tone-detection) - Analyzes communication tone
+- [Prompt Perplexity](#prompt-perplexity) - Measures prompt quality
+- [Uncertainty Detector](#uncertainty-detector) - Detects uncertain language
+
+## Quick Reference Table
+
+| Evaluator | Best Mode | Primary Use Case | Key Parameters |
+|-----------|-----------|------------------|----------------|
+| pii-detector | Both | Prevent PII in prompts/responses | probability_threshold |
+| secrets-detector | Post-call | Prevent secrets in responses | - |
+| prompt-injection | Pre-call | Block injection attacks | threshold |
+| profanity-detector | Both | Filter profane content | - |
+| sexism-detector | Both | Block sexist content | threshold |
+| toxicity-detector | Both | Prevent toxic content | threshold |
+| regex-validator | Both | Validate formats | regex, should_match |
+| json-validator | Post-call | Validate JSON structure | enable_schema_validation |
+| sql-validator | Both | Validate SQL syntax | - |
+| tone-detection | Post-call | Ensure appropriate tone | - |
+| prompt-perplexity | Pre-call | Measure prompt quality | - |
+| uncertainty-detector | Post-call | Detect uncertain responses | - |
+
+---
+
+## Safety Evaluators
+
+### PII Detector
+
+**Evaluator Slug:** `pii-detector`
+
+**Category:** Safety
+
+**Description:**
+
+Detects personally identifiable information (PII) such as names, email addresses, phone numbers, social security numbers, addresses, and other sensitive personal data. Uses machine learning models to identify PII with configurable confidence thresholds.
+
+**Recommended Mode:** ✅ Both (equally important)
+
+**When to Use Pre-call:**
+
+- Prevent users from accidentally including their own PII in prompts
+- Block prompts that contain PII of other individuals
+- Comply with data privacy regulations (GDPR, CCPA, HIPAA)
+- Protect against social engineering attempts that include personal data
+- Educational scenarios where users shouldn't submit personal information
+
+**When to Use Post-call:**
+
+- Prevent LLM from leaking PII present in training data
+- Stop responses containing synthesized but realistic PII
+- Ensure compliance for outbound communications
+- Protect against inadvertent disclosure in generated content
+- Filter PII from code examples, documentation, or summaries
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `probability_threshold` | float | No | 0.5 | Minimum confidence score (0.0-1.0) for PII detection. Higher values reduce false positives. |
+
+**Configuration Examples:**
+
+Pre-call (strict blocking):
+
+```yaml
+guards:
+  - name: pii-input-strict
+    provider: traceloop
+    evaluator_slug: pii-detector
+    mode: pre_call
+    on_failure: block
+    required: true
+    params:
+      probability_threshold: 0.8  # High threshold = fewer false positives
+```
+
+Post-call (lenient monitoring):
+
+```yaml
+guards:
+  - name: pii-output-monitor
+    provider: traceloop
+    evaluator_slug: pii-detector
+    mode: post_call
+    on_failure: warn
+    required: false
+    params:
+      probability_threshold: 0.5  # Lower threshold = catch more potential PII
+```
+
+Both modes for comprehensive protection:
+
+```yaml
+guards:
+  - name: pii-input-block
+    provider: traceloop
+    evaluator_slug: pii-detector
+    mode: pre_call
+    on_failure: block
+    required: true
+    params:
+      probability_threshold: 0.7
+
+  - name: pii-output-block
+    provider: traceloop
+    evaluator_slug: pii-detector
+    mode: post_call
+    on_failure: block
+    required: true
+    params:
+      probability_threshold: 0.6  # Slightly lower for outputs
+```
+
+**Use Cases:**
+
+- Healthcare applications protecting patient information (HIPAA compliance)
+- Financial services preventing exposure of account numbers
+- Customer support systems handling personal data
+- HR applications processing employee information
+- Legal tech protecting confidential client information
+- Educational platforms handling student data
+
+**Best Practices:**
+
+- **Use both modes** for comprehensive PII protection
+- Set **higher thresholds (0.7-0.9)** for `block` mode to reduce false positives
+- Set **lower thresholds (0.4-0.6)** for `warn` mode to catch edge cases
+- Review warnings regularly to fine-tune thresholds
+- Use `required: true` for regulated industries
+- Consider context: some PII may be acceptable in certain use cases
+
+---
+
+### Secrets Detector
+
+**Evaluator Slug:** `secrets-detector`
+
+**Category:** Safety
+
+**Description:**
+
+Identifies exposed credentials, API keys, tokens, passwords, and other secrets using pattern matching and entropy analysis. Detects secrets from major providers including AWS, Azure, GitHub, Stripe, OpenAI, and custom patterns.
+
+**Recommended Mode:** ✅ Post-call (primary), Pre-call (secondary)
+
+**When to Use Pre-call:**
+
+- Prevent users from submitting their own credentials in prompts
+- Block prompts containing API keys or tokens
+- Educational scenarios where users may accidentally paste sensitive data
+- Internal tools where employees might accidentally share secrets
+- Prevent credentials in code pasted into prompts
+
+**When to Use Post-call:**
+
+- **Primary use case:** Prevent LLM from generating or exposing real secrets
+- Stop responses containing API keys from training data
+- Prevent code generation that includes actual credentials
+- Block responses that accidentally reveal system secrets
+- Filter credentials from example code or documentation
+
+**Parameters:**
+
+No configurable parameters - uses built-in secret detection patterns.
+
+**Configuration Examples:**
+
+Post-call (recommended - critical security):
+
+```yaml
+guards:
+  - name: secrets-output-block
+    provider: traceloop
+    evaluator_slug: secrets-detector
+    mode: post_call
+    on_failure: block  # Critical: always block exposed secrets
+    required: true  # Fail-closed for security
+```
+
+Pre-call (optional - user education):
+
+```yaml
+guards:
+  - name: secrets-input-warn
+    provider: traceloop
+    evaluator_slug: secrets-detector
+    mode: pre_call
+    on_failure: warn  # Educate users but don't block
+    required: false
+```
+
+Both modes for maximum protection:
+
+```yaml
+guards:
+  - name: secrets-input
+    provider: traceloop
+    evaluator_slug: secrets-detector
+    mode: pre_call
+    on_failure: warn
+    required: false
+
+  - name: secrets-output
+    provider: traceloop
+    evaluator_slug: secrets-detector
+    mode: post_call
+    on_failure: block
+    required: true
+```
+
+**Use Cases:**
+
+- Developer tools and coding assistants
+- Infrastructure management applications
+- DevOps chatbots and automation tools
+- Documentation generators
+- CI/CD integration assistants
+- Code review and analysis tools
+
+**Best Practices:**
+
+- **Always use post-call with `on_failure: block`**
+- Set `required: true` for post-call (fail-closed for security)
+- Use pre-call in `warn` mode for user education
+- Log all detections for security audit trails
+- Integrate alerts with security monitoring systems
+- Review blocked requests to identify training data issues
+
+---
+
+### Prompt Injection
+
+**Evaluator Slug:** `prompt-injection`
+
+**Category:** Safety
+
+**Description:**
+
+Detects prompt injection attacks where users attempt to manipulate the LLM by injecting malicious instructions, role-playing commands, jailbreaking attempts, or context overrides. Identifies attempts to bypass system prompts or extract sensitive information.
+
+**Recommended Mode:** ✅ Pre-call only
+
+**When to Use Pre-call:**
+
+- **Essential for all public-facing LLM applications**
+- Protect system prompts from being overridden
+- Prevent "jailbreaking" attempts
+- Block attempts to extract training data or internal instructions
+- Defend against social engineering via prompt manipulation
+- Prevent role-playing attacks ("Ignore previous instructions...")
+- Stop delimiter injection attacks
+
+**When to Use Post-call:**
+
+Not recommended - injection happens at input stage, not output stage.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `threshold` | float | No | 0.5 | Detection sensitivity (0.0-1.0). Lower values = more sensitive detection. |
+
+**Configuration Examples:**
+
+Standard protection:
+
+```yaml
+guards:
+  - name: injection-defense
+    provider: traceloop
+    evaluator_slug: prompt-injection
+    mode: pre_call
+    on_failure: block
+    required: true
+    params:
+      threshold: 0.7  # Moderate sensitivity
+```
+
+High-security environment:
+
+```yaml
+guards:
+  - name: injection-strict
+    provider: traceloop
+    evaluator_slug: prompt-injection
+    mode: pre_call
+    on_failure: block
+    required: true
+    params:
+      threshold: 0.4  # High sensitivity - catch more attempts
+```
+
+Monitoring mode:
+
+```yaml
+guards:
+  - name: injection-monitor
+    provider: traceloop
+    evaluator_slug: prompt-injection
+    mode: pre_call
+    on_failure: warn  # Monitor during testing
+    required: false
+    params:
+      threshold: 0.6
+```
+
+**Use Cases:**
+
+- Customer-facing chatbots
+- Public API endpoints
+- Multi-tenant SaaS applications
+- Educational platforms with LLM integration
+- Enterprise applications with sensitive system prompts
+- Automated customer service systems
+- Interactive AI assistants
+
+**Best Practices:**
+
+- **Always use in pre_call mode** (not post_call)
+- Set `on_failure: block` for production
+- Use `required: true` (fail-closed for security)
+- Start with `threshold: 0.7` and adjust based on false positives
+- Monitor blocked attempts for security insights
+- Combine with rate limiting for additional protection
+- Review injection patterns to improve system prompts
+
+---
+
+### Profanity Detector
+
+**Evaluator Slug:** `profanity-detector`
+
+**Category:** Safety
+
+**Description:**
+
+Detects profanity, obscene language, vulgar expressions, and curse words across multiple languages. Useful for maintaining professional communication standards, brand voice, and family-friendly environments.
+
+**Recommended Mode:** ✅ Both (use case dependent)
+
+**When to Use Pre-call:**
+
+- Educational applications or platforms for minors
+- Professional communication tools
+- Public-facing customer service bots
+- Workplace collaboration tools
+- Brand-sensitive applications
+- Family-friendly entertainment platforms
+
+**When to Use Post-call:**
+
+- Ensure LLM responses remain professional
+- Prevent profanity in generated content
+- Maintain brand voice consistency
+- Filter creative content generation
+- Protect against adversarial prompts causing profane outputs
+- Content moderation for published materials
+
+**Parameters:**
+
+No configurable parameters - uses comprehensive profanity lexicon.
+
+**Configuration Examples:**
+
+Pre-call for family-friendly app:
+
+```yaml
+guards:
+  - name: profanity-input-filter
+    provider: traceloop
+    evaluator_slug: profanity-detector
+    mode: pre_call
+    on_failure: block
+    required: false  # Fail-open: don't break service if evaluator down
+```
+
+Post-call for brand protection:
+
+```yaml
+guards:
+  - name: profanity-output-block
+    provider: traceloop
+    evaluator_slug: profanity-detector
+    mode: post_call
+    on_failure: block  # Never send profane responses
+    required: true  # Critical for brand protection
+```
+
+Warn mode for internal tools:
+
+```yaml
+guards:
+  - name: profanity-monitor
+    provider: traceloop
+    evaluator_slug: profanity-detector
+    mode: both
+    on_failure: warn  # Log but don't block
+    required: false
+```
+
+**Use Cases:**
+
+- Educational technology platforms
+- Children's content applications
+- Corporate communication tools
+- Customer support systems
+- Brand-sensitive marketing applications
+- Social media moderation
+- Public forum moderation
+
+**Best Practices:**
+
+- Use **pre_call** for user-facing applications to filter input
+- Use **post_call** to protect brand voice in outputs
+- Consider `on_failure: warn` for internal tools
+- Balance strictness with user experience
+- Provide clear, respectful feedback when blocking
+- Consider cultural context and language variations
+
+---
+
+### Sexism Detector
+
+**Evaluator Slug:** `sexism-detector`
+
+**Category:** Safety
+
+**Description:**
+
+Identifies sexist language, gender-based discrimination, stereotyping, and biased content. Helps maintain inclusive, respectful communication and comply with diversity and equality standards.
+
+**Recommended Mode:** ✅ Both (highly recommended)
+
+**When to Use Pre-call:**
+
+- Block sexist user inputs in community platforms
+- Prevent discriminatory prompts
+- Maintain inclusive environment standards
+- Protect against hostile communication
+- Educational use cases to flag inappropriate content
+- Workplace communication tools
+
+**When to Use Post-call:**
+
+- Ensure LLM responses are gender-neutral and inclusive
+- Prevent reinforcement of gender stereotypes
+- Filter biased content generation
+- Maintain diversity and inclusion standards
+- Protect brand reputation
+- Ensure compliance with equality policies
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `threshold` | float | No | 0.5 | Detection sensitivity (0.0-1.0). Lower values = more sensitive detection. |
+
+**Configuration Examples:**
+
+Strict pre-call filtering:
+
+```yaml
+guards:
+  - name: sexism-input-block
+    provider: traceloop
+    evaluator_slug: sexism-detector
+    mode: pre_call
+    on_failure: block
+    required: true
+    params:
+      threshold: 0.6  # Moderate-high sensitivity
+```
+
+Post-call brand protection:
+
+```yaml
+guards:
+  - name: sexism-output-block
+    provider: traceloop
+    evaluator_slug: sexism-detector
+    mode: post_call
+    on_failure: block
+    required: true
+    params:
+      threshold: 0.5  # Higher sensitivity for outputs
+```
+
+Both modes with different thresholds:
+
+```yaml
+guards:
+  - name: sexism-input
+    provider: traceloop
+    evaluator_slug: sexism-detector
+    mode: pre_call
+    on_failure: warn
+    params:
+      threshold: 0.7
+
+  - name: sexism-output
+    provider: traceloop
+    evaluator_slug: sexism-detector
+    mode: post_call
+    on_failure: block
+    required: true
+    params:
+      threshold: 0.5
+```
+
+**Use Cases:**
+
+- HR tech and recruitment platforms
+- Corporate communication tools
+- Educational platforms
+- Social media and community forums
+- Professional networking applications
+- Customer service systems
+- Content creation platforms
+
+**Best Practices:**
+
+- **Use both pre-call and post-call** for comprehensive protection
+- Set `on_failure: block` for public-facing applications
+- Adjust threshold based on context sensitivity
+- Regular review of flagged content to improve accuracy
+- Combine with human review for edge cases
+- Document decisions for compliance purposes
+- Provide constructive feedback when blocking
+
+---
+
+### Toxicity Detector
+
+**Evaluator Slug:** `toxicity-detector`
+
+**Category:** Safety
+
+**Description:**
+
+Detects toxic language including personal attacks, threats, hate speech, mockery, insults, and aggressive communication. Provides granular toxicity scoring across multiple harm categories.
+
+**Recommended Mode:** ✅ Both (essential for safety)
+
+**When to Use Pre-call:**
+
+- Protect moderators and staff from abusive content
+- Maintain healthy community standards
+- Block hostile user interactions
+- Prevent harassment and bullying
+- Create safe spaces for vulnerable users
+- Monitor user sentiment and aggression
+
+**When to Use Post-call:**
+
+- Ensure LLM responses are non-toxic
+- Prevent aggressive or hostile outputs
+- Filter emotionally charged content
+- Maintain professional tone
+- Protect brand reputation from toxic associations
+- Prevent inflammatory generated content
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `threshold` | float | No | 0.5 | Toxicity score threshold (0.0-1.0). Lower values = more sensitive detection. |
+
+**Configuration Examples:**
+
+Strict community protection:
+
+```yaml
+guards:
+  - name: toxicity-input-block
+    provider: traceloop
+    evaluator_slug: toxicity-detector
+    mode: pre_call
+    on_failure: block
+    required: true
+    params:
+      threshold: 0.6  # Moderate sensitivity
+```
+
+High-sensitivity output filtering:
+
+```yaml
+guards:
+  - name: toxicity-output-block
+    provider: traceloop
+    evaluator_slug: toxicity-detector
+    mode: post_call
+    on_failure: block
+    required: true
+    params:
+      threshold: 0.4  # Higher sensitivity for outputs
+```
+
+Monitoring mode:
+
+```yaml
+guards:
+  - name: toxicity-monitor
+    provider: traceloop
+    evaluator_slug: toxicity-detector
+    mode: both
+    on_failure: warn
+    required: false
+    params:
+      threshold: 0.3  # Very sensitive - for monitoring
+```
+
+**Use Cases:**
+
+- Social media and community platforms
+- Mental health and wellness applications
+- Customer support systems
+- Educational platforms
+- Gaming communities
+- Professional networking
+- Content moderation systems
+- Public forums and discussion boards
+
+**Best Practices:**
+
+- **Use both modes** for comprehensive safety
+- Start with `threshold: 0.5` and adjust based on community needs
+- Set `on_failure: block` for user-generated content platforms
+- Use `required: true` for safety-critical applications
+- Implement escalation paths for repeated violations
+- Provide clear, constructive feedback to users
+- Regular review and tuning based on false positives/negatives
+- Combine with human moderation for edge cases
+
+---
+
+## Validation Evaluators
+
+### Regex Validator
+
+**Evaluator Slug:** `regex-validator`
+
+**Category:** Validation
+
+**Description:**
+
+Validates text against custom regular expression patterns. Flexible evaluator for enforcing format requirements, checking for specific patterns, or blocking unwanted content structures.
+
+**Recommended Mode:** ✅ Both (use case dependent)
+
+**When to Use Pre-call:**
+
+- Validate user input formats (emails, phone numbers, IDs)
+- Enforce prompt structure requirements
+- Block specific patterns in user queries
+- Validate domain-specific formats (order IDs, ticket numbers)
+- Ensure required elements are present in prompts
+
+**When to Use Post-call:**
+
+- Validate LLM output formats
+- Ensure responses contain required elements
+- Verify structured data generation
+- Validate code generation patterns
+- Enforce response templates
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `regex` | string | **Yes** | - | Regular expression pattern to match |
+| `should_match` | boolean | No | true | If true, text must match pattern. If false, text must NOT match pattern. |
+| `case_sensitive` | boolean | No | true | Whether matching is case-sensitive |
+| `dot_include_nl` | boolean | No | false | Whether dot (.) matches newline characters |
+| `multi_line` | boolean | No | false | Whether ^ and $ match line boundaries |
+
+**Configuration Examples:**
+
+Pre-call: Validate email format:
+
+```yaml
+guards:
+  - name: email-format-check
+    provider: traceloop
+    evaluator_slug: regex-validator
+    mode: pre_call
+    on_failure: block
+    required: false
+    params:
+      regex: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+      should_match: true
+      case_sensitive: false
+```
+
+Post-call: Block URLs in responses:
+
+```yaml
+guards:
+  - name: block-urls
+    provider: traceloop
+    evaluator_slug: regex-validator
+    mode: post_call
+    on_failure: block
+    required: false
+    params:
+      regex: "https?://[^\\s]+"
+      should_match: false  # Block if URLs found
+```
+
+Pre-call: Validate order ID format:
+
+```yaml
+guards:
+  - name: order-id-validator
+    provider: traceloop
+    evaluator_slug: regex-validator
+    mode: pre_call
+    on_failure: block
+    required: true
+    params:
+      regex: "ORD-[0-9]{6}-[A-Z]{2}"
+      should_match: true
+      case_sensitive: true
+```
+
+Post-call: Ensure response contains status field:
+
+```yaml
+guards:
+  - name: status-field-required
+    provider: traceloop
+    evaluator_slug: regex-validator
+    mode: post_call
+    on_failure: warn
+    params:
+      regex: "\"status\"\\s*:\\s*\"(success|error|pending)\""
+      should_match: true
+      multi_line: true
+      dot_include_nl: true
+```
+
+**Use Cases:**
+
+- API request validation
+- Structured output enforcement
+- Content filtering by pattern
+- Format compliance checking
+- Custom business rule enforcement
+- Template validation
+- Code generation validation
+
+**Best Practices:**
+
+- Test regex patterns thoroughly before deployment
+- Use raw strings or proper escaping for backslashes
+- Set `should_match: false` to block unwanted patterns
+- Use `case_sensitive: false` for user-friendly validation
+- Combine multiple regex validators for complex requirements
+- Provide clear error messages when validation fails
+- Consider performance impact of complex patterns
+- Document regex patterns with comments in YAML
+
+---
+
+### JSON Validator
+
+**Evaluator Slug:** `json-validator`
+
+**Category:** Validation
+
+**Description:**
+
+Validates JSON structure and optionally validates against JSON Schema. Ensures LLM-generated JSON is well-formed and meets specific structural requirements.
+
+**Recommended Mode:** ✅ Post-call (primary), Pre-call (secondary)
+
+**When to Use Pre-call:**
+
+- Validate JSON payloads in user prompts
+- Check structured input formats
+- Ensure API request payloads are valid
+- Validate configuration objects in prompts
+
+**When to Use Post-call:**
+
+- **Primary use case:** Validate LLM-generated JSON
+- Ensure structured data generation is correct
+- Validate API response formats
+- Check function calling parameters
+- Verify structured output adherence
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `enable_schema_validation` | boolean | No | false | Whether to validate against a JSON Schema |
+| `schema_string` | string | No | null | JSON Schema to validate against (required if `enable_schema_validation` is true) |
+
+**Configuration Examples:**
+
+Basic JSON validation:
+
+```yaml
+guards:
+  - name: json-output-check
+    provider: traceloop
+    evaluator_slug: json-validator
+    mode: post_call
+    on_failure: block
+    required: true
+    params:
+      enable_schema_validation: false  # Just check if valid JSON
+```
+
+Schema validation with required fields:
+
+```yaml
+guards:
+  - name: user-profile-validation
+    provider: traceloop
+    evaluator_slug: json-validator
+    mode: post_call
+    on_failure: block
+    required: true
+    params:
+      enable_schema_validation: true
+      schema_string: |
+        {
+          "type": "object",
+          "required": ["name", "email", "age"],
+          "properties": {
+            "name": { "type": "string" },
+            "email": { "type": "string", "format": "email" },
+            "age": { "type": "integer", "minimum": 0 }
+          }
+        }
+```
+
+Complex schema with nested objects:
+
+```yaml
+guards:
+  - name: api-response-validation
+    provider: traceloop
+    evaluator_slug: json-validator
+    mode: post_call
+    on_failure: block
+    required: true
+    params:
+      enable_schema_validation: true
+      schema_string: |
+        {
+          "type": "object",
+          "required": ["status", "data"],
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": ["success", "error"]
+            },
+            "data": {
+              "type": "object",
+              "required": ["items"],
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+```
+
+**Use Cases:**
+
+- Structured data generation
+- API integration with strict schemas
+- Function calling validation
+- Configuration generation
+- Data extraction tasks
+- Report generation with specific formats
+- Integration with downstream systems
+
+**Best Practices:**
+
+- **Always use post-call** for LLM-generated JSON
+- Use `enable_schema_validation: true` for strict requirements
+- Test schemas with sample valid/invalid data
+- Consider `on_failure: warn` during development
+- Switch to `on_failure: block` for production
+- Provide schema in LLM system prompt for better compliance
+- Log validation failures to improve prompts
+- Use `required: true` for critical integrations
+
+---
+
+### SQL Validator
+
+**Evaluator Slug:** `sql-validator`
+
+**Category:** Validation
+
+**Description:**
+
+Validates SQL query syntax without executing the query. Checks for proper SQL structure, detects syntax errors, and ensures query safety. Does not execute queries or connect to databases.
+
+**Recommended Mode:** ✅ Both (use case dependent)
+
+**When to Use Pre-call:**
+
+- Validate user-submitted SQL queries
+- Check queries in analytical applications
+- Validate database query tools
+- Educational SQL platforms
+- Query builder validation
+
+**When to Use Post-call:**
+
+- **Primary use case:** Validate LLM-generated SQL
+- Text-to-SQL applications
+- Query generation validation
+- Database assistant tools
+- Automated reporting systems
+
+**Parameters:**
+
+No configurable parameters - validates standard SQL syntax.
+
+**Configuration Examples:**
+
+Post-call for text-to-SQL:
+
+```yaml
+guards:
+  - name: sql-generation-check
+    provider: traceloop
+    evaluator_slug: sql-validator
+    mode: post_call
+    on_failure: block
+    required: true  # Critical: don't allow invalid SQL
+```
+
+Pre-call for query submission:
+
+```yaml
+guards:
+  - name: sql-input-check
+    provider: traceloop
+    evaluator_slug: sql-validator
+    mode: pre_call
+    on_failure: warn  # Educate but don't block
+    required: false
+```
+
+Both modes for database assistant:
+
+```yaml
+guards:
+  - name: sql-input-validation
+    provider: traceloop
+    evaluator_slug: sql-validator
+    mode: pre_call
+    on_failure: block
+    required: true
+
+  - name: sql-output-validation
+    provider: traceloop
+    evaluator_slug: sql-validator
+    mode: post_call
+    on_failure: block
+    required: true
+```
+
+**Use Cases:**
+
+- Text-to-SQL applications
+- Database query assistants
+- BI and analytics tools
+- SQL learning platforms
+- Database administration tools
+- Report generation systems
+- Data exploration interfaces
+
+**Best Practices:**
+
+- **Always use post-call** for LLM-generated SQL
+- Set `on_failure: block` to prevent syntax errors
+- Use `required: true` for production systems
+- Combine with SQL injection detection (use prompt-injection guard)
+- Implement additional authorization checks
+- Log all SQL generation for audit trails
+- Provide SQL context in system prompts
+- Consider read-only query enforcement at database level
+- Test with diverse SQL dialects if needed
+
+---
+
+## Quality Evaluators
+
+### Tone Detection
+
+**Evaluator Slug:** `tone-detection`
+
+**Category:** Quality
+
+**Description:**
+
+Analyzes communication tone and emotional sentiment. Identifies whether text is professional, casual, aggressive, empathetic, formal, informal, friendly, or dismissive. Helps maintain consistent brand voice and appropriate communication style.
+
+**Recommended Mode:** ✅ Post-call (primary), Pre-call (secondary)
+
+**When to Use Pre-call:**
+
+- Monitor customer sentiment in support interactions
+- Flag aggressive user communications for escalation
+- Analyze tone trends in user feedback
+- Detect when users are frustrated or upset
+- Educational feedback on communication style
+
+**When to Use Post-call:**
+
+- **Primary use case:** Ensure appropriate response tone
+- Maintain consistent brand voice
+- Ensure empathetic responses in support contexts
+- Filter overly casual responses in professional settings
+- Validate formal tone in legal/medical applications
+- Prevent aggressive or dismissive responses
+
+**Parameters:**
+
+No configurable parameters - provides multi-dimensional tone analysis.
+
+**Configuration Examples:**
+
+Post-call for customer support:
+
+```yaml
+guards:
+  - name: empathetic-tone-check
+    provider: traceloop
+    evaluator_slug: tone-detection
+    mode: post_call
+    on_failure: warn  # Log for review, don't block
+    required: false
+```
+
+Post-call for professional services:
+
+```yaml
+guards:
+  - name: professional-tone-enforcement
+    provider: traceloop
+    evaluator_slug: tone-detection
+    mode: post_call
+    on_failure: block  # Enforce professionalism
+    required: true
+```
+
+Pre-call for sentiment monitoring:
+
+```yaml
+guards:
+  - name: user-sentiment-monitor
+    provider: traceloop
+    evaluator_slug: tone-detection
+    mode: pre_call
+    on_failure: warn  # Just monitor, don't block users
+    required: false
+```
+
+**Use Cases:**
+
+- Customer support and service applications
+- Professional communication tools
+- Brand voice consistency
+- Healthcare and medical applications
+- Legal tech requiring formal tone
+- Educational feedback systems
+- Emotional intelligence training
+- Crisis communication systems
+
+**Best Practices:**
+
+- Use **post-call** to enforce desired response tone
+- Use **pre-call** to monitor user sentiment
+- Set `on_failure: warn` for tone monitoring
+- Set `on_failure: block` for critical tone requirements
+- Define clear tone guidelines in system prompts
+- Regular review of flagged messages
+- Provide tone guidance to users when blocking
+- Balance tone control with natural conversation
+- Document tone standards for compliance
+
+---
+
+### Prompt Perplexity
+
+**Evaluator Slug:** `prompt-perplexity`
+
+**Category:** Quality
+
+**Description:**
+
+Measures the perplexity (predictability/complexity) of prompts. Low perplexity indicates clear, well-formed, coherent prompts. High perplexity may indicate unclear, ambiguous, garbled, or potentially problematic inputs.
+
+**Recommended Mode:** ✅ Pre-call only
+
+**When to Use Pre-call:**
+
+- Quality-check user prompts
+- Identify unclear or ambiguous queries
+- Educational feedback on prompt quality
+- Flag potentially problematic inputs
+- Improve user prompt engineering
+- Detect garbled or nonsensical input
+- Bot and spam detection
+
+**When to Use Post-call:**
+
+Not applicable - perplexity measures input quality, not output quality.
+
+**Parameters:**
+
+No configurable parameters - computes perplexity score.
+
+**Configuration Examples:**
+
+Warn mode for user education:
+
+```yaml
+guards:
+  - name: prompt-quality-feedback
+    provider: traceloop
+    evaluator_slug: prompt-perplexity
+    mode: pre_call
+    on_failure: warn  # Educate users, don't block
+    required: false
+```
+
+Block extremely unclear prompts:
+
+```yaml
+guards:
+  - name: prompt-clarity-enforcement
+    provider: traceloop
+    evaluator_slug: prompt-perplexity
+    mode: pre_call
+    on_failure: block  # Block very high perplexity
+    required: false
+```
+
+Monitoring for analytics:
+
+```yaml
+guards:
+  - name: prompt-quality-analytics
+    provider: traceloop
+    evaluator_slug: prompt-perplexity
+    mode: pre_call
+    on_failure: warn
+    required: false
+```
+
+**Use Cases:**
+
+- Educational platforms teaching prompt engineering
+- API quality monitoring
+- User experience improvement
+- Spam and gibberish detection
+- Prompt quality analytics
+- Bot detection
+- User assistance systems
+- Content quality control
+
+**Best Practices:**
+
+- Use in **warn mode** for user feedback, not blocking
+- Don't block based solely on perplexity
+- Combine with other quality indicators
+- Provide helpful feedback when flagging
+- Use for analytics and monitoring
+- Track perplexity trends over time
+- Consider user experience impact
+- Test thresholds with real user data
+- May have false positives on creative or technical prompts
+
+---
+
+### Uncertainty Detector
+
+**Evaluator Slug:** `uncertainty-detector`
+
+**Category:** Quality
+
+**Description:**
+
+Detects hedging language and uncertainty markers in text such as "maybe", "possibly", "I think", "might", "could be", "perhaps". Useful for identifying when LLM responses lack confidence or are speculative.
+
+**Recommended Mode:** ✅ Post-call only
+
+**When to Use Pre-call:**
+
+Not typically useful - user uncertainty is natural and acceptable in questions.
+
+**When to Use Post-call:**
+
+- **Primary use case:** Flag uncertain LLM responses
+- Identify speculative or hedging language
+- Ensure confident responses in critical applications
+- Detect when LLM is unsure
+- Quality control for factual applications
+- Filter non-committal responses
+
+**Parameters:**
+
+No configurable parameters - detects uncertainty markers.
+
+**Configuration Examples:**
+
+Warn on uncertain responses:
+
+```yaml
+guards:
+  - name: uncertainty-monitor
+    provider: traceloop
+    evaluator_slug: uncertainty-detector
+    mode: post_call
+    on_failure: warn  # Log uncertain responses
+    required: false
+```
+
+Block uncertain responses in critical apps:
+
+```yaml
+guards:
+  - name: confidence-required
+    provider: traceloop
+    evaluator_slug: uncertainty-detector
+    mode: post_call
+    on_failure: block  # Require confident responses
+    required: true
+```
+
+Quality monitoring:
+
+```yaml
+guards:
+  - name: response-confidence-check
+    provider: traceloop
+    evaluator_slug: uncertainty-detector
+    mode: post_call
+    on_failure: warn
+    required: false
+```
+
+**Use Cases:**
+
+- Medical and healthcare applications (avoid uncertain medical advice)
+- Legal tech (require confident legal analysis)
+- Financial advisory systems
+- Technical support (ensure confident troubleshooting)
+- Educational content (clear, definitive answers)
+- Compliance and regulatory responses
+- Customer support quality assurance
+
+**Best Practices:**
+
+- Use **post-call** to monitor response confidence
+- Set `on_failure: warn` for most applications
+- Use `on_failure: block` for critical domains (healthcare, legal, financial)
+- Consider that some uncertainty is appropriate and honest
+- Provide guidance in system prompts about expressing confidence appropriately
+- Track uncertainty patterns over time
+- Fine-tune prompts to reduce unnecessary hedging
+- Balance confidence requirements with accuracy
+- Some domains require acknowledging uncertainty (don't force false confidence)
+
+---
+
+## Choosing the Right Evaluators
+
+### By Use Case
+
+**Public-Facing Chatbot:**
+- prompt-injection (pre_call, block)
+- pii-detector (both, block)
+- profanity-detector (post_call, block)
+- toxicity-detector (both, block)
+
+**Healthcare Application:**
+- pii-detector (both, block, high threshold)
+- prompt-injection (pre_call, block)
+- tone-detection (post_call, warn)
+- uncertainty-detector (post_call, warn)
+
+**Code Generation Tool:**
+- secrets-detector (post_call, block)
+- sql-validator (post_call, warn)
+- json-validator (post_call, warn)
+
+**Financial Services:**
+- pii-detector (both, block)
+- secrets-detector (post_call, block)
+- prompt-injection (pre_call, block)
+- json-validator (post_call, block with schema)
+
+**Educational Platform:**
+- profanity-detector (both, block)
+- sexism-detector (both, block)
+- toxicity-detector (both, block)
+- tone-detection (post_call, warn)
+
+### By Security Level
+
+**High Security (Regulated Industries):**
+- Use `required: true` (fail-closed)
+- Use `on_failure: block` for safety guards
+- Use both pre_call and post_call modes
+- Higher detection thresholds to reduce false positives
+
+**Moderate Security (Business Applications):**
+- Mix of `required: true` and `false`
+- `block` for critical guards, `warn` for quality
+- Focus on pre_call for security, post_call for quality
+
+**Low Security (Internal Tools):**
+- Use `required: false` (fail-open)
+- Prefer `warn` over `block`
+- Focus on monitoring and analytics
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Configuration Guide" icon="gear" href="/hub/guardrails-configuration">
+    Learn how to configure these evaluators
+  </Card>
+  <Card title="Examples & Use Cases" icon="code" href="/hub/guardrails-examples">
+    See real-world configurations
+  </Card>
+  <Card title="Overview" icon="book" href="/hub/guardrails-overview">
+    Back to guardrails overview
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/hub/guardrails-troubleshooting">
+    Common issues and solutions
+  </Card>
+</CardGroup>

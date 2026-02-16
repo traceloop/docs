@@ -160,6 +160,16 @@
       ]
     },
     {
+      "group": "Guardrails",
+      "pages": [
+        "hub/overview",
+        "hub/guardrails-configuration",
+        "hub/evaluators",
+        "hub/examples",
+        "hub/troubleshooting"
+      ]
+    },
+    {
       "group": "Datasets",
       "pages": [
         "datasets/quick-start",

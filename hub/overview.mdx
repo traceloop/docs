@@ -1,0 +1,260 @@
+---
+title: "Overview"
+description: "Real-time safety and quality checks for LLM requests and responses in Traceloop Hub"
+---
+
+## Introduction
+
+Hub guardrails provide real-time safety and quality checks for LLM requests and responses at the gateway level. Hub guardrails can run centrally before requests reach your LLM providers (pre-call) and after responses are received from LLMs but before they return to users (post-call).
+
+**Key Benefits:**
+
+- **No Code Changes Required** - Add safety checks without modifying application code
+- **Centralized Control** - Manage security policies for all LLM traffic in one place
+- **Provider-Agnostic** - Works with any LLM provider (OpenAI, Anthropic, Azure, etc.)
+- **Real-Time Protection** - Blocks malicious requests and filters harmful responses
+- **Flexible Policies** - Different guardrail configurations per pipeline
+
+## How Guardrails Work
+
+Guardrails execute at two critical points in the request lifecycle:
+
+```
+User Request → Pre-call Guards → LLM Provider → Post-call Guards → User Response
+               (concurrent)                      (concurrent)
+               ↓                                 ↓
+               Block (403) or Warn              Block (403) or Warn
+```
+
+### Execution Flow
+
+1. **User sends a request** to Hub
+2. **Pre-call guards execute concurrently** on the user's prompt
+   - If any blocking guard fails → return HTTP 403
+   - If warning guards fail → add warning headers, continue
+3. **Request forwarded to LLM** (if not blocked)
+4. **Post-call guards execute concurrently** on the LLM's response
+   - If any blocking guard fails → return HTTP 403
+   - If warning guards fail → add warning headers, continue
+5. **Response returned to user** (if not blocked)
+
+### Pre-call vs Post-call Guards
+
+**Pre-call guards** run on the prompt messages before it reaches the LLM. Use these for security checks, input validation, and preventing malicious prompts.
+
+**Post-call guards** run on the LLM's completion after the response is generated. Use these for output safety, content moderation, and preventing data leaks.
+
+<Tip>
+Many guards work well in both modes for comprehensive protection - for example, PII detection can prevent sensitive data in both user prompts and LLM responses.
+</Tip>
+
+## Core Concepts
+
+### Guards
+
+A **guard** is a configured instance of an evaluator. Each guard defines:
+
+- **What to evaluate** (evaluator type)
+- **When to evaluate** (pre_call or post_call)
+- **How to respond to failures** (block or warn)
+- **Configuration parameters** (evaluator-specific settings)
+
+Example guard configuration:
+
+```yaml
+guards:
+  - name: pii-check
+    provider: traceloop
+    evaluator_slug: pii-detector
+    mode: pre_call
+    on_failure: block
+    required: true
+```
+
+### Evaluators
+
+**Evaluators** are the detection algorithms that analyze text. Traceloop Hub includes 12 built-in evaluators across three categories:
+
+**Safety Evaluators (6):**
+- `pii-detector` - Detects personally identifiable information
+- `secrets-detector` - Identifies exposed secrets and API keys
+- `prompt-injection` - Detects prompt injection attacks
+- `profanity-detector` - Detects profane language
+- `sexism-detector` - Identifies sexist content
+- `toxicity-detector` - Detects toxic/harmful content
+
+**Validation Evaluators (3):**
+- `regex-validator` - Custom pattern matching
+- `json-validator` - JSON structure validation
+- `sql-validator` - SQL syntax validation
+
+**Quality Evaluators (3):**
+- `tone-detection` - Analyzes communication tone
+- `prompt-perplexity` - Measures prompt quality
+- `uncertainty-detector` - Detects uncertain language
+
+### Execution Modes
+
+Guards can run in two modes:
+
+**`pre_call` Mode:**
+- Executes on user input before the LLM call
+- Best for: security checks, input validation, attack prevention
+- Examples: prompt injection detection, input PII filtering
+
+**`post_call` Mode:**
+- Executes on LLM output after the LLM responds
+- Best for: output safety, content moderation, quality checks
+- Examples: response PII filtering, secrets detection, tone validation
+
+### Failure Handling
+
+When a guard evaluation fails, the system responds based on the `on_failure` setting:
+
+**`block` Mode:**
+- Returns HTTP 403 Forbidden to the user
+- Includes details about which guard failed
+- Prevents the request/response from proceeding
+
+**`warn` Mode:**
+- Adds a warning header to the response
+- Logs the failure for monitoring
+- Allows the request/response to continue
+
+### Required Flag (Fail-Closed vs Fail-Open)
+
+The `required` flag determines behavior when the evaluator service is unavailable:
+
+**`required: true` (Fail-Closed):**
+- If evaluator is unavailable → treat as failure
+- Use for security-critical guards
+- Ensures zero gaps in protection
+- Example: PII detection in healthcare apps
+
+**`required: false` (Fail-Open):**
+- If evaluator is unavailable → continue anyway
+- Use for quality checks and non-critical guards
+- Prioritizes availability over enforcement
+- Example: Tone detection in internal tools
+
+<Tip>
+**Security Best Practice:** Set `required: true` for guards with `on_failure: block` in production systems to prevent security gaps during service disruptions.
+</Tip>
+
+### Providers
+
+Providers are the services that execute evaluations. Currently, Hub supports the **Traceloop provider**, which offers all 12 evaluators through the Traceloop API.
+
+Provider configuration example:
+
+```yaml
+guardrails:
+  providers:
+    - name: traceloop
+      api_base: https://api.traceloop.com
+      api_key: ${TRACELOOP_API_KEY}
+```
+
+## Quick Start Example
+
+Here's a minimal configuration that adds PII detection and prompt injection protection:
+
+```yaml
+guardrails:
+  providers:
+    - name: traceloop
+      api_base: https://api.traceloop.com
+      api_key: ${TRACELOOP_API_KEY}
+
+  guards:
+    - name: pii-check
+      provider: traceloop
+      evaluator_slug: pii-detector
+      mode: pre_call
+      on_failure: block
+      required: true
+
+    - name: injection-check
+      provider: traceloop
+      evaluator_slug: prompt-injection
+      mode: pre_call
+      on_failure: block
+      required: true
+
+pipelines:
+  - name: default
+    type: chat
+    guards:
+      - pii-check
+      - injection-check
+    plugins:
+      - model-router:
+          models: [gpt-4]
+```
+
+This configuration:
+- Checks all user prompts for PII (blocks if detected)
+- Checks all user prompts for injection attacks (blocks if detected)
+- Runs both guards concurrently for minimal latency
+- Fails closed (blocks if evaluator unavailable)
+
+## Response Formats
+
+### Blocked Request (HTTP 403)
+
+When a guard blocks a request, Hub returns:
+
+```json
+{
+  "error": {
+    "type": "guardrail_blocked",
+    "guardrail": "pii-check",
+    "message": "Request blocked by guardrail 'pii-check'",
+    "evaluation_result": {
+      "pass": false,
+      "result": {
+        "detected_pii": ["email", "phone_number"],
+        "confidence": 0.92
+      }
+    },
+    "reason": "evaluation_failed"
+  }
+}
+```
+
+### Warning Headers
+
+When a guard fails in `warn` mode, Hub adds a header:
+
+```
+X-Traceloop-Guardrail-Warning: guardrail_name="tone-check", reason="failed"
+```
+
+## Observability
+
+Every guard evaluation creates an OpenTelemetry span with attributes:
+
+- `gen_ai.guardrail.name` - Guard name
+- `gen_ai.guardrail.status` - PASSED, FAILED, or ERROR
+- `gen_ai.guardrail.duration` - Execution time in milliseconds
+- `gen_ai.guardrail.error.type` - Error category (if failed)
+- `gen_ai.guardrail.input` - Input text (if trace content enabled)
+
+Use these spans to monitor guardrail performance, track failures, and optimize configurations.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Configuration Guide" icon="gear" href="/hub/guardrails-configuration">
+    Learn how to configure guardrails with complete YAML reference
+  </Card>
+  <Card title="Evaluators Reference" icon="shield" href="/hub/guardrails-evaluators">
+    Detailed reference for all 12 evaluators with examples
+  </Card>
+  <Card title="Examples & Use Cases" icon="code" href="/hub/guardrails-examples">
+    Real-world configurations for different industries
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/hub/guardrails-troubleshooting">
+    Common issues and debugging tips
+  </Card>
+</CardGroup>
