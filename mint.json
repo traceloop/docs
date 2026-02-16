@@ -164,9 +164,7 @@
       "pages": [
         "hub/overview",
         "hub/guardrails-configuration",
-        "hub/evaluators",
-        "hub/examples",
-        "hub/troubleshooting"
+        "hub/evaluators"
       ]
     },
     {
