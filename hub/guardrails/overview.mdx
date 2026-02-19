@@ -48,6 +48,19 @@ User Request → Pre-call Guards → LLM Provider → Post-call Guards → User 
 Many guards work well in both modes for comprehensive protection - for example, PII detection can prevent sensitive data in both user prompts and LLM responses.
 </Tip>
 
+## Supported Request Types
+
+Guardrails work across all three LLM endpoint types with appropriate logic for each:
+
+| Request Type | Pre-call Guards | Post-call Guards | Streaming Support |
+| --- | --- | --- | --- |
+| `/chat/completions` | ✅ | ✅ | ✅ Skipped |
+| `/completions` (legacy) | ✅ | ✅ | ✅ Skipped |
+| `/embeddings` | ✅ | ❌ N/A | ❌ N/A |
+
+- **Chat and legacy completions** support both pre-call and post-call guards. When streaming is enabled, post-call guards are skipped since the response is delivered incrementally.
+- **Embeddings** only support pre-call guards, as there is no text completion to evaluate in the response.
+
 ## Core Concepts
 
 ### Guards

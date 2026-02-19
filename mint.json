@@ -162,9 +162,9 @@
     {
       "group": "Guardrails",
       "pages": [
-        "hub/overview",
-        "hub/guardrails-configuration",
-        "hub/evaluators"
+        "hub/guardrails/overview",
+        "hub/guardrails/configuration",
+        "hub/guardrails/evaluators"
       ]
     },
     {
