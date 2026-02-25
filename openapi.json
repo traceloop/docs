@@ -116,14 +116,14 @@
         ]
       }
     },
-    "/v2/auto-monitor-setups/{setup_id}": {
+    "/v2/auto-monitor-setups/{external_id}": {
       "delete": {
-        "description": "Delete an auto monitor setup by ID",
+        "description": "Delete an auto monitor setup by its external ID",
         "parameters": [
           {
-            "description": "Auto monitor setup ID",
+            "description": "Auto monitor setup external ID",
             "in": "path",
-            "name": "setup_id",
+            "name": "external_id",
             "required": true,
             "schema": {
               "type": "string"
@@ -155,18 +155,18 @@
             }
           }
         },
-        "summary": "Delete an auto monitor setup",
+        "summary": "Delete an auto monitor setup by external ID",
         "tags": [
           "auto-monitor-setups"
         ]
       },
       "get": {
-        "description": "Get a specific auto monitor setup by its ID",
+        "description": "Get a specific auto monitor setup by its external ID",
         "parameters": [
           {
-            "description": "Auto monitor setup ID",
+            "description": "Auto monitor setup external ID",
             "in": "path",
-            "name": "setup_id",
+            "name": "external_id",
             "required": true,
             "schema": {
               "type": "string"
@@ -205,18 +205,18 @@
             }
           }
         },
-        "summary": "Get an auto monitor setup by ID",
+        "summary": "Get an auto monitor setup by external ID",
         "tags": [
           "auto-monitor-setups"
         ]
       },
       "put": {
-        "description": "Update an existing auto monitor setup by ID",
+        "description": "Update an existing auto monitor setup by its external ID",
         "parameters": [
           {
-            "description": "Auto monitor setup ID",
+            "description": "Auto monitor setup external ID",
             "in": "path",
-            "name": "setup_id",
+            "name": "external_id",
             "required": true,
             "schema": {
               "type": "string"
@@ -276,7 +276,7 @@
             }
           }
         },
-        "summary": "Update an auto monitor setup",
+        "summary": "Update an auto monitor setup by external ID",
         "tags": [
           "auto-monitor-setups"
         ]
