@@ -21,6 +21,7 @@ include_paths:
   - /v2/metrics_hwm
   - /v2/organizations
   - /v2/evaluators/execute/*
+  - /v2/evaluators/custom-evaluator
   - /v2/metrics
   - /v2/metrics_hwm
   - /v2/auto-monitor-setups

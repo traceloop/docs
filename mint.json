@@ -278,6 +278,7 @@
     {
       "group": "Evaluators",
       "pages": [
+        "api-reference/evaluators/create-a-custom-llm-as-a-judge-evaluator",
         "api-reference/evaluators/execute-agent-efficiency-evaluator",
         "api-reference/evaluators/execute-agent-flow-quality-evaluator",
         "api-reference/evaluators/execute-agent-goal-accuracy-evaluator",

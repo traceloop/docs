@@ -282,6 +282,58 @@
         ]
       }
     },
+    "/v2/evaluators/custom-evaluator": {
+      "post": {
+        "description": "Create a new custom evaluator at the organization level without project or environment bindings. The evaluator uses LLM-as-a-judge to evaluate inputs based on the provided configuration. The response format is automatically generated from the output schema.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.CreateCustomEvaluatorInput"
+              }
+            }
+          },
+          "description": "Custom evaluator creation input",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.CreateEvaluatorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a custom LLM-as-a-judge evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
     "/v2/evaluators/execute/agent-efficiency": {
       "post": {
         "description": "Evaluate agent efficiency - detect redundant calls, unnecessary follow-ups\n\n**Request Body:**\n- `input.trajectory_prompts` (string, required): JSON array of prompts in the agent trajectory\n- `input.trajectory_completions` (string, required): JSON array of completions in the agent trajectory",
@@ -2505,6 +2557,20 @@
           "EnumType"
         ]
       },
+      "model.LLMMessage": {
+        "properties": {
+          "content": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "tool_call_id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "request.AgentEfficiencyInput": {
         "properties": {
           "trajectory_completions": {
@@ -2990,6 +3056,84 @@
           "entity_value",
           "evaluators",
           "external_id"
+        ],
+        "type": "object"
+      },
+      "request.CreateCustomEvaluatorInput": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "frequency_penalty": {
+            "type": "number"
+          },
+          "input_schema": {
+            "description": "Schemas",
+            "items": {
+              "$ref": "#/components/schemas/evaluator.Property"
+            },
+            "type": "array"
+          },
+          "logprobs": {
+            "type": "boolean"
+          },
+          "max_tokens": {
+            "type": "integer"
+          },
+          "messages": {
+            "description": "LLM Message configuration",
+            "items": {
+              "$ref": "#/components/schemas/model.LLMMessage"
+            },
+            "type": "array"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "model": {
+            "description": "LLM parameters (from BaseLLMConfig)",
+            "type": "string"
+          },
+          "name": {
+            "description": "Basic fields",
+            "type": "string"
+          },
+          "output_schema": {
+            "items": {
+              "$ref": "#/components/schemas/evaluator.Property"
+            },
+            "type": "array"
+          },
+          "presence_penalty": {
+            "type": "number"
+          },
+          "provider": {
+            "description": "Provider configuration",
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "stop": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "temperature": {
+            "type": "number"
+          },
+          "top_p": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "input_schema",
+          "messages",
+          "model",
+          "name",
+          "output_schema",
+          "provider"
         ],
         "type": "object"
       },
@@ -3991,6 +4135,29 @@
         },
         "type": "object"
       },
+      "response.CreateEvaluatorResponse": {
+        "properties": {
+          "bindings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "evaluator_id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/types.EvaluatorType"
+          },
+          "version_id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "response.CreateOrganizationResponse": {
         "properties": {
           "environments": {
@@ -4356,6 +4523,85 @@
           "ComparisonOperatorNotContains",
           "ComparisonOperatorIn",
           "ComparisonOperatorNotIn"
+        ]
+      },
+      "types.EvaluatorType": {
+        "enum": [
+          "AGENT_GOAL_ACCURACY",
+          "CHAR_COUNT",
+          "CHAR_COUNT_RATIO",
+          "ANSWER_COMPLETENESS",
+          "FAITHFULNESS",
+          "JSON_VALIDATOR",
+          "PERPLEXITY",
+          "PII_DETECTOR",
+          "PLACEHOLDER_REGEX",
+          "PROFANITY_DETECTOR",
+          "SEXISM_DETECTOR",
+          "PROMPT_INJECTION",
+          "TONE_DETECTION",
+          "PROMPT_PERPLEXITY",
+          "TOXICITY_DETECTOR",
+          "ANSWER_RELEVANCY",
+          "ANSWER_CORRECTNESS",
+          "REGEX_VALIDATOR",
+          "SECRETS_DETECTOR",
+          "SQL_VALIDATOR",
+          "SEMANTIC_SIMILARITY",
+          "TOPIC_ADHERENCE",
+          "UNCERTAINTY_DETECTOR",
+          "WORD_COUNT",
+          "WORD_COUNT_RATIO",
+          "INSTRUCTION_ADHERENCE",
+          "AGENT_FLOW_QUALITY",
+          "AGENT_EFFICIENCY",
+          "AGENT_GOAL_COMPLETENESS",
+          "CONVERSATION_QUALITY",
+          "INTENT_CHANGE",
+          "CONTEXT_RELEVANCE",
+          "AGENT_TOOL_ERROR_DETECTOR",
+          "AGENT_TOOL_TRAJECTORY",
+          "HTML_COMPARISON",
+          "LLM_AS_A_JUDGE"
+        ],
+        "type": "string",
+        "x-enum-varnames": [
+          "AgentGoalAccuracy",
+          "CharCount",
+          "CharCountRatio",
+          "AnswerCompleteness",
+          "Faithfulness",
+          "JsonValidator",
+          "Perplexity",
+          "PIIDetector",
+          "PlaceholderRegex",
+          "ProfanityDetector",
+          "SexismDetector",
+          "PromptInjection",
+          "ToneDetection",
+          "PromptPerplexity",
+          "ToxicityDetector",
+          "AnswerRelevancy",
+          "AnswerCorrectness",
+          "RegexValidator",
+          "SecretsDetector",
+          "SQLValidator",
+          "SemanticSimilarity",
+          "TopicAdherence",
+          "UncertaintyDetector",
+          "WordCount",
+          "WordCountRatio",
+          "InstructionAdherence",
+          "AgentFlowQuality",
+          "AgentEfficiency",
+          "AgentGoalCompleteness",
+          "ConversationQuality",
+          "IdentIntentChange",
+          "ContextRelevance",
+          "AgentToolErrorDetector",
+          "AgentToolTrajectory",
+          "HtmlComparison",
+          "LLMAsAJudge"
         ]
       },
       "types.LogicalOperator": {
