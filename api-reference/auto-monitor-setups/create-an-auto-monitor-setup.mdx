@@ -29,6 +29,15 @@ An auto monitor setup is an asynchronous process that attempts to create a [Trac
   A map of span attribute key-value pairs used to filter which spans this monitor applies to. Only spans matching **all** provided key-value pairs will be evaluated.
 
   Keys are span attribute names and values can be strings, numbers, or booleans.
+
+  **Example selector keys:**
+
+  | Key | Type | Example |
+  |-----|------|---------|
+  | `gen_ai.request.model` | string | `"gpt-4o"`, `"claude-3-5-sonnet"` |
+  | `gen_ai.request.max_tokens` | number | `1000` |
+
+  Any other span attribute from your traces can also be used as a selector key.
 </ParamField>
 
 ## Example Request
