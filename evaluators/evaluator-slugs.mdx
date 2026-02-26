@@ -1,0 +1,64 @@
+---
+title: "Evaluator Slugs"
+description: "Reference list of all built-in evaluator slugs for use with the API"
+---
+
+Use these slugs when referencing evaluators in the API (e.g. the `evaluators` field in [Create an Auto Monitor Setup](/api-reference/auto-monitor-setups/create-an-auto-monitor-setup)).
+
+## Quality & Correctness
+
+| Slug | Label |
+|------|-------|
+| `answer-relevancy` | Answer Relevancy |
+| `answer-correctness` | Answer Correctness |
+| `answer-completeness` | Answer Completeness |
+| `faithfulness` | Faithfulness |
+| `semantic-similarity` | Semantic Similarity |
+| `topic-adherence` | Topic Adherence |
+| `uncertainty-detector` | Uncertainty Detection |
+| `instruction-adherence` | Instruction Adherence |
+| `context-relevance` | Context Relevance |
+
+## Style
+
+| Slug | Label |
+|------|-------|
+| `char-count` | Character Count |
+| `char-count-ratio` | Character Count Ratio |
+| `word-count` | Word Count |
+| `word-count-ratio` | Word Count Ratio |
+| `tone-detection` | Tone Detection *(SaaS only)* |
+
+## Security & Compliance
+
+| Slug | Label |
+|------|-------|
+| `pii-detector` | PII Detection |
+| `profanity-detector` | Profanity Detection |
+| `secrets-detector` | Secrets Detection |
+| `prompt-injection` | Prompt Injection Detection *(SaaS only)* |
+| `sexism-detector` | Sexism Detection *(SaaS only)* |
+| `toxicity-detector` | Toxicity Detection *(SaaS only)* |
+
+## Formatting
+
+| Slug | Label |
+|------|-------|
+| `json-validator` | JSON Validation |
+| `regex-validator` | Regex Validation |
+| `placeholder-regex` | Placeholder Regex |
+| `sql-validator` | SQL Validation |
+| `html-comparison` | HTML Comparison |
+
+## Agents
+
+| Slug | Label |
+|------|-------|
+| `agent-goal-accuracy` | Agent Goal Accuracy |
+| `agent-goal-completeness` | Agent Goal Completeness |
+| `agent-flow-quality` | Agent Flow Quality *(Beta)* |
+| `agent-efficiency` | Agent Efficiency *(Beta)* |
+| `agent-tool-error-detector` | Tool Error *(Beta)* |
+| `agent-tool-trajectory` | Agent Tool Trajectory *(Beta)* |
+| `intent-change` | Intent Change |
+| `conversation-quality` | Conversation Quality |

@@ -11,14 +11,6 @@
         "description": "List all auto monitor setups for the organization with optional filters",
         "parameters": [
           {
-            "description": "Filter by entity type (e.g., agent, workflow)",
-            "in": "query",
-            "name": "entity_type",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "description": "Filter by status (e.g., pending, completed)",
             "in": "query",
             "name": "status",
@@ -66,7 +58,7 @@
         ]
       },
       "post": {
-        "description": "Create a new auto monitor setup for automatic monitor creation",
+        "description": "Create a new auto monitor setup for automatic monitor creation.\n\nThe `selector` field is a map of span attribute key-value pairs used to filter which spans\nthis monitor applies to. Keys are span attribute names and values can be strings, numbers, or booleans.\n\nCommon selector keys:\n- `gen_ai.system` — LLM provider (e.g. \"openai\", \"anthropic\")\n- `gen_ai.request.model` — model name (e.g. \"gpt-4o\", \"claude-3-5-sonnet\")\n- `gen_ai.request.max_tokens` — max tokens (number)\n- Any other span attribute from your traces",
         "requestBody": {
           "content": {
             "application/json": {
@@ -116,14 +108,14 @@
         ]
       }
     },
-    "/v2/auto-monitor-setups/{setup_id}": {
+    "/v2/auto-monitor-setups/{external_id}": {
       "delete": {
-        "description": "Delete an auto monitor setup by ID",
+        "description": "Delete an auto monitor setup by its external ID",
         "parameters": [
           {
-            "description": "Auto monitor setup ID",
+            "description": "Auto monitor setup external ID",
             "in": "path",
-            "name": "setup_id",
+            "name": "external_id",
             "required": true,
             "schema": {
               "type": "string"
@@ -155,18 +147,18 @@
             }
           }
         },
-        "summary": "Delete an auto monitor setup",
+        "summary": "Delete an auto monitor setup by external ID",
         "tags": [
           "auto-monitor-setups"
         ]
       },
       "get": {
-        "description": "Get a specific auto monitor setup by its ID",
+        "description": "Get a specific auto monitor setup by its external ID",
         "parameters": [
           {
-            "description": "Auto monitor setup ID",
+            "description": "Auto monitor setup external ID",
             "in": "path",
-            "name": "setup_id",
+            "name": "external_id",
             "required": true,
             "schema": {
               "type": "string"
@@ -205,18 +197,18 @@
             }
           }
         },
-        "summary": "Get an auto monitor setup by ID",
+        "summary": "Get an auto monitor setup by external ID",
         "tags": [
           "auto-monitor-setups"
         ]
       },
       "put": {
-        "description": "Update an existing auto monitor setup by ID",
+        "description": "Update an existing auto monitor setup by its external ID",
         "parameters": [
           {
-            "description": "Auto monitor setup ID",
+            "description": "Auto monitor setup external ID",
             "in": "path",
-            "name": "setup_id",
+            "name": "external_id",
             "required": true,
             "schema": {
               "type": "string"
@@ -276,7 +268,7 @@
             }
           }
         },
-        "summary": "Update an auto monitor setup",
+        "summary": "Update an auto monitor setup by external ID",
         "tags": [
           "auto-monitor-setups"
         ]
@@ -284,7 +276,7 @@
     },
     "/v2/evaluators/custom-evaluator": {
       "post": {
-        "description": "A custom evaluator requires three main components: a prompt, an input schema, and an output schema.\n\n**Prompt**\n\nThe prompt serves as an LLM-as-a-judge, instructing the model to evaluate your data against the criteria you define. Use Jinja2 templating syntax `{{var_name}}` to reference variables from your input schema.\n\n**Input Schema**\n\nDefines the variables available to your prompt template. Each variable declared here can be referenced in your prompt using `{{var_name}}`.\n\n**Output Schema**\n\nDefines the structure of the evaluation result. The model returns its assessment as structured output matching this schema.\n\nAdditionally, you'll specify an LLM provider, model, and any provider-specific settings.",
+        "description": "Create a new custom evaluator at the organization level without project or environment bindings. The evaluator uses LLM-as-a-judge to evaluate inputs based on the provided configuration. The response format is automatically generated from the output schema.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -293,7 +285,7 @@
               }
             }
           },
-          "description": "Custom evaluator configuration",
+          "description": "Custom evaluator creation input",
           "required": true
         },
         "responses": {
@@ -328,12 +320,7 @@
             }
           }
         },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "summary": "Create custom evaluator",
+        "summary": "Create a custom LLM-as-a-judge evaluator",
         "tags": [
           "evaluators"
         ]
@@ -968,7 +955,7 @@
     },
     "/v2/evaluators/execute/context-relevance": {
       "post": {
-        "description": "Evaluate whether retrieved context contains sufficient information to answer the query\n\n**Request Body:**\n- `input.query` (string, required): The query/question to evaluate context relevance for\n- `input.context` (string, required): The context to evaluate for relevance to the query\n- `config.model` (string, optional): Model to use for evaluation (default: gpt-4o)",
+        "description": "Evaluate whether retrieved context contains sufficient information to answer the query\n\n**Request Body:**\n- `input.query` (string, required): The query/question to evaluate context relevance for\n- `input.completion` (string, required): The completion to evaluate for context relevance\n- `input.context` (string, required): The context to evaluate for relevance to the query\n- `config.model` (string, optional): Model to use for evaluation (default: gpt-4o)",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1481,7 +1468,7 @@
     },
     "/v2/evaluators/execute/placeholder-regex": {
       "post": {
-        "description": "Validate text against a placeholder regex pattern\n\n**Request Body:**\n- `input.placeholder_value` (string, required): The regex pattern to match against\n- `input.text` (string, required): The text to validate against the regex pattern\n- `config.should_match` (bool, optional): Whether the text should match the regex\n- `config.case_sensitive` (bool, optional): Case-sensitive matching\n- `config.dot_include_nl` (bool, optional): Dot matches newlines\n- `config.multi_line` (bool, optional): Multi-line mode",
+        "description": "Validate text against a placeholder regex pattern\n\n**Request Body:**\n- `input.placeholder_name` (string, required): The name of the placeholder to substitute\n- `input.placeholder_value` (string, required): The value to substitute into the regex placeholder\n- `input.text` (string, required): The text to validate against the regex pattern\n- `config.should_match` (bool, optional): Whether the text should match the regex\n- `config.case_sensitive` (bool, optional): Case-sensitive matching\n- `config.dot_include_nl` (bool, optional): Dot matches newlines\n- `config.multi_line` (bool, optional): Multi-line mode",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2518,65 +2505,25 @@
       }
     },
     "schemas": {
-      "evaluator.ComparisonOperator": {
-        "enum": [
-          "equals",
-          "not_equals",
-          "contains",
-          "exists",
-          "not_exists",
-          "greater_than",
-          "less_than",
-          "starts_with"
-        ],
-        "type": "string",
-        "x-enum-varnames": [
-          "ComparisonOperatorEquals",
-          "ComparisonOperatorNotEquals",
-          "ComparisonOperatorContains",
-          "ComparisonOperatorExists",
-          "ComparisonOperatorNotExists",
-          "ComparisonOperatorGreaterThan",
-          "ComparisonOperatorLessThan",
-          "ComparisonOperatorStartsWith"
-        ]
-      },
-      "evaluator.LogicalOperator": {
-        "enum": [
-          "AND",
-          "OR"
-        ],
-        "type": "string",
-        "x-enum-varnames": [
-          "LogicalOperatorAnd",
-          "LogicalOperatorOr"
-        ]
-      },
       "evaluator.Property": {
         "properties": {
           "description": {
-            "type": "string",
-            "description": "Description of the property"
-          },
-          "label": {
-            "type": "string",
-            "description": "Display label for the property"
-          },
-          "name": {
-            "type": "string",
-            "description": "Property name (used as variable in templates)"
-          },
-          "type": {
-            "type": "string",
-            "description": "Property type: string, int, float, boolean, or enum",
-            "enum": ["string", "int", "float", "boolean", "enum"]
+            "type": "string"
           },
           "enum_values": {
-            "type": "array",
-            "description": "Allowed values if type is enum",
             "items": {
               "type": "string"
-            }
+            },
+            "type": "array"
+          },
+          "label": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/evaluator.PropertyType"
           }
         },
         "required": [
@@ -2585,28 +2532,35 @@
         ],
         "type": "object"
       },
-      "evaluator.Rule": {
+      "evaluator.PropertyType": {
+        "enum": [
+          "string",
+          "int",
+          "float",
+          "boolean",
+          "enum"
+        ],
+        "type": "string",
+        "x-enum-varnames": [
+          "StringType",
+          "IntType",
+          "FloatType",
+          "BooleanType",
+          "EnumType"
+        ]
+      },
+      "model.LLMMessage": {
         "properties": {
-          "key": {
+          "content": {
             "type": "string"
           },
-          "op": {
-            "$ref": "#/components/schemas/evaluator.ComparisonOperator"
-          },
-          "source": {
+          "role": {
             "type": "string"
           },
-          "value": {
-            "type": "string"
-          },
-          "value_type": {
+          "tool_call_id": {
             "type": "string"
           }
         },
-        "required": [
-          "op",
-          "source"
-        ],
         "type": "object"
       },
       "request.AgentEfficiencyInput": {
@@ -3004,6 +2958,10 @@
       },
       "request.ContextRelevanceInput": {
         "properties": {
+          "completion": {
+            "example": "Our store is open Monday to Friday from 9am to 6pm, and Saturday from 10am to 4pm. We are closed on Sundays.",
+            "type": "string"
+          },
           "context": {
             "example": "Our store is open Monday to Friday from 9am to 6pm, and Saturday from 10am to 4pm. We are closed on Sundays.",
             "type": "string"
@@ -3014,6 +2972,7 @@
           }
         },
         "required": [
+          "completion",
           "context",
           "query"
         ],
@@ -3063,13 +3022,12 @@
       },
       "request.CreateAutoMonitorSetupInput": {
         "properties": {
-          "entity_type": {
-            "type": "string"
-          },
-          "entity_value": {
-            "type": "string"
-          },
           "evaluators": {
+            "description": "List of evaluator slugs to run on matched spans",
+            "example": [
+              "hallucination",
+              "toxicity"
+            ],
             "items": {
               "type": "string"
             },
@@ -3077,18 +3035,96 @@
             "type": "array"
           },
           "external_id": {
+            "description": "Unique identifier for the auto monitor setup, used to reference it in future requests",
+            "example": "my-agent-monitor-1",
             "type": "string"
           },
           "selector": {
-            "additionalProperties": true,
+            "description": "Map of span attributes to filter which spans this monitor applies to.\nKeys are span attribute names (e.g. gen_ai.system, gen_ai.request.model) and\nvalues can be strings, numbers, or booleans.\nExample: {\"gen_ai.system\": \"openai\", \"gen_ai.request.model\": \"gpt-4o\", \"gen_ai.request.max_tokens\": 1000}",
             "type": "object"
           }
         },
         "required": [
-          "entity_type",
-          "entity_value",
           "evaluators",
           "external_id"
+        ],
+        "type": "object"
+      },
+      "request.CreateCustomEvaluatorInput": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "frequency_penalty": {
+            "type": "number"
+          },
+          "input_schema": {
+            "description": "Schemas",
+            "items": {
+              "$ref": "#/components/schemas/evaluator.Property"
+            },
+            "type": "array"
+          },
+          "logprobs": {
+            "type": "boolean"
+          },
+          "max_tokens": {
+            "type": "integer"
+          },
+          "messages": {
+            "description": "LLM Message configuration",
+            "items": {
+              "$ref": "#/components/schemas/model.LLMMessage"
+            },
+            "type": "array"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "model": {
+            "description": "LLM parameters (from BaseLLMConfig)",
+            "type": "string"
+          },
+          "name": {
+            "description": "Basic fields",
+            "type": "string"
+          },
+          "output_schema": {
+            "items": {
+              "$ref": "#/components/schemas/evaluator.Property"
+            },
+            "type": "array"
+          },
+          "presence_penalty": {
+            "type": "number"
+          },
+          "provider": {
+            "description": "Provider configuration",
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "stop": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "temperature": {
+            "type": "number"
+          },
+          "top_p": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "input_schema",
+          "messages",
+          "model",
+          "name",
+          "output_schema",
+          "provider"
         ],
         "type": "object"
       },
@@ -3166,7 +3202,7 @@
             "type": "integer"
           },
           "logical_operator": {
-            "$ref": "#/components/schemas/evaluator.LogicalOperator"
+            "$ref": "#/components/schemas/types.LogicalOperator"
           },
           "metric_name": {
             "type": "string"
@@ -3390,16 +3426,21 @@
       },
       "request.PlaceholderRegexInput": {
         "properties": {
+          "placeholder_name": {
+            "example": "name",
+            "type": "string"
+          },
           "placeholder_value": {
-            "example": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}",
+            "example": "Hello ${name}",
             "type": "string"
           },
           "text": {
-            "example": "user@example.com",
+            "example": "Hello John Doe",
             "type": "string"
           }
         },
         "required": [
+          "placeholder_name",
           "placeholder_value",
           "text"
         ],
@@ -3776,20 +3817,19 @@
       },
       "request.UpdateAutoMonitorSetupInput": {
         "properties": {
-          "entity_type": {
-            "type": "string"
-          },
-          "entity_value": {
-            "type": "string"
-          },
           "evaluators": {
+            "description": "List of evaluator slugs to run on matched spans",
+            "example": [
+              "hallucination",
+              "toxicity"
+            ],
             "items": {
               "type": "string"
             },
             "type": "array"
           },
           "selector": {
-            "additionalProperties": true,
+            "description": "Map of span attributes to filter which spans this monitor applies to.\nKeys are span attribute names (e.g. gen_ai.system, gen_ai.request.model) and\nvalues can be strings, numbers, or booleans.\nExample: {\"gen_ai.system\": \"openai\", \"gen_ai.request.model\": \"gpt-4o\", \"gen_ai.request.max_tokens\": 1000}",
             "type": "object"
           }
         },
@@ -3873,13 +3913,13 @@
             "example": "Agent followed the expected flow correctly",
             "type": "string"
           },
-          "result": {
-            "example": "pass",
-            "type": "string"
-          },
           "score": {
             "example": 0.89,
             "type": "number"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -3899,13 +3939,13 @@
             "example": "All user goals were accomplished",
             "type": "string"
           },
-          "result": {
-            "example": "complete",
-            "type": "string"
-          },
           "score": {
             "example": 0.95,
             "type": "number"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -3916,9 +3956,9 @@
             "example": "Tool executed successfully without errors",
             "type": "string"
           },
-          "result": {
-            "example": "success",
-            "type": "string"
+          "success": {
+            "example": true,
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -3929,13 +3969,13 @@
             "example": "Tool calls match the expected trajectory",
             "type": "string"
           },
-          "result": {
-            "example": "pass",
-            "type": "string"
-          },
           "score": {
             "example": 0.85,
             "type": "number"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -4007,12 +4047,6 @@
           "created_at": {
             "type": "string"
           },
-          "entity_type": {
-            "type": "string"
-          },
-          "entity_value": {
-            "type": "string"
-          },
           "env_project_id": {
             "type": "string"
           },
@@ -4030,7 +4064,7 @@
           },
           "init_rules": {
             "items": {
-              "$ref": "#/components/schemas/evaluator.Rule"
+              "$ref": "#/components/schemas/types.Rule"
             },
             "type": "array"
           },
@@ -4081,6 +4115,29 @@
           "conversation_quality_score": {
             "example": 0.82,
             "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "response.CreateEvaluatorResponse": {
+        "properties": {
+          "bindings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "evaluator_id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/types.EvaluatorType"
+          },
+          "version_id": {
+            "type": "string"
           }
         },
         "type": "object"
@@ -4157,10 +4214,6 @@
       },
       "response.IntentChangeResponse": {
         "properties": {
-          "pass": {
-            "example": true,
-            "type": "boolean"
-          },
           "reason": {
             "example": "User intent remained consistent throughout the conversation",
             "type": "string"
@@ -4168,6 +4221,10 @@
           "score": {
             "example": 1,
             "type": "integer"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -4278,7 +4335,7 @@
       },
       "response.ProfanityDetectorResponse": {
         "properties": {
-          "has_profanity": {
+          "is_safe": {
             "example": false,
             "type": "boolean"
           }
@@ -4288,8 +4345,8 @@
       "response.PromptInjectionResponse": {
         "properties": {
           "has_injection": {
-            "example": "safe",
-            "type": "string"
+            "example": false,
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -4342,8 +4399,8 @@
       "response.SexismDetectorResponse": {
         "properties": {
           "is_safe": {
-            "example": "safe",
-            "type": "string"
+            "example": false,
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -4373,8 +4430,8 @@
       "response.ToxicityDetectorResponse": {
         "properties": {
           "is_safe": {
-            "example": "safe",
-            "type": "string"
+            "example": false,
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -4421,7 +4478,7 @@
           "value": {
             "type": "string"
           },
-          "valueType": {
+          "value_type": {
             "type": "string"
           },
           "values": {
@@ -4433,121 +4490,131 @@
         },
         "type": "object"
       },
-      "model.LLMMessage": {
-        "properties": {
-          "role": {
-            "type": "string",
-            "description": "Message role (system, user, assistant)"
-          },
-          "content": {
-            "type": "string",
-            "description": "Message content"
-          }
-        },
-        "required": [
-          "role",
-          "content"
+      "types.ComparisonOperator": {
+        "enum": [
+          "equals",
+          "not_equals",
+          "contains",
+          "not_contains",
+          "in",
+          "not_in"
         ],
-        "type": "object"
+        "type": "string",
+        "x-enum-varnames": [
+          "ComparisonOperatorEquals",
+          "ComparisonOperatorNotEquals",
+          "ComparisonOperatorContains",
+          "ComparisonOperatorNotContains",
+          "ComparisonOperatorIn",
+          "ComparisonOperatorNotIn"
+        ]
       },
-      "request.CreateCustomEvaluatorInput": {
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Display name of the evaluator"
-          },
-          "slug": {
-            "type": "string",
-            "description": "URL-safe identifier (auto-generated if not provided)"
-          },
-          "description": {
-            "type": "string",
-            "description": "Description of what the evaluator does"
-          },
-          "provider": {
-            "type": "string",
-            "description": "LLM provider (e.g., openai, anthropic)"
-          },
-          "model": {
-            "type": "string",
-            "description": "Model to use for evaluation"
-          },
-          "messages": {
-            "type": "array",
-            "description": "Prompt messages for the LLM judge",
-            "items": {
-              "$ref": "#/components/schemas/model.LLMMessage"
-            }
-          },
-          "input_schema": {
-            "type": "array",
-            "description": "Schema defining evaluator inputs",
-            "items": {
-              "$ref": "#/components/schemas/evaluator.Property"
-            }
-          },
-          "output_schema": {
-            "type": "array",
-            "description": "Schema defining evaluator outputs",
-            "items": {
-              "$ref": "#/components/schemas/evaluator.Property"
-            }
-          },
-          "temperature": {
-            "type": "number",
-            "description": "Temperature setting for the LLM"
-          },
-          "top_p": {
-            "type": "number",
-            "description": "Top P (nucleus sampling) setting"
-          },
-          "max_tokens": {
-            "type": "integer",
-            "description": "Maximum tokens in the response"
-          },
-          "frequency_penalty": {
-            "type": "number",
-            "description": "Frequency penalty to reduce repetition"
-          },
-          "presence_penalty": {
-            "type": "number",
-            "description": "Presence penalty for topic diversity"
-          },
-          "stop": {
-            "type": "array",
-            "description": "Stop sequences",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "name",
-          "provider",
-          "model",
-          "messages",
-          "input_schema",
-          "output_schema"
+      "types.EvaluatorType": {
+        "enum": [
+          "AGENT_GOAL_ACCURACY",
+          "CHAR_COUNT",
+          "CHAR_COUNT_RATIO",
+          "ANSWER_COMPLETENESS",
+          "FAITHFULNESS",
+          "JSON_VALIDATOR",
+          "PERPLEXITY",
+          "PII_DETECTOR",
+          "PLACEHOLDER_REGEX",
+          "PROFANITY_DETECTOR",
+          "SEXISM_DETECTOR",
+          "PROMPT_INJECTION",
+          "TONE_DETECTION",
+          "PROMPT_PERPLEXITY",
+          "TOXICITY_DETECTOR",
+          "ANSWER_RELEVANCY",
+          "ANSWER_CORRECTNESS",
+          "REGEX_VALIDATOR",
+          "SECRETS_DETECTOR",
+          "SQL_VALIDATOR",
+          "SEMANTIC_SIMILARITY",
+          "TOPIC_ADHERENCE",
+          "UNCERTAINTY_DETECTOR",
+          "WORD_COUNT",
+          "WORD_COUNT_RATIO",
+          "INSTRUCTION_ADHERENCE",
+          "AGENT_FLOW_QUALITY",
+          "AGENT_EFFICIENCY",
+          "AGENT_GOAL_COMPLETENESS",
+          "CONVERSATION_QUALITY",
+          "INTENT_CHANGE",
+          "CONTEXT_RELEVANCE",
+          "AGENT_TOOL_ERROR_DETECTOR",
+          "AGENT_TOOL_TRAJECTORY",
+          "HTML_COMPARISON",
+          "LLM_AS_A_JUDGE"
         ],
-        "type": "object"
+        "type": "string",
+        "x-enum-varnames": [
+          "AgentGoalAccuracy",
+          "CharCount",
+          "CharCountRatio",
+          "AnswerCompleteness",
+          "Faithfulness",
+          "JsonValidator",
+          "Perplexity",
+          "PIIDetector",
+          "PlaceholderRegex",
+          "ProfanityDetector",
+          "SexismDetector",
+          "PromptInjection",
+          "ToneDetection",
+          "PromptPerplexity",
+          "ToxicityDetector",
+          "AnswerRelevancy",
+          "AnswerCorrectness",
+          "RegexValidator",
+          "SecretsDetector",
+          "SQLValidator",
+          "SemanticSimilarity",
+          "TopicAdherence",
+          "UncertaintyDetector",
+          "WordCount",
+          "WordCountRatio",
+          "InstructionAdherence",
+          "AgentFlowQuality",
+          "AgentEfficiency",
+          "AgentGoalCompleteness",
+          "ConversationQuality",
+          "IdentIntentChange",
+          "ContextRelevance",
+          "AgentToolErrorDetector",
+          "AgentToolTrajectory",
+          "HtmlComparison",
+          "LLMAsAJudge"
+        ]
       },
-      "response.CreateEvaluatorResponse": {
+      "types.LogicalOperator": {
+        "enum": [
+          "AND",
+          "OR"
+        ],
+        "type": "string",
+        "x-enum-varnames": [
+          "LogicalOperatorAnd",
+          "LogicalOperatorOr"
+        ]
+      },
+      "types.Rule": {
         "properties": {
-          "evaluator_id": {
-            "type": "string",
-            "description": "Unique identifier for the created evaluator"
+          "key": {
+            "type": "string"
           },
-          "version_id": {
-            "type": "string",
-            "description": "Version identifier"
+          "op": {
+            "$ref": "#/components/schemas/types.ComparisonOperator"
           },
-          "slug": {
-            "type": "string",
-            "description": "URL-safe slug for the evaluator"
+          "source": {
+            "type": "string"
           },
-          "type": {
-            "type": "string",
-            "description": "Type of the evaluator"
+          "value": {
+            "type": "string"
+          },
+          "value_type": {
+            "type": "string"
           }
         },
         "type": "object"
