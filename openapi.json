@@ -11,14 +11,6 @@
         "description": "List all auto monitor setups for the organization with optional filters",
         "parameters": [
           {
-            "description": "Filter by entity type (e.g., agent, workflow)",
-            "in": "query",
-            "name": "entity_type",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "description": "Filter by status (e.g., pending, completed)",
             "in": "query",
             "name": "status",
@@ -66,7 +58,7 @@
         ]
       },
       "post": {
-        "description": "Create a new auto monitor setup for automatic monitor creation",
+        "description": "Create a new auto monitor setup for automatic monitor creation.\n\nThe `selector` field is a map of span attribute key-value pairs used to filter which spans\nthis monitor applies to. Keys are span attribute names and values can be strings, numbers, or booleans.\n\nCommon selector keys:\n- `gen_ai.system` — LLM provider (e.g. \"openai\", \"anthropic\")\n- `gen_ai.request.model` — model name (e.g. \"gpt-4o\", \"claude-3-5-sonnet\")\n- `gen_ai.request.max_tokens` — max tokens (number)\n- Any other span attribute from your traces",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3030,13 +3022,12 @@
       },
       "request.CreateAutoMonitorSetupInput": {
         "properties": {
-          "entity_type": {
-            "type": "string"
-          },
-          "entity_value": {
-            "type": "string"
-          },
           "evaluators": {
+            "description": "List of evaluator slugs to run on matched spans",
+            "example": [
+              "hallucination",
+              "toxicity"
+            ],
             "items": {
               "type": "string"
             },
@@ -3044,16 +3035,16 @@
             "type": "array"
           },
           "external_id": {
+            "description": "Unique identifier for the auto monitor setup, used to reference it in future requests",
+            "example": "my-agent-monitor-1",
             "type": "string"
           },
           "selector": {
-            "additionalProperties": true,
+            "description": "Map of span attributes to filter which spans this monitor applies to.\nKeys are span attribute names (e.g. gen_ai.system, gen_ai.request.model) and\nvalues can be strings, numbers, or booleans.\nExample: {\"gen_ai.system\": \"openai\", \"gen_ai.request.model\": \"gpt-4o\", \"gen_ai.request.max_tokens\": 1000}",
             "type": "object"
           }
         },
         "required": [
-          "entity_type",
-          "entity_value",
           "evaluators",
           "external_id"
         ],
@@ -3826,20 +3817,19 @@
       },
       "request.UpdateAutoMonitorSetupInput": {
         "properties": {
-          "entity_type": {
-            "type": "string"
-          },
-          "entity_value": {
-            "type": "string"
-          },
           "evaluators": {
+            "description": "List of evaluator slugs to run on matched spans",
+            "example": [
+              "hallucination",
+              "toxicity"
+            ],
             "items": {
               "type": "string"
             },
             "type": "array"
           },
           "selector": {
-            "additionalProperties": true,
+            "description": "Map of span attributes to filter which spans this monitor applies to.\nKeys are span attribute names (e.g. gen_ai.system, gen_ai.request.model) and\nvalues can be strings, numbers, or booleans.\nExample: {\"gen_ai.system\": \"openai\", \"gen_ai.request.model\": \"gpt-4o\", \"gen_ai.request.max_tokens\": 1000}",
             "type": "object"
           }
         },
@@ -4055,12 +4045,6 @@
       "response.AutoMonitorSetupResponse": {
         "properties": {
           "created_at": {
-            "type": "string"
-          },
-          "entity_type": {
-            "type": "string"
-          },
-          "entity_value": {
             "type": "string"
           },
           "env_project_id": {
