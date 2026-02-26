@@ -36,8 +36,8 @@ An auto monitor setup is an asynchronous process that attempts to create a [Trac
 
   | Key | Type | Example |
   |-----|------|---------|
-  | `gen_ai.request.model` | string | `"gpt-4o"`, `"claude-3-5-sonnet"` |
-  | `gen_ai.request.max_tokens` | number | `1000` |
+  | `llm.request.model` | string | `"gpt-4o"`, `"claude-3-5-sonnet"` |
+  | `llm.request.max_tokens` | number | `1000` |
 
   All available span attributes can be found in your [Traceloop traces page](https://app.traceloop.com).
 </ParamField>
@@ -52,8 +52,8 @@ curl -X POST https://api.traceloop.com/v2/auto-monitor-setups \
     "external_id": "my-agent-monitor-1",
     "evaluators": ["answer-relevancy", "toxicity-detector"],
     "selector": {
-      "gen_ai.system": "openai",
-      "gen_ai.request.model": "gpt-4o"
+      "llm.vendor": "openai",
+      "llm.request.model": "gpt-4o"
     }
   }'
 ```
