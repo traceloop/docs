@@ -23,6 +23,8 @@ An auto monitor setup is an asynchronous process that attempts to create a [Trac
   List of evaluator slugs to run on matched spans. Must contain at least one evaluator.
 
   **Example:** `["answer-relevancy", "toxicity-detector"]`
+
+  All available evaluator slugs can be found in the [Evaluators Library](https://app.traceloop.com) in the Traceloop UI.
 </ParamField>
 
 <ParamField body="selector" type="object">
@@ -37,7 +39,7 @@ An auto monitor setup is an asynchronous process that attempts to create a [Trac
   | `gen_ai.request.model` | string | `"gpt-4o"`, `"claude-3-5-sonnet"` |
   | `gen_ai.request.max_tokens` | number | `1000` |
 
-  Any other span attribute from your traces can also be used as a selector key.
+  All available span attributes can be found in your [Traceloop traces page](https://app.traceloop.com).
 </ParamField>
 
 ## Example Request
