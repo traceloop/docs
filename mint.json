@@ -186,7 +186,8 @@
         "evaluators/intro",
         "evaluators/guardrails",
         "evaluators/custom-evaluator",
-        "evaluators/made-by-traceloop"
+        "evaluators/made-by-traceloop",
+        "evaluators/evaluator-slugs"
       ]
     },
     {
