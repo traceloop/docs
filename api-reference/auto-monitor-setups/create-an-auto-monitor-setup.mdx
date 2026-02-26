@@ -1,3 +1,111 @@
 ---
-openapi: post /v2/auto-monitor-setups
+title: "Create an Auto Monitor Setup"
+description: "Trigger a process that attempts to create a Traceloop monitor using the provided selector criteria"
 ---
+
+An auto monitor setup is an asynchronous process that attempts to create a [Traceloop monitor](/monitoring/introduction) based on the `selector` you provide. The selector is matched against your incoming spans — when a match is found, the monitor is created and the specified evaluators begin running on those spans.
+
+<Note>
+  All API requests require authentication. Pass your API key as a Bearer token in the `Authorization` header.
+  See [Authentication](/api-reference/introduction) for details.
+</Note>
+
+## Endpoint
+
+```
+POST https://api.traceloop.com/v2/auto-monitor-setups
+```
+
+## Request Body
+
+<ParamField body="external_id" type="string" required>
+  Unique identifier for the auto monitor setup. Used to reference it in future requests (get, update, delete).
+
+  **Example:** `"my-agent-monitor-1"`
+</ParamField>
+
+<ParamField body="evaluators" type="string[]" required>
+  List of evaluator slugs to run on matched spans. Must contain at least one evaluator.
+
+  **Example:** `["answer-relevancy", "toxicity-detector"]`
+
+</ParamField>
+
+<ParamField body="selector" type="object">
+  A map of span attribute key-value pairs used to filter which spans this monitor applies to. Only spans matching **all** provided key-value pairs will be evaluated.
+
+  Keys are span attribute names and values can be strings, numbers, or booleans.
+
+  **Common selector keys:**
+
+  | Key | Type | Example |
+  |-----|------|---------|
+  | `gen_ai.system` | string | `"openai"`, `"anthropic"` |
+  | `gen_ai.request.model` | string | `"gpt-4o"`, `"claude-3-5-sonnet"` |
+  | `gen_ai.request.max_tokens` | number | `1000` |
+
+  Any other span attribute from your traces can also be used as a selector key.
+</ParamField>
+
+## Example Request
+
+```bash
+curl -X POST https://api.traceloop.com/v2/auto-monitor-setups \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "external_id": "my-agent-monitor-1",
+    "evaluators": ["answer-relevancy", "toxicity-detector"],
+    "selector": {
+      "gen_ai.system": "openai",
+      "gen_ai.request.model": "gpt-4o",
+      "gen_ai.request.max_tokens": 1000
+    }
+  }'
+```
+
+## Response
+
+### 201 Created
+
+Returns the created auto monitor setup object.
+
+```json
+{
+  "id": "ams_01j9...",
+  "external_id": "my-agent-monitor-1",
+  "evaluators": [
+    {
+      "evaluator_id": "...",
+      "evaluator_type": "answer-relevancy",
+      "status": "active",
+      "binding_id": "..."
+    },
+    {
+      "evaluator_id": "...",
+      "evaluator_type": "toxicity-detector",
+      "status": "active",
+      "binding_id": "..."
+    }
+  ],
+  "created_at": "2025-01-15T10:30:00Z"
+}
+```
+
+### 400 Bad Request
+
+Returned when the request body is invalid (e.g. missing required fields or empty `evaluators` array).
+
+```json
+{
+  "error": "invalid input: evaluators must contain at least one item"
+}
+```
+
+### 500 Internal Server Error
+
+```json
+{
+  "error": "internal server error"
+}
+```
