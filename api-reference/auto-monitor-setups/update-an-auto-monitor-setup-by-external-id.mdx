@@ -1,3 +1,114 @@
 ---
-openapi: put /v2/auto-monitor-setups/{external_id}
+title: "Update an Auto Monitor Setup by External ID"
+description: "Update the selector or evaluators for an existing auto monitor setup"
+api: "PUT /v2/auto-monitor-setups/{external_id}"
 ---
+
+<Note>
+  All API requests require authentication. Pass your API key as a Bearer token in the `Authorization` header.
+  See [Authentication](/api-reference/introduction) for details.
+</Note>
+
+## Path Parameters
+
+<ParamField path="external_id" type="string" required>
+  The external ID of the auto monitor setup to update.
+</ParamField>
+
+## Request Body
+
+All fields are optional. Only the fields you provide will be updated.
+
+<ParamField body="evaluators" type="string[]">
+  List of evaluator slugs to run on matched spans.
+
+  **Example:** `["answer-relevancy", "toxicity-detector"]`
+
+  See the full list of available slugs in the [Evaluator Slugs](/evaluators/evaluator-slugs) reference.
+</ParamField>
+
+<ParamField body="selector" type="object[]">
+  An array of filter rules used to match spans. Each rule specifies an attribute key, a value to match, and a source indicating where the attribute lives. Only spans matching **all** provided rules will be evaluated.
+
+  Each rule has the following fields:
+
+  | Field | Type | Required | Description |
+  |-------|------|----------|-------------|
+  | `key` | string | Yes | The attribute key to filter on (e.g., `gen_ai.system`, `service.name`) |
+  | `value` | string | No | The value to match against (for single-value operators like `equals`, `contains`) |
+  | `values` | string[] | No | List of values to match against (for `in`, `not_in` operators) |
+  | `source` | string | Yes | Where the attribute lives: `span_attributes` or `resource_attributes` |
+  | `operator` | string | No | Comparison operator. Defaults to `equals`. One of: `equals`, `not_equals`, `contains`, `not_contains`, `in`, `not_in` |
+
+  All available span and resource attributes can be found in your [Traceloop traces page](https://app.traceloop.com).
+</ParamField>
+
+## Example Request
+
+```bash
+curl -X PUT https://api.traceloop.com/v2/auto-monitor-setups/my-agent-monitor-1 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "selector": [
+      {"key": "gen_ai.system", "value": "openai", "source": "span_attributes"},
+      {"key": "service.name", "value": "my-service", "source": "resource_attributes", "operator": "equals"}
+    ]
+  }'
+```
+
+## Response
+
+### 200 OK
+
+Returns the updated auto monitor setup object.
+
+```json
+{
+  "id": "ams_01j9...",
+  "external_id": "my-agent-monitor-1",
+  "init_rules": [
+    {
+      "key": "gen_ai.system",
+      "value": "openai",
+      "source": "span_attributes",
+      "operator": "equals"
+    },
+    {
+      "key": "service.name",
+      "value": "my-service",
+      "source": "resource_attributes",
+      "operator": "equals"
+    }
+  ],
+  "evaluators": [
+    {
+      "evaluator_type": "answer-relevancy",
+      "status": "pending"
+    }
+  ],
+  "status": "pending",
+  "created_at": "2025-01-15T10:30:00Z",
+  "updated_at": "2025-01-15T11:00:00Z"
+}
+```
+
+### 404 Not Found
+
+Returned when no setup exists with the given external ID.
+
+```json
+{
+  "error": "auto monitor setup not found"
+}
+```
+
+### 400 Bad Request
+
+Returned when the request body is invalid.
+
+```json
+{
+  "error": "invalid input"
+}
+```
