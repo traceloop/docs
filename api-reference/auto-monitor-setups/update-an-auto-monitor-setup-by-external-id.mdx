@@ -35,10 +35,10 @@ All fields are optional. Only the fields you provide will be updated.
   | Field | Type | Required | Description |
   |-------|------|----------|-------------|
   | `key` | string | Yes | The attribute key to filter on (e.g., `gen_ai.system`, `service.name`) |
-  | `value` | string | No | The value to match against (for single-value operators like `equals`, `contains`) |
-  | `values` | string[] | No | List of values to match against (for `in`, `not_in` operators) |
+  | `value` | string | Conditional | The value to match against. **Required** for `equals`, `not_equals`, `contains`, `not_contains` operators |
+  | `values` | string[] | Conditional | List of values to match against. **Required** for `in`, `not_in` operators |
   | `source` | string | Yes | Where the attribute lives: `span_attributes` or `resource_attributes` |
-  | `operator` | string | No | Comparison operator. Defaults to `equals`. One of: `equals`, `not_equals`, `contains`, `not_contains`, `in`, `not_in` |
+  | `operator` | string | No | Comparison operator. Defaults to `equals`. One of: `equals`, `not_equals`, `contains`, `not_contains`, `exists`, `not_exists`, `in`, `not_in` |
 
   All available span and resource attributes can be found in your [Traceloop traces page](https://app.traceloop.com).
 </ParamField>
