@@ -67,8 +67,11 @@ Returns the created auto monitor setup object. The `init_rules` array reflects t
 
 ```json
 {
-  "id": "ams_01j9...",
+  "id": "cmm...",
   "external_id": "my-agent-monitor-1",
+  "org_id": "c108269c-...",
+  "project_id": "cm9v2g95l...",
+  "env_project_id": "cm9v2ga9i...",
   "init_rules": [
     {
       "key": "gen_ai.system",
@@ -86,16 +89,30 @@ Returns the created auto monitor setup object. The `init_rules` array reflects t
   "evaluators": [
     {
       "evaluator_type": "answer-relevancy",
+      "input_schema": [
+        { "type": "string", "name": "completion", "description": "The LLM response to evaluate" },
+        { "type": "string", "name": "context", "description": "The context for the answer" },
+        { "type": "string", "name": "question", "description": "The original question" }
+      ],
+      "output_schema": [
+        { "type": "float", "name": "answer_relevancy_score", "description": "Relevancy score (0-1)" }
+      ],
       "status": "pending"
     },
     {
       "evaluator_type": "toxicity-detector",
+      "input_schema": [
+        { "type": "string", "name": "text", "description": "The text to analyze for toxicity" }
+      ],
+      "output_schema": [
+        { "type": "boolean", "name": "is_toxic", "description": "Whether the text is toxic" }
+      ],
       "status": "pending"
     }
   ],
   "status": "pending",
-  "created_at": "2025-01-15T10:30:00Z",
-  "updated_at": "2025-01-15T10:30:00Z"
+  "created_at": "2026-01-15T10:30:00Z",
+  "updated_at": "2026-01-15T10:30:00Z"
 }
 ```
 
