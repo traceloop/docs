@@ -27,19 +27,20 @@ An auto monitor setup is an asynchronous process that attempts to create a [Trac
   See the full list of available slugs in the [Evaluator Slugs](/evaluators/evaluator-slugs) reference.
 </ParamField>
 
-<ParamField body="selector" type="object">
-  A map of span attribute key-value pairs used to filter which spans this monitor applies to. Only spans matching **all** provided key-value pairs will be evaluated.
+<ParamField body="selector" type="object[]">
+  An array of filter rules used to match spans. Each rule specifies an attribute key, a value to match, and a source indicating where the attribute lives. Only spans matching **all** provided rules will be evaluated.
 
-  Keys are span attribute names and values can be strings, numbers, or booleans.
+  Each rule has the following fields:
 
-  **Example selector keys:**
+  | Field | Type | Required | Description |
+  |-------|------|----------|-------------|
+  | `key` | string | Yes | The attribute key to filter on (e.g., `gen_ai.system`, `service.name`) |
+  | `value` | string | Conditional | The value to match against. **Required** for `equals`, `not_equals`, `contains`, `not_contains` operators |
+  | `values` | string[] | Conditional | List of values to match against. **Required** for `in`, `not_in` operators |
+  | `source` | string | Yes | Where the attribute lives: `span_attributes` or `resource_attributes` |
+  | `operator` | string | No | Comparison operator. Defaults to `equals`. One of: `equals`, `not_equals`, `contains`, `not_contains`, `exists`, `not_exists`, `in`, `not_in` |
 
-  | Key | Type | Example |
-  |-----|------|---------|
-  | `llm.request.model` | string | `"gpt-4o"`, `"claude-3-5-sonnet"` |
-  | `llm.request.max_tokens` | number | `1000` |
-
-  All available span attributes can be found in your [Traceloop traces page](https://app.traceloop.com).
+  All available span and resource attributes can be found in your [Traceloop traces page](https://app.traceloop.com).
 </ParamField>
 
 ## Example Request
@@ -51,10 +52,10 @@ curl -X POST https://api.traceloop.com/v2/auto-monitor-setups \
   -d '{
     "external_id": "my-agent-monitor-1",
     "evaluators": ["answer-relevancy", "toxicity-detector"],
-    "selector": {
-      "llm.vendor": "openai",
-      "llm.request.model": "gpt-4o"
-    }
+    "selector": [
+      {"key": "gen_ai.system", "value": "openai", "source": "span_attributes"},
+      {"key": "gen_ai.request.model", "value": "gpt-4o", "source": "span_attributes"}
+    ]
   }'
 ```
 
@@ -62,27 +63,56 @@ curl -X POST https://api.traceloop.com/v2/auto-monitor-setups \
 
 ### 201 Created
 
-Returns the created auto monitor setup object.
+Returns the created auto monitor setup object. The `init_rules` array reflects the stored selector — same shape as the input `selector`.
 
 ```json
 {
-  "id": "ams_01j9...",
+  "id": "cmm...",
   "external_id": "my-agent-monitor-1",
-  "evaluators": [
+  "org_id": "c108269c-...",
+  "project_id": "cm9v2g95l...",
+  "env_project_id": "cm9v2ga9i...",
+  "init_rules": [
     {
-      "evaluator_id": "...",
-      "evaluator_type": "answer-relevancy",
-      "status": "active",
-      "binding_id": "..."
+      "key": "gen_ai.system",
+      "value": "openai",
+      "source": "span_attributes",
+      "operator": "equals"
     },
     {
-      "evaluator_id": "...",
-      "evaluator_type": "toxicity-detector",
-      "status": "active",
-      "binding_id": "..."
+      "key": "gen_ai.request.model",
+      "value": "gpt-4o",
+      "source": "span_attributes",
+      "operator": "equals"
     }
   ],
-  "created_at": "2025-01-15T10:30:00Z"
+  "evaluators": [
+    {
+      "evaluator_type": "answer-relevancy",
+      "input_schema": [
+        { "type": "string", "name": "completion", "description": "The LLM response to evaluate" },
+        { "type": "string", "name": "context", "description": "The context for the answer" },
+        { "type": "string", "name": "question", "description": "The original question" }
+      ],
+      "output_schema": [
+        { "type": "float", "name": "answer_relevancy_score", "description": "Relevancy score (0-1)" }
+      ],
+      "status": "pending"
+    },
+    {
+      "evaluator_type": "toxicity-detector",
+      "input_schema": [
+        { "type": "string", "name": "text", "description": "The text to analyze for toxicity" }
+      ],
+      "output_schema": [
+        { "type": "boolean", "name": "is_toxic", "description": "Whether the text is toxic" }
+      ],
+      "status": "pending"
+    }
+  ],
+  "status": "pending",
+  "created_at": "2026-01-15T10:30:00Z",
+  "updated_at": "2026-01-15T10:30:00Z"
 }
 ```
 
