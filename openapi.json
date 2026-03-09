@@ -2325,17 +2325,6 @@
       "post": {
         "description": "Retrieves metrics data with support for filtering, sorting, and pagination. Metrics are grouped by metric name with individual data points. Supports filtering by direct column fields (bool_value, trace_id, etc.), label fields (labels.agent_name, labels.trace_id), and attribute fields (attributes.*).",
         "operationId": "get-metrics",
-        "parameters": [
-          {
-            "description": "Project ID",
-            "in": "path",
-            "name": "project_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2511,6 +2500,7 @@
             "type": "string"
           },
           "enum_values": {
+            "description": "The allowed values for this property. Only applicable when `type` is `enum`.",
             "items": {
               "type": "string"
             },
@@ -3180,14 +3170,28 @@
       },
       "request.GetMetricsRequest": {
         "properties": {
+          "from_timestamp_sec": {
+            "type": "integer",
+            "description": "Start time in Unix seconds timestamp.",
+            "example": 1772905218
+          },
+          "to_timestamp_sec": {
+            "type": "integer",
+            "description": "End time in Unix seconds timestamp.",
+            "example": 1772905218
+          },
           "cursor": {
-            "type": "integer"
+            "type": "integer",
+            "description": "Pagination cursor for fetching the next page of results. The cursor is returned in the response to the previous request.",
+            "example": 1772905218000
           },
           "environments": {
             "items": {
               "type": "string"
             },
-            "type": "array"
+            "type": "array",
+            "description": "List of environments to filter by",
+            "example": ["prd", "stg", "dev"]
           },
           "filters": {
             "items": {
@@ -3195,29 +3199,33 @@
             },
             "type": "array"
           },
-          "from_timestamp_sec": {
-            "type": "integer"
-          },
           "limit": {
-            "type": "integer"
+            "type": "integer",
+            "description": "Maximum number of metrics to return per page.",
+            "example": 50
           },
           "logical_operator": {
             "$ref": "#/components/schemas/types.LogicalOperator"
           },
           "metric_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Metric name to filter by. The metric_name is a metric attribute that is set on the metric object.",
+            "example": "answer relevancy"
           },
           "metric_source": {
-            "type": "string"
+            "type": "string",
+            "description": "Metric source to filter by. The metric_source is a metric attribute that is set on the metric object.",
+            "example": "llm_as_a_judge"
           },
           "sort_by": {
-            "type": "string"
+            "type": "string",
+            "description": "Field to sort by.",
+            "example": "timestamp"
           },
           "sort_order": {
-            "type": "string"
-          },
-          "to_timestamp_sec": {
-            "type": "integer"
+            "type": "string",
+            "description": "Sort order.",
+            "example": "ASC"
           }
         },
         "type": "object"
@@ -4241,7 +4249,9 @@
       "response.MetricGroup": {
         "properties": {
           "metric_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Metric name.",
+            "example": "answer relevancy"
           },
           "organization_id": {
             "type": "string"
@@ -4250,12 +4260,14 @@
             "items": {
               "$ref": "#/components/schemas/response.MetricPoint"
             },
-            "type": "array"
+            "type": "array",
+            "description": "List of data points for this metric. The `unit` field in each point's `labels` indicates the data type and determines which value field is populated: `bool_value` for booleans, `numeric_value` for numbers, or `enum_value` for strings."
           }
         },
         "type": "object"
       },
       "response.MetricPoint": {
+        "description": "A single metric data point. The `unit` field in `labels` indicates the data type and determines which value field is populated: `bool_value` for booleans unitless, `numeric_value` for number units, or `enum_value` for strings.",
         "properties": {
           "bool_value": {
             "type": "boolean"
@@ -4263,17 +4275,36 @@
           "enum_value": {
             "type": "string"
           },
+          "numeric_value": {
+            "type": "number"
+          },
           "event_time": {
             "type": "integer"
           },
           "labels": {
+            "description": "The labels are the attributes of the metric point. The labels are key-value pairs that are used to identify the metric point.",
+            "example": {
+                "agent_name": "Travel Planner Agent",
+                "entity_type": "span",
+                "env_project_id": "1111",
+                "environment": "dev",
+                "evaluator_name": "",
+                "insert_time": "1772616490000",
+                "metric_source": "word_count",
+                "metric_type": "numeric",
+                "model": "gpt-4o-2024-08-06",
+                "org_id": "12345",
+                "run_id": "54321",
+                "service_name": "travel-agent-demo",
+                "span_id": "e118a1985c9cff23",
+                "trace_id": "2c98a42d1225cb786f3395d97ca3014d",
+                "unit": "words",
+                "vendor": "openai"
+            },
             "additionalProperties": {
               "type": "string"
             },
             "type": "object"
-          },
-          "numeric_value": {
-            "type": "number"
           }
         },
         "type": "object"
@@ -4470,22 +4501,35 @@
       "shared.FilterCondition": {
         "properties": {
           "field": {
-            "type": "string"
+            "type": "string",
+            "description": "Field key to filter by. The key is labels attribute on the metric point from the response.metrics object",
+            "example": "labels.agent_name"
           },
           "operator": {
-            "type": "string"
+            "type": "string",
+            "description": "Comparison operator.",
+            "enum": [
+              "equals",
+              "not_equals",
+              "contains",
+              "not_contains",
+              "in",
+              "not_in"
+            ],
+            "example": "equals"
           },
           "value": {
-            "type": "string"
-          },
-          "value_type": {
-            "type": "string"
+            "type": "string",
+            "description": "Value to filter by.",
+            "example": "Travel Planner Agent"
           },
           "values": {
             "items": {
               "type": "string"
             },
-            "type": "array"
+            "type": "array",
+            "description": "List of values to filter by. This is only used for the in and not_in operators.",
+            "example": ["Travel Planner Agent", "Calendar Planner Agent"]
           }
         },
         "type": "object"
