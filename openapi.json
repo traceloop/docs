@@ -2500,6 +2500,7 @@
             "type": "string"
           },
           "enum_values": {
+            "description": "The allowed values for this property. Only applicable when `type` is `enum`.",
             "items": {
               "type": "string"
             },
@@ -4248,7 +4249,9 @@
       "response.MetricGroup": {
         "properties": {
           "metric_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Metric name.",
+            "example": "answer relevancy"
           },
           "organization_id": {
             "type": "string"
@@ -4257,12 +4260,14 @@
             "items": {
               "$ref": "#/components/schemas/response.MetricPoint"
             },
-            "type": "array"
+            "type": "array",
+            "description": "Each metric can have multiple points. Each point is a single data point for the metric."
           }
         },
         "type": "object"
       },
       "response.MetricPoint": {
+        "description": "A single metric data point. The `unit` field in `labels` indicates the data type and determines which value field is populated: `bool_value` for booleans unitless, `float_value` for number units, or `string_value` for strings.",
         "properties": {
           "bool_value": {
             "type": "boolean"
@@ -4270,17 +4275,36 @@
           "enum_value": {
             "type": "string"
           },
+          "numeric_value": {
+            "type": "number"
+          },
           "event_time": {
             "type": "integer"
           },
           "labels": {
+            "description": "The labels are the attributes of the metric point. The labels are key-value pairs that are used to identify the metric point.",
+            "example": {
+                "agent_name": "Travel Planner Agent",
+                "entity_type": "span",
+                "env_project_id": "1111",
+                "environment": "dev",
+                "evaluator_name": "",
+                "insert_time": "1772616490000",
+                "metric_source": "word_count",
+                "metric_type": "numeric",
+                "model": "gpt-4o-2024-08-06",
+                "org_id": "12345",
+                "run_id": "54321",
+                "service_name": "travel-agent-demo",
+                "span_id": "e118a1985c9cff23",
+                "trace_id": "2c98a42d1225cb786f3395d97ca3014d",
+                "unit": "words",
+                "vendor": "openai"
+            },
             "additionalProperties": {
               "type": "string"
             },
             "type": "object"
-          },
-          "numeric_value": {
-            "type": "number"
           }
         },
         "type": "object"
