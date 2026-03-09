@@ -2325,17 +2325,6 @@
       "post": {
         "description": "Retrieves metrics data with support for filtering, sorting, and pagination. Metrics are grouped by metric name with individual data points. Supports filtering by direct column fields (bool_value, trace_id, etc.), label fields (labels.agent_name, labels.trace_id), and attribute fields (attributes.*).",
         "operationId": "get-metrics",
-        "parameters": [
-          {
-            "description": "Project ID",
-            "in": "path",
-            "name": "project_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -3181,13 +3170,17 @@
       "request.GetMetricsRequest": {
         "properties": {
           "cursor": {
-            "type": "integer"
+            "type": "integer",
+            "description": "Pagination cursor for fetching the next page of results. The cursor is returned in the response to the previous request.",
+            "example": 1772905218000
           },
           "environments": {
             "items": {
               "type": "string"
             },
-            "type": "array"
+            "type": "array",
+            "description": "List of environments to filter by",
+            "example": ["prd", "stg", "dev"]
           },
           "filters": {
             "items": {
