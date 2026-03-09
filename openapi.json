@@ -4261,13 +4261,13 @@
               "$ref": "#/components/schemas/response.MetricPoint"
             },
             "type": "array",
-            "description": "Each metric can have multiple points. Each point is a single data point for the metric."
+            "description": "List of data points for this metric. The `unit` field in each point's `labels` indicates the data type and determines which value field is populated: `bool_value` for booleans, `numeric_value` for numbers, or `enum_value` for strings."
           }
         },
         "type": "object"
       },
       "response.MetricPoint": {
-        "description": "A single metric data point. The `unit` field in `labels` indicates the data type and determines which value field is populated: `bool_value` for booleans unitless, `float_value` for number units, or `string_value` for strings.",
+        "description": "A single metric data point. The `unit` field in `labels` indicates the data type and determines which value field is populated: `bool_value` for booleans unitless, `numeric_value` for number units, or `enum_value` for strings.",
         "properties": {
           "bool_value": {
             "type": "boolean"
