@@ -3169,6 +3169,16 @@
       },
       "request.GetMetricsRequest": {
         "properties": {
+          "from_timestamp_sec": {
+            "type": "integer",
+            "description": "Start time in Unix seconds timestamp.",
+            "example": 1772905218
+          },
+          "to_timestamp_sec": {
+            "type": "integer",
+            "description": "End time in Unix seconds timestamp.",
+            "example": 1772905218
+          },
           "cursor": {
             "type": "integer",
             "description": "Pagination cursor for fetching the next page of results. The cursor is returned in the response to the previous request.",
@@ -3188,29 +3198,33 @@
             },
             "type": "array"
           },
-          "from_timestamp_sec": {
-            "type": "integer"
-          },
           "limit": {
-            "type": "integer"
+            "type": "integer",
+            "description": "Maximum number of metrics to return per page.",
+            "example": 50
           },
           "logical_operator": {
             "$ref": "#/components/schemas/types.LogicalOperator"
           },
           "metric_name": {
-            "type": "string"
+            "type": "string",
+            "description": "Metric name to filter by. The metric_name is a metric attribute that is set on the metric object.",
+            "example": "answer relevancy"
           },
           "metric_source": {
-            "type": "string"
+            "type": "string",
+            "description": "Metric source to filter by. The metric_source is a metric attribute that is set on the metric object.",
+            "example": "llm_as_a_judge"
           },
           "sort_by": {
-            "type": "string"
+            "type": "string",
+            "description": "Field to sort by.",
+            "example": "timestamp"
           },
           "sort_order": {
-            "type": "string"
-          },
-          "to_timestamp_sec": {
-            "type": "integer"
+            "type": "string",
+            "description": "Sort order.",
+            "example": "ASC"
           }
         },
         "type": "object"
@@ -4463,22 +4477,35 @@
       "shared.FilterCondition": {
         "properties": {
           "field": {
-            "type": "string"
+            "type": "string",
+            "description": "Field key to filter by. The key is labels attribute on the metric point from the response.metrics object",
+            "example": "labels.agent_name"
           },
           "operator": {
-            "type": "string"
+            "type": "string",
+            "description": "Comparison operator.",
+            "enum": [
+              "equals",
+              "not_equals",
+              "contains",
+              "not_contains",
+              "in",
+              "not_in"
+            ],
+            "example": "equals"
           },
           "value": {
-            "type": "string"
-          },
-          "value_type": {
-            "type": "string"
+            "type": "string",
+            "description": "Value to filter by.",
+            "example": "Travel Planner Agent"
           },
           "values": {
             "items": {
               "type": "string"
             },
-            "type": "array"
+            "type": "array",
+            "description": "List of values to filter by. This is only used for the in and not_in operators.",
+            "example": ["Travel Planner Agent", "Calendar Planner Agent"]
           }
         },
         "type": "object"
