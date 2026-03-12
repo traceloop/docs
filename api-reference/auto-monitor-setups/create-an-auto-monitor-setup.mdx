@@ -65,6 +65,17 @@ curl -X POST https://api.traceloop.com/v2/auto-monitor-setups \
 
 Returns the created auto monitor setup object. The `init_rules` array reflects the stored selector — same shape as the input `selector`.
 
+The `status` field indicates the current state of the setup process:
+
+| Status | Description |
+|--------|-------------|
+| `pending` | The setup has been created and is queued for processing |
+| `in_progress` | The setup is actively being processed |
+| `waiting_for_spans` | The setup is ready and waiting for enough spans to be received before attempting to process |
+| `completed` | All monitors have been successfully created |
+| `partial` | Some monitors were created but others failed |
+| `failed` | The setup process failed |
+
 ```json
 {
   "id": "cmm...",
