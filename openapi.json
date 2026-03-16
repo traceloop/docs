@@ -3128,6 +3128,12 @@
           },
           "org_name": {
             "type": "string"
+          },
+          "retention_hours": {
+            "type": "integer",
+            "description": "Data retention period in hours (1-720). Defaults to 720 (1 month).",
+            "minimum": 1,
+            "maximum": 720
           }
         },
         "required": [
