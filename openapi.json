@@ -3133,7 +3133,8 @@
             "type": "integer",
             "description": "Data retention period in hours (1-720). Defaults to 720 (1 month).",
             "minimum": 1,
-            "maximum": 720
+            "maximum": 720,
+            "default": 720
           }
         },
         "required": [
