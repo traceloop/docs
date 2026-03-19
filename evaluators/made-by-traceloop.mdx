@@ -34,6 +34,10 @@ Each evaluator comes with a predefined input and output schema. When using an ev
   <Card title="Word Count Ratio" icon="hashtag">
     Measure the ratio of words to the input to compare input/output verbosity and expansion patterns.
   </Card>
+
+  <Card title="Tone Detection" icon="face-smile">
+    Detect and classify the tone of AI responses to ensure appropriate communication style.
+  </Card>
 </CardGroup>
 
 ### Quality & Correctness
@@ -75,12 +79,12 @@ Each evaluator comes with a predefined input and output schema. When using an ev
     Generate responses and measure model uncertainty from logprobs to identify when the model is less confident in its outputs.
   </Card>
 
-  <Card title="Conversation Quality" icon="comments">
-    Evaluate conversation quality based on tone, clarity, flow, responsiveness, and transparency.
-  </Card>
-
   <Card title="Context Relevance" icon="hashtag">
     Validate context relevance to ensure retrieved context is pertinent to the query.
+  </Card>
+
+  <Card title="Prompt Perplexity" icon="hashtag">
+    Measure prompt perplexity from logprobs to assess the complexity and clarity of input prompts.
   </Card>
 </CardGroup>
 
@@ -130,6 +134,10 @@ Each evaluator comes with a predefined input and output schema. When using an ev
   <Card title="Placeholder Regex" icon="asterisk">
     Validate placeholder regex patterns to ensure proper template and variable replacement structures.
   </Card>
+
+  <Card title="HTML Comparison" icon="code">
+    Compare HTML outputs to validate structure and content accuracy in generated HTML.
+  </Card>
 </CardGroup>
 
 ### Agents
@@ -155,7 +163,15 @@ Each evaluator comes with a predefined input and output schema. When using an ev
     Measure whether the agent successfully accomplished all user goals to verify comprehensive goal achievement.
   </Card>
 
+  <Card title="Agent Tool Trajectory" icon="route">
+    Evaluate the sequence of tool calls made by an agent to assess decision-making quality.
+  </Card>
+
   <Card title="Intent Change" icon="repeat">
     Detect whether the user's primary intent or workflow changed significantly during a conversation.
+  </Card>
+
+  <Card title="Conversation Quality" icon="comments">
+    Evaluate conversation quality based on tone, clarity, flow, responsiveness, and transparency.
   </Card>
 </CardGroup>
