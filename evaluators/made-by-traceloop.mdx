@@ -5,7 +5,7 @@ description: "Pre-configured evaluators by Traceloop for common assessment tasks
 
 The Evaluator Library provides a comprehensive collection of pre-built quality checks designed to systematically assess AI outputs.
 
-Each evaluator comes with a predefined input and output schema. When using an evaluator, you’ll need to map your data to its input schema.
+Each evaluator comes with a predefined input and output schema. When using an evaluator, you'll need to map your data to its input schema.
 <Frame>
   <img
     className="block dark:hidden"
@@ -19,95 +19,99 @@ Each evaluator comes with a predefined input and output schema. When using an ev
 ### Style
 
 <CardGroup cols={3}>
-  <Card title="Character Count" icon="text">
+  <Card title="Character Count" icon="text" href="/api-reference/evaluators/execute-char-count-evaluator">
     Analyze response length and verbosity to ensure outputs meet specific length requirements.
   </Card>
 
-  <Card title="Character Count Ratio" icon="hashtag">
+  <Card title="Character Count Ratio" icon="hashtag" href="/api-reference/evaluators/execute-char-count-ratio-evaluator">
     Measure the ratio of characters to the input to assess response proportionality and expansion.
   </Card>
 
-  <Card title="Word Count" icon="align-left">
+  <Card title="Word Count" icon="align-left" href="/api-reference/evaluators/execute-word-count-evaluator">
     Ensure appropriate response detail level by tracking the total number of words in outputs.
   </Card>
 
-  <Card title="Word Count Ratio" icon="hashtag">
+  <Card title="Word Count Ratio" icon="hashtag" href="/api-reference/evaluators/execute-word-count-ratio-evaluator">
     Measure the ratio of words to the input to compare input/output verbosity and expansion patterns.
+  </Card>
+
+  <Card title="Tone Detection" icon="face-smile" href="/api-reference/evaluators/execute-tone-detection-evaluator">
+    Detect and classify the tone of AI responses to ensure appropriate communication style.
   </Card>
 </CardGroup>
 
 ### Quality & Correctness
 
 <CardGroup cols={3}>
-  <Card title="Answer Relevancy" icon="bullseye">
+  <Card title="Answer Relevancy" icon="bullseye" href="/api-reference/evaluators/execute-answer-relevancy-evaluator">
     Verify responses address the query to ensure AI outputs stay on topic and remain relevant.
   </Card>
 
-  <Card title="Faithfulness" icon="circle-check">
+  <Card title="Faithfulness" icon="circle-check" href="/api-reference/evaluators/execute-faithfulness-evaluator">
     Detect hallucinations and verify facts to maintain accuracy and truthfulness in AI responses.
   </Card>
 
-  <Card title="Answer Correctness" icon="circle-check">
+  <Card title="Answer Correctness" icon="circle-check" href="/api-reference/evaluators/execute-answer-correctness-evaluator">
     Evaluate factual accuracy by comparing answers against ground truth.
   </Card>
 
-  <Card title="Answer Completeness" icon="circle-check">
+  <Card title="Answer Completeness" icon="circle-check" href="/api-reference/evaluators/execute-answer-completeness-evaluator">
     Measure how completely responses use relevant context to ensure all relevant information is addressed.
   </Card>
 
-  <Card title="Topic Adherence" icon="hashtag">
+  <Card title="Topic Adherence" icon="hashtag" href="/api-reference/evaluators/execute-topic-adherence-evaluator">
     Validate topic adherence to ensure responses stay focused on the specified subject matter.
   </Card>
 
-  <Card title="Semantic Similarity" icon="hashtag">
+  <Card title="Semantic Similarity" icon="hashtag" href="/api-reference/evaluators/execute-semantic-similarity-evaluator">
     Validate semantic similarity between expected and actual responses to measure content alignment.
   </Card>
 
-  <Card title="Instruction Adherence" icon="clipboard-check">
+  <Card title="Instruction Adherence" icon="clipboard-check" href="/api-reference/evaluators/execute-instruction-adherence-evaluator">
     Measure how well the LLM response follows given instructions to ensure compliance with specified requirements.
   </Card>
 
-  <Card title="Measure Perplexity" icon="hashtag">
+  <Card title="Measure Perplexity" icon="hashtag" href="/api-reference/evaluators/execute-perplexity-evaluator">
     Measure text perplexity from logprobs to assess the predictability and coherence of generated text.
   </Card>
 
-  <Card title="Uncertainty Detector" icon="gauge">
+  <Card title="Uncertainty Detector" icon="gauge" href="/api-reference/evaluators/execute-uncertainty-detector-evaluator">
     Generate responses and measure model uncertainty from logprobs to identify when the model is less confident in its outputs.
   </Card>
 
-  <Card title="Conversation Quality" icon="comments">
-    Evaluate conversation quality based on tone, clarity, flow, responsiveness, and transparency.
+  <Card title="Context Relevance" icon="hashtag" href="/api-reference/evaluators/execute-context-relevance-evaluator">
+    Validate context relevance to ensure retrieved context is pertinent to the query.
   </Card>
 
-  <Card title="Context Relevance" icon="hashtag">
-    Validate context relevance to ensure retrieved context is pertinent to the query.
+  <Card title="Prompt Perplexity" icon="hashtag" href="/api-reference/evaluators/execute-prompt-perplexity-evaluator">
+    Measure prompt perplexity from logprobs to assess the complexity and clarity of input prompts.
   </Card>
 </CardGroup>
 
 ### Security & Compliance
 
 <CardGroup cols={3}>
-  <Card title="PII Detection" icon="shield">
+  <Card title="PII Detection" icon="shield" href="/api-reference/evaluators/execute-pii-detector-evaluator">
     Identify personal information exposure to protect user privacy and ensure data security compliance.
   </Card>
 
-  <Card title="Profanity Detection" icon="triangle-exclamation">
+  <Card title="Profanity Detection" icon="triangle-exclamation" href="/api-reference/evaluators/execute-profanity-detector-evaluator">
     Flag inappropriate language use to maintain content quality standards and professional communication.
   </Card>
 
-  <Card title="Sexism Detection" icon="triangle-exclamation">
+  <Card title="Sexism Detection" icon="triangle-exclamation" href="/api-reference/evaluators/execute-sexism-detector-evaluator">
     Detect sexist and discriminatory content.
   </Card>
 
-  <Card title="Prompt Injection" icon="shield-exclamation">
+  <Card title="Prompt Injection" icon="shield-exclamation" href="/api-reference/evaluators/execute-prompt-injection-evaluator">
     Detect prompt injection attacks in user inputs.
   </Card>
 
-  <Card title="Toxicity Detector" icon="skull">
+  <Card title="Toxicity Detector" icon="skull" href="/api-reference/evaluators/execute-toxicity-detector-evaluator">
     Detect toxic content including personal attacks, mockery, hate, and threats.
   </Card>
 
-  <Card title="Secrets Detection" icon="lock">
+  <Card title="Secrets Detection" icon="lock" href="/api-reference/evaluators/execute-secrets-detector-evaluator">
     Monitor for credential and key leaks to prevent accidental exposure of sensitive information.
   </Card>
 </CardGroup>
@@ -115,47 +119,59 @@ Each evaluator comes with a predefined input and output schema. When using an ev
 ### Formatting
 
 <CardGroup cols={3}>
-  <Card title="SQL Validation" icon="database">
+  <Card title="SQL Validation" icon="database" href="/api-reference/evaluators/execute-sql-validator-evaluator">
     Validate SQL queries to ensure proper syntax and structure in database-related AI outputs.
   </Card>
 
-  <Card title="JSON Validation" icon="code">
+  <Card title="JSON Validation" icon="code" href="/api-reference/evaluators/execute-json-validator-evaluator">
     Validate JSON responses to ensure proper formatting and structure in API-related outputs.
   </Card>
 
-  <Card title="Regex Validation" icon="asterisk">
+  <Card title="Regex Validation" icon="asterisk" href="/api-reference/evaluators/execute-regex-validator-evaluator">
     Validate regex patterns to ensure correct regular expression syntax and functionality.
   </Card>
 
-  <Card title="Placeholder Regex" icon="asterisk">
+  <Card title="Placeholder Regex" icon="asterisk" href="/api-reference/evaluators/execute-placeholder-regex-evaluator">
     Validate placeholder regex patterns to ensure proper template and variable replacement structures.
+  </Card>
+
+  <Card title="HTML Comparison" icon="code" href="/api-reference/evaluators/execute-html-comparison-evaluator">
+    Compare HTML outputs to validate structure and content accuracy in generated HTML.
   </Card>
 </CardGroup>
 
 ### Agents
 
 <CardGroup cols={3}>
-  <Card title="Agent Goal Accuracy" icon="bullseye">
+  <Card title="Agent Goal Accuracy" icon="bullseye" href="/api-reference/evaluators/execute-agent-goal-accuracy-evaluator">
     Validate agent goal accuracy to ensure AI systems achieve their intended objectives effectively.
   </Card>
 
-  <Card title="Agent Tool Error Detector" icon="wrench">
+  <Card title="Agent Tool Error Detector" icon="wrench" href="/api-reference/evaluators/execute-agent-tool-error-detector-evaluator">
     Detect errors or failures during tool execution to monitor agent tool performance.
   </Card>
 
-  <Card title="Agent Flow Quality" icon="route">
+  <Card title="Agent Flow Quality" icon="route" href="/api-reference/evaluators/execute-agent-flow-quality-evaluator">
     Validate agent trajectories against user-defined natural language tests to assess agent decision-making paths.
   </Card>
 
-  <Card title="Agent Efficiency" icon="zap">
+  <Card title="Agent Efficiency" icon="zap" href="/api-reference/evaluators/execute-agent-efficiency-evaluator">
     Evaluate agent efficiency by checking for redundant calls and optimal paths to optimize agent performance.
   </Card>
 
-  <Card title="Agent Goal Completeness" icon="circle-check">
+  <Card title="Agent Goal Completeness" icon="circle-check" href="/api-reference/evaluators/execute-agent-goal-completeness-evaluator">
     Measure whether the agent successfully accomplished all user goals to verify comprehensive goal achievement.
   </Card>
 
-  <Card title="Intent Change" icon="repeat">
+  <Card title="Agent Tool Trajectory" icon="route" href="/api-reference/evaluators/execute-agent-tool-trajectory-evaluator">
+    Evaluate the sequence of tool calls made by an agent to assess decision-making quality.
+  </Card>
+
+  <Card title="Intent Change" icon="repeat" href="/api-reference/evaluators/execute-intent-change-evaluator">
     Detect whether the user's primary intent or workflow changed significantly during a conversation.
+  </Card>
+
+  <Card title="Conversation Quality" icon="comments" href="/api-reference/evaluators/execute-conversation-quality-evaluator">
+    Evaluate conversation quality based on tone, clarity, flow, responsiveness, and transparency.
   </Card>
 </CardGroup>
