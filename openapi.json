@@ -58,7 +58,7 @@
         ]
       },
       "post": {
-        "description": "Create a new auto monitor setup for automatic monitor creation.\n\nThe `selector` field is a map of span attribute key-value pairs used to filter which spans\nthis monitor applies to. Keys are span attribute names and values can be strings, numbers, or booleans.\n\nCommon selector keys:\n- `gen_ai.system` — LLM provider (e.g. \"openai\", \"anthropic\")\n- `gen_ai.request.model` — model name (e.g. \"gpt-4o\", \"claude-3-5-sonnet\")\n- `gen_ai.request.max_tokens` — max tokens (number)\n- Any other span attribute from your traces",
+        "description": "Create a new auto monitor setup for automatic monitor creation.\n\nThe `selector` field is a map of span attribute key-value pairs used to filter which spans\nthis monitor applies to. Keys are span attribute names and values can be strings, numbers, or booleans.\n\nCommon selector keys:\n- `gen_ai.system` \u2014 LLM provider (e.g. \"openai\", \"anthropic\")\n- `gen_ai.request.model` \u2014 model name (e.g. \"gpt-4o\", \"claude-3-5-sonnet\")\n- `gen_ai.request.max_tokens` \u2014 max tokens (number)\n- Any other span attribute from your traces",
         "requestBody": {
           "content": {
             "application/json": {
@@ -326,7 +326,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/agent-efficiency": {
+    "/v2/evaluators/agent-efficiency/execute": {
       "post": {
         "description": "Evaluate agent efficiency - detect redundant calls, unnecessary follow-ups\n\n**Request Body:**\n- `input.trajectory_prompts` (string, required): JSON array of prompts in the agent trajectory\n- `input.trajectory_completions` (string, required): JSON array of completions in the agent trajectory",
         "requestBody": {
@@ -383,7 +383,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/agent-flow-quality": {
+    "/v2/evaluators/agent-flow-quality/execute": {
       "post": {
         "description": "Validate agent trajectory against user-defined conditions\n\n**Request Body:**\n- `input.trajectory_prompts` (string, required): JSON array of prompts in the agent trajectory\n- `input.trajectory_completions` (string, required): JSON array of completions in the agent trajectory\n- `config.conditions` (array of strings, required): Array of evaluation conditions/rules to validate against\n- `config.threshold` (number, required): Score threshold for pass/fail determination (0.0-1.0)",
         "requestBody": {
@@ -440,7 +440,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/agent-goal-accuracy": {
+    "/v2/evaluators/agent-goal-accuracy/execute": {
       "post": {
         "description": "Evaluate agent goal accuracy\n\n**Request Body:**\n- `input.question` (string, required): The original question or goal\n- `input.completion` (string, required): The agent's completion/response\n- `input.reference` (string, required): The expected reference answer",
         "requestBody": {
@@ -497,7 +497,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/agent-goal-completeness": {
+    "/v2/evaluators/agent-goal-completeness/execute": {
       "post": {
         "description": "Measure if agent accomplished all user goals\n\n**Request Body:**\n- `input.trajectory_prompts` (string, required): JSON array of prompts in the agent trajectory\n- `input.trajectory_completions` (string, required): JSON array of completions in the agent trajectory\n- `config.threshold` (number, required): Score threshold for pass/fail determination (0.0-1.0)",
         "requestBody": {
@@ -554,7 +554,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/agent-tool-error-detector": {
+    "/v2/evaluators/agent-tool-error-detector/execute": {
       "post": {
         "description": "Detect errors or failures during tool execution\n\n**Request Body:**\n- `input.tool_input` (string, required): JSON string of the tool input\n- `input.tool_output` (string, required): JSON string of the tool output",
         "requestBody": {
@@ -611,7 +611,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/agent-tool-trajectory": {
+    "/v2/evaluators/agent-tool-trajectory/execute": {
       "post": {
         "description": "Compare actual tool calls against expected reference tool calls\n\n**Request Body:**\n- `input.executed_tool_calls` (string, required): JSON array of actual tool calls made by the agent\n- `input.expected_tool_calls` (string, required): JSON array of expected/reference tool calls\n- `config.threshold` (float, optional): Score threshold for pass/fail determination (default: 0.5)\n- `config.mismatch_sensitive` (bool, optional): Whether tool calls must match exactly (default: false)\n- `config.order_sensitive` (bool, optional): Whether order of tool calls matters (default: false)\n- `config.input_params_sensitive` (bool, optional): Whether to compare input parameters (default: true)",
         "requestBody": {
@@ -668,7 +668,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/answer-completeness": {
+    "/v2/evaluators/answer-completeness/execute": {
       "post": {
         "description": "Evaluate whether the answer is complete and contains all the necessary information\n\n**Request Body:**\n- `input.question` (string, required): The original question\n- `input.completion` (string, required): The completion to evaluate for completeness\n- `input.context` (string, required): The context that provides the complete information",
         "requestBody": {
@@ -725,7 +725,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/answer-correctness": {
+    "/v2/evaluators/answer-correctness/execute": {
       "post": {
         "description": "Evaluate factual accuracy by comparing answers against ground truth\n\n**Request Body:**\n- `input.question` (string, required): The original question\n- `input.completion` (string, required): The completion to evaluate\n- `input.ground_truth` (string, required): The expected correct answer",
         "requestBody": {
@@ -782,7 +782,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/answer-relevancy": {
+    "/v2/evaluators/answer-relevancy/execute": {
       "post": {
         "description": "Check if an answer is relevant to a question\n\n**Request Body:**\n- `input.answer` (string, required): The answer to evaluate for relevancy\n- `input.question` (string, required): The question that the answer should be relevant to",
         "requestBody": {
@@ -839,7 +839,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/char-count": {
+    "/v2/evaluators/char-count/execute": {
       "post": {
         "description": "Count the number of characters in text\n\n**Request Body:**\n- `input.text` (string, required): The text to count characters in",
         "requestBody": {
@@ -896,7 +896,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/char-count-ratio": {
+    "/v2/evaluators/char-count-ratio/execute": {
       "post": {
         "description": "Calculate the ratio of characters between two texts\n\n**Request Body:**\n- `input.numerator_text` (string, required): The numerator text (will be divided by denominator)\n- `input.denominator_text` (string, required): The denominator text (divides the numerator)",
         "requestBody": {
@@ -953,7 +953,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/context-relevance": {
+    "/v2/evaluators/context-relevance/execute": {
       "post": {
         "description": "Evaluate whether retrieved context contains sufficient information to answer the query\n\n**Request Body:**\n- `input.query` (string, required): The query/question to evaluate context relevance for\n- `input.completion` (string, required): The completion to evaluate for context relevance\n- `input.context` (string, required): The context to evaluate for relevance to the query\n- `config.model` (string, optional): Model to use for evaluation (default: gpt-4o)",
         "requestBody": {
@@ -1010,7 +1010,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/conversation-quality": {
+    "/v2/evaluators/conversation-quality/execute": {
       "post": {
         "description": "Evaluate conversation quality based on tone, clarity, flow, responsiveness, and transparency\n\n**Request Body:**\n- `input.prompts` (string, required): JSON array of prompts in the conversation\n- `input.completions` (string, required): JSON array of completions in the conversation",
         "requestBody": {
@@ -1067,7 +1067,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/faithfulness": {
+    "/v2/evaluators/faithfulness/execute": {
       "post": {
         "description": "Check if a completion is faithful to the provided context\n\n**Request Body:**\n- `input.completion` (string, required): The LLM completion to check for faithfulness\n- `input.context` (string, required): The context that the completion should be faithful to\n- `input.question` (string, required): The original question asked",
         "requestBody": {
@@ -1124,7 +1124,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/html-comparison": {
+    "/v2/evaluators/html-comparison/execute": {
       "post": {
         "description": "Compare two HTML documents for structural and content similarity\n\n**Request Body:**\n- `input.html1` (string, required): The first HTML document to compare\n- `input.html2` (string, required): The second HTML document to compare",
         "requestBody": {
@@ -1181,7 +1181,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/instruction-adherence": {
+    "/v2/evaluators/instruction-adherence/execute": {
       "post": {
         "description": "Evaluate how well responses follow given instructions\n\n**Request Body:**\n- `input.instructions` (string, required): The instructions that should be followed\n- `input.response` (string, required): The response to evaluate for instruction adherence",
         "requestBody": {
@@ -1238,7 +1238,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/intent-change": {
+    "/v2/evaluators/intent-change/execute": {
       "post": {
         "description": "Detect changes in user intent between prompts and completions\n\n**Request Body:**\n- `input.prompts` (string, required): JSON array of prompts in the conversation\n- `input.completions` (string, required): JSON array of completions in the conversation",
         "requestBody": {
@@ -1295,7 +1295,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/json-validator": {
+    "/v2/evaluators/json-validator/execute": {
       "post": {
         "description": "Validate JSON syntax\n\n**Request Body:**\n- `input.text` (string, required): The text to validate as JSON\n- `config.enable_schema_validation` (bool, optional): Enable JSON schema validation\n- `config.schema_string` (string, optional): JSON schema to validate against",
         "requestBody": {
@@ -1352,7 +1352,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/perplexity": {
+    "/v2/evaluators/perplexity/execute": {
       "post": {
         "description": "Measure text perplexity from logprobs\n\n**Request Body:**\n- `input.logprobs` (string, required): JSON array of log probabilities from the model",
         "requestBody": {
@@ -1409,7 +1409,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/pii-detector": {
+    "/v2/evaluators/pii-detector/execute": {
       "post": {
         "description": "Detect personally identifiable information in text\n\n**Request Body:**\n- `input.text` (string, required): The text to scan for personally identifiable information\n- `config.probability_threshold` (float, optional): Detection threshold (default: 0.8)",
         "requestBody": {
@@ -1466,7 +1466,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/placeholder-regex": {
+    "/v2/evaluators/placeholder-regex/execute": {
       "post": {
         "description": "Validate text against a placeholder regex pattern\n\n**Request Body:**\n- `input.placeholder_name` (string, required): The name of the placeholder to substitute\n- `input.placeholder_value` (string, required): The value to substitute into the regex placeholder\n- `input.text` (string, required): The text to validate against the regex pattern\n- `config.should_match` (bool, optional): Whether the text should match the regex\n- `config.case_sensitive` (bool, optional): Case-sensitive matching\n- `config.dot_include_nl` (bool, optional): Dot matches newlines\n- `config.multi_line` (bool, optional): Multi-line mode",
         "requestBody": {
@@ -1523,7 +1523,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/profanity-detector": {
+    "/v2/evaluators/profanity-detector/execute": {
       "post": {
         "description": "Detect profanity in text\n\n**Request Body:**\n- `input.text` (string, required): The text to scan for profanity",
         "requestBody": {
@@ -1580,7 +1580,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/prompt-injection": {
+    "/v2/evaluators/prompt-injection/execute": {
       "post": {
         "description": "Detect prompt injection attempts\n\n**Request Body:**\n- `input.prompt` (string, required): The prompt to check for injection attempts\n- `config.threshold` (float, optional): Detection threshold (default: 0.5)",
         "requestBody": {
@@ -1637,7 +1637,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/prompt-perplexity": {
+    "/v2/evaluators/prompt-perplexity/execute": {
       "post": {
         "description": "Measure prompt perplexity to detect potential injection attempts\n\n**Request Body:**\n- `input.prompt` (string, required): The prompt to calculate perplexity for",
         "requestBody": {
@@ -1694,7 +1694,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/regex-validator": {
+    "/v2/evaluators/regex-validator/execute": {
       "post": {
         "description": "Validate text against a regex pattern\n\n**Request Body:**\n- `input.text` (string, required): The text to validate against a regex pattern\n- `config.regex` (string, optional): The regex pattern to match against\n- `config.should_match` (bool, optional): Whether the text should match the regex\n- `config.case_sensitive` (bool, optional): Case-sensitive matching\n- `config.dot_include_nl` (bool, optional): Dot matches newlines\n- `config.multi_line` (bool, optional): Multi-line mode",
         "requestBody": {
@@ -1751,7 +1751,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/secrets-detector": {
+    "/v2/evaluators/secrets-detector/execute": {
       "post": {
         "description": "Detect secrets and credentials in text\n\n**Request Body:**\n- `input.text` (string, required): The text to scan for secrets (API keys, passwords, etc.)",
         "requestBody": {
@@ -1808,7 +1808,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/semantic-similarity": {
+    "/v2/evaluators/semantic-similarity/execute": {
       "post": {
         "description": "Calculate semantic similarity between completion and reference\n\n**Request Body:**\n- `input.completion` (string, required): The completion text to compare\n- `input.reference` (string, required): The reference text to compare against",
         "requestBody": {
@@ -1865,7 +1865,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/sexism-detector": {
+    "/v2/evaluators/sexism-detector/execute": {
       "post": {
         "description": "Detect sexist language and bias\n\n**Request Body:**\n- `input.text` (string, required): The text to scan for sexist content\n- `config.threshold` (float, optional): Detection threshold (default: 0.5)",
         "requestBody": {
@@ -1922,7 +1922,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/sql-validator": {
+    "/v2/evaluators/sql-validator/execute": {
       "post": {
         "description": "Validate SQL query syntax\n\n**Request Body:**\n- `input.text` (string, required): The text to validate as SQL",
         "requestBody": {
@@ -1979,7 +1979,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/tone-detection": {
+    "/v2/evaluators/tone-detection/execute": {
       "post": {
         "description": "Detect the tone of the text\n\n**Request Body:**\n- `input.text` (string, required): The text to detect the tone of",
         "requestBody": {
@@ -2036,7 +2036,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/topic-adherence": {
+    "/v2/evaluators/topic-adherence/execute": {
       "post": {
         "description": "Evaluate topic adherence\n\n**Request Body:**\n- `input.question` (string, required): The original question\n- `input.completion` (string, required): The completion to evaluate\n- `input.reference_topics` (string, required): Comma-separated list of expected topics",
         "requestBody": {
@@ -2093,7 +2093,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/toxicity-detector": {
+    "/v2/evaluators/toxicity-detector/execute": {
       "post": {
         "description": "Detect toxic or harmful language\n\n**Request Body:**\n- `input.text` (string, required): The text to scan for toxic content\n- `config.threshold` (float, optional): Detection threshold (default: 0.5)",
         "requestBody": {
@@ -2150,7 +2150,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/uncertainty-detector": {
+    "/v2/evaluators/uncertainty-detector/execute": {
       "post": {
         "description": "Detect uncertainty in the text\n\n**Request Body:**\n- `input.prompt` (string, required): The text to detect uncertainty in",
         "requestBody": {
@@ -2207,7 +2207,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/word-count": {
+    "/v2/evaluators/word-count/execute": {
       "post": {
         "description": "Count the number of words in text\n\n**Request Body:**\n- `input.text` (string, required): The text to count words in",
         "requestBody": {
@@ -2264,7 +2264,7 @@
         ]
       }
     },
-    "/v2/evaluators/execute/word-count-ratio": {
+    "/v2/evaluators/word-count-ratio/execute": {
       "post": {
         "description": "Calculate the ratio of words between two texts\n\n**Request Body:**\n- `input.numerator_text` (string, required): The numerator text (will be divided by denominator)\n- `input.denominator_text` (string, required): The denominator text (divides the numerator)",
         "requestBody": {
@@ -3198,7 +3198,11 @@
             },
             "type": "array",
             "description": "List of environments to filter by",
-            "example": ["prd", "stg", "dev"]
+            "example": [
+              "prd",
+              "stg",
+              "dev"
+            ]
           },
           "filters": {
             "items": {
@@ -4291,22 +4295,22 @@
           "labels": {
             "description": "The labels are the attributes of the metric point. The labels are key-value pairs that are used to identify the metric point.",
             "example": {
-                "agent_name": "Travel Planner Agent",
-                "entity_type": "span",
-                "env_project_id": "1111",
-                "environment": "dev",
-                "evaluator_name": "",
-                "insert_time": "1772616490000",
-                "metric_source": "word_count",
-                "metric_type": "numeric",
-                "model": "gpt-4o-2024-08-06",
-                "org_id": "12345",
-                "run_id": "54321",
-                "service_name": "travel-agent-demo",
-                "span_id": "e118a1985c9cff23",
-                "trace_id": "2c98a42d1225cb786f3395d97ca3014d",
-                "unit": "words",
-                "vendor": "openai"
+              "agent_name": "Travel Planner Agent",
+              "entity_type": "span",
+              "env_project_id": "1111",
+              "environment": "dev",
+              "evaluator_name": "",
+              "insert_time": "1772616490000",
+              "metric_source": "word_count",
+              "metric_type": "numeric",
+              "model": "gpt-4o-2024-08-06",
+              "org_id": "12345",
+              "run_id": "54321",
+              "service_name": "travel-agent-demo",
+              "span_id": "e118a1985c9cff23",
+              "trace_id": "2c98a42d1225cb786f3395d97ca3014d",
+              "unit": "words",
+              "vendor": "openai"
             },
             "additionalProperties": {
               "type": "string"
@@ -4536,7 +4540,10 @@
             },
             "type": "array",
             "description": "List of values to filter by. This is only used for the in and not_in operators.",
-            "example": ["Travel Planner Agent", "Calendar Planner Agent"]
+            "example": [
+              "Travel Planner Agent",
+              "Calendar Planner Agent"
+            ]
           }
         },
         "type": "object"
