@@ -274,7 +274,7 @@
         ]
       }
     },
-    "/v2/evaluators/custom-evaluator": {
+    "/v2/evaluators": {
       "post": {
         "description": "Create a new custom evaluator at the organization level without project or environment bindings. The evaluator uses LLM-as-a-judge to evaluate inputs based on the provided configuration. The response format is automatically generated from the output schema.",
         "requestBody": {
