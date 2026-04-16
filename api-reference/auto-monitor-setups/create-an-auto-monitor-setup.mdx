@@ -19,12 +19,36 @@ An auto monitor setup is an asynchronous process that attempts to create a [Trac
   **Example:** `"my-agent-monitor-1"`
 </ParamField>
 
-<ParamField body="evaluators" type="string[]" required>
-  List of evaluator slugs to run on matched spans. Must contain at least one evaluator.
+<ParamField body="evaluators" type="string[]">
+  List of evaluator slugs to run on matched spans.
 
   **Example:** `["answer-relevancy", "toxicity-detector"]`
 
   See the full list of available slugs in the [Evaluator Slugs](/evaluators/evaluator-slugs) reference.
+
+  <Note>
+    Either `evaluators` or `evaluator_configs` must be provided on create. If both are provided, `evaluator_configs` wins and this field is ignored. Use `evaluator_configs` when you need to pin a per-evaluator scope.
+  </Note>
+</ParamField>
+
+<ParamField body="evaluator_configs" type="object[]">
+  List of per-evaluator configurations. Use this instead of `evaluators` when you need to control the granularity at which an individual evaluator runs.
+
+  Each entry has the following fields:
+
+  | Field | Type | Required | Description |
+  |-------|------|----------|-------------|
+  | `slug` | string | Yes | Evaluator slug — same set accepted by the `evaluators` array. See the [Evaluator Slugs](/evaluators/evaluator-slugs) reference. |
+  | `scope` | string | No | Granularity at which the evaluator runs. One of `session`, `trace`, `span`. When omitted, no scope is persisted and the downstream monitor applies its own default. |
+
+  **Example:**
+  ```json
+  [
+    { "slug": "char-count", "scope": "session" },
+    { "slug": "toxicity",   "scope": "trace"   },
+    { "slug": "pii" }
+  ]
+  ```
 </ParamField>
 
 <ParamField body="selector" type="object[]">
@@ -45,6 +69,8 @@ An auto monitor setup is an asynchronous process that attempts to create a [Trac
 
 ## Example Request
 
+Using the simple `evaluators` array (no per-evaluator scope):
+
 ```bash
 curl -X POST https://api.traceloop.com/v2/auto-monitor-setups \
   -H "Authorization: Bearer YOUR_API_KEY" \
@@ -59,11 +85,32 @@ curl -X POST https://api.traceloop.com/v2/auto-monitor-setups \
   }'
 ```
 
+Using `evaluator_configs` to pin a scope per evaluator:
+
+```bash
+curl -X POST https://api.traceloop.com/v2/auto-monitor-setups \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "external_id": "my-agent-monitor-1",
+    "selector": [
+      {"key": "gen_ai.system", "value": "openai", "source": "span_attributes"}
+    ],
+    "evaluator_configs": [
+      {"slug": "char-count", "scope": "session"},
+      {"slug": "toxicity",   "scope": "trace"},
+      {"slug": "pii"}
+    ]
+  }'
+```
+
 ## Response
 
 ### 201 Created
 
 Returns the created auto monitor setup object. The `init_rules` array reflects the stored selector — same shape as the input `selector`.
+
+Each entry in `evaluators` optionally includes a `scope` field (`session`, `trace`, or `span`) when a scope was set for that evaluator via `evaluator_configs`. When no scope was provided at create time, `scope` is omitted from the evaluator object (it is never returned as `null`).
 
 The `status` field indicates the current state of the setup process:
 
@@ -100,6 +147,7 @@ The `status` field indicates the current state of the setup process:
   "evaluators": [
     {
       "evaluator_type": "answer-relevancy",
+      "scope": "trace",
       "input_schema": [
         { "type": "string", "name": "completion", "description": "The LLM response to evaluate" },
         { "type": "string", "name": "context", "description": "The context for the answer" },
@@ -129,11 +177,16 @@ The `status` field indicates the current state of the setup process:
 
 ### 400 Bad Request
 
-Returned when the request body is invalid (e.g. missing required fields or empty `evaluators` array).
+Returned when the request body is invalid. Common validation errors:
+
+- Neither `evaluators` nor `evaluator_configs` is set on a Create request — `one of evaluators or evaluator_configs is required`.
+- An entry in `evaluator_configs` is missing its `slug`.
+- An entry in `evaluator_configs` has a `scope` that is not one of `session`, `trace`, or `span`.
+- A provided evaluator slug is not recognized — `unknown evaluator slug "<slug>"`.
 
 ```json
 {
-  "error": "invalid input: evaluators must contain at least one item"
+  "error": "one of evaluators or evaluator_configs is required"
 }
 ```
 
