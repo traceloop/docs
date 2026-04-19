@@ -46,6 +46,11 @@ Traceloop provides several pre-configured evaluators for common assessment tasks
 - Returns pass/fail
 - *Implementation: Custom GPT-4o prompt*
 
+**Agent Tool Trajectory** <sup>(beta)</sup>
+- Compares actual tool calls made by the agent against expected reference tool calls
+- Returns similarity score (0-1) with configurable threshold, order sensitivity, and mismatch sensitivity
+- *Implementation: Deterministic comparison algorithm*
+
 ---
 
 ### Answer Quality Evaluators
@@ -162,6 +167,11 @@ Traceloop provides several pre-configured evaluators for common assessment tasks
 - Useful for dynamic pattern validation
 - *Implementation: Python re*
 
+**HTML Comparison**
+- Compares two HTML documents for structural and content similarity
+- Returns 0-1 similarity score
+- *Implementation: HTML parsing and comparison*
+
 ---
 
 ### Text Metrics
@@ -190,6 +200,11 @@ Traceloop provides several pre-configured evaluators for common assessment tasks
 - Computes perplexity using provided logprobs to quantify model confidence on its output
 - Lower = more confident predictions
 - *Implementation: Mathematical calculation exp(-avg_log_prob)*
+
+**Prompt Perplexity**
+- Measures prompt perplexity to detect potential injection attempts or unusually crafted prompts
+- Returns perplexity score
+- *Implementation: Language model perplexity calculation*
 
 ---
 
