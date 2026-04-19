@@ -3010,10 +3010,35 @@
         ],
         "type": "object"
       },
+      "request.AutoMonitorEvaluatorConfig": {
+        "description": "Per-evaluator configuration that lets you pin the granularity (scope) at which the evaluator runs.",
+        "properties": {
+          "slug": {
+            "description": "Evaluator slug. Same set of values accepted by the `evaluators` array.",
+            "example": "toxicity",
+            "type": "string"
+          },
+          "scope": {
+            "description": "Granularity at which the evaluator runs. When omitted, no scope is persisted and downstream applies its own default.",
+            "enum": [
+              "session",
+              "trace",
+              "span"
+            ],
+            "example": "trace",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "type": "object"
+      },
       "request.CreateAutoMonitorSetupInput": {
+        "description": "At least one of `evaluators` or `evaluator_configs` must be provided. If both are provided, `evaluator_configs` wins and `evaluators` is ignored.",
         "properties": {
           "evaluators": {
-            "description": "List of evaluator slugs to run on matched spans",
+            "description": "List of evaluator slugs to run on matched spans. Use `evaluator_configs` instead when you need to set a per-evaluator scope. If both fields are provided, `evaluator_configs` takes precedence and this field is ignored.",
             "example": [
               "hallucination",
               "toxicity"
@@ -3022,6 +3047,18 @@
               "type": "string"
             },
             "minItems": 1,
+            "type": "array"
+          },
+          "evaluator_configs": {
+            "description": "List of per-evaluator configurations. Each entry declares an evaluator slug and an optional scope (`session`, `trace`, or `span`) controlling the granularity at which the evaluator runs. Takes precedence over `evaluators` when both are provided.",
+            "example": [
+              { "slug": "char-count", "scope": "session" },
+              { "slug": "toxicity", "scope": "trace" },
+              { "slug": "pii" }
+            ],
+            "items": {
+              "$ref": "#/components/schemas/request.AutoMonitorEvaluatorConfig"
+            },
             "type": "array"
           },
           "external_id": {
@@ -3035,7 +3072,6 @@
           }
         },
         "required": [
-          "evaluators",
           "external_id"
         ],
         "type": "object"
@@ -3835,15 +3871,28 @@
         "type": "object"
       },
       "request.UpdateAutoMonitorSetupInput": {
+        "description": "On update, both `evaluators` and `evaluator_configs` may be empty \u2014 in that case the evaluator list is not modified. If both are provided, `evaluator_configs` wins and `evaluators` is ignored.",
         "properties": {
           "evaluators": {
-            "description": "List of evaluator slugs to run on matched spans",
+            "description": "List of evaluator slugs to run on matched spans. Use `evaluator_configs` instead when you need to set a per-evaluator scope. If both fields are provided, `evaluator_configs` takes precedence and this field is ignored.",
             "example": [
               "hallucination",
               "toxicity"
             ],
             "items": {
               "type": "string"
+            },
+            "type": "array"
+          },
+          "evaluator_configs": {
+            "description": "List of per-evaluator configurations. Each entry declares an evaluator slug and an optional scope (`session`, `trace`, or `span`) controlling the granularity at which the evaluator runs. Takes precedence over `evaluators` when both are provided.",
+            "example": [
+              { "slug": "char-count", "scope": "session" },
+              { "slug": "toxicity", "scope": "trace" },
+              { "slug": "pii" }
+            ],
+            "items": {
+              "$ref": "#/components/schemas/request.AutoMonitorEvaluatorConfig"
             },
             "type": "array"
           },
@@ -4053,6 +4102,16 @@
             "type": "array"
           },
           "processed_at": {
+            "type": "string"
+          },
+          "scope": {
+            "description": "Granularity at which the evaluator runs. Only present when a scope was set for this evaluator when the setup was created or updated. Omitted (not `null`) when no scope was provided.",
+            "enum": [
+              "session",
+              "trace",
+              "span"
+            ],
+            "example": "trace",
             "type": "string"
           },
           "status": {
