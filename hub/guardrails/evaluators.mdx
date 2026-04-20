@@ -1,0 +1,423 @@
+---
+title: "Guardrails Evaluators"
+description: "Complete reference for all available guardrail evaluators in Hub"
+---
+
+## Overview
+
+Traceloop Hub includes 12 built-in evaluators organized into three categories. Each evaluator can be configured to run in `pre_call` mode (on user input), `post_call` mode (on LLM output), or both depending on your security and quality requirements.
+
+## Evaluator Categories
+
+### Safety Evaluators (6)
+
+Detect harmful, malicious, or sensitive content to protect users and maintain platform safety.
+
+- [PII Detector](#pii-detector) - Detects personally identifiable information
+- [Secrets Detector](#secrets-detector) - Identifies exposed secrets and API keys
+- [Prompt Injection](#prompt-injection) - Detects prompt injection attacks
+- [Profanity Detector](#profanity-detector) - Detects profane language
+- [Sexism Detector](#sexism-detector) - Identifies sexist content
+- [Toxicity Detector](#toxicity-detector) - Detects toxic/harmful content
+
+### Validation Evaluators (3)
+
+Ensure data meets format, structure, and syntax requirements.
+
+- [Regex Validator](#regex-validator) - Custom pattern matching
+- [JSON Validator](#json-validator) - JSON structure validation
+- [SQL Validator](#sql-validator) - SQL syntax validation
+
+### Quality Evaluators (3)
+
+Assess communication quality, clarity, and confidence.
+
+- [Tone Detection](#tone-detection) - Analyzes communication tone
+- [Prompt Perplexity](#prompt-perplexity) - Measures prompt quality
+- [Uncertainty Detector](#uncertainty-detector) - Detects uncertain language
+
+## Quick Reference Table
+
+| Evaluator | Best Mode | Primary Use Case | Key Parameters |
+|-----------|-----------|------------------|----------------|
+| pii-detector | Both | Prevent PII in prompts/responses | probability_threshold |
+| secrets-detector | Post-call | Prevent secrets in responses | - |
+| prompt-injection | Pre-call | Block injection attacks | threshold |
+| profanity-detector | Both | Filter profane content | - |
+| sexism-detector | Both | Block sexist content | threshold |
+| toxicity-detector | Both | Prevent toxic content | threshold |
+| regex-validator | Both | Validate formats | regex, should_match |
+| json-validator | Post-call | Validate JSON structure | enable_schema_validation |
+| sql-validator | Both | Validate SQL syntax | - |
+| tone-detection | Post-call | Ensure appropriate tone | - |
+| prompt-perplexity | Pre-call | Measure prompt quality | - |
+| uncertainty-detector | Post-call | Detect uncertain responses | - |
+
+---
+
+## Safety Evaluators
+
+### PII Detector
+
+**Evaluator Slug:** `pii-detector`
+
+**Category:** Safety
+
+**Description:**
+
+Detects personally identifiable information (PII) such as names, email addresses, phone numbers, social security numbers, addresses, and other sensitive personal data. Uses machine learning models to identify PII with configurable confidence thresholds.
+
+**Recommended Mode:** ✅ Both Post-call and Pre-call
+
+**Configuration Example:**
+
+```yaml
+guards:
+  - name: pii-input-strict
+    provider: traceloop
+    evaluator_slug: pii-detector
+    mode: pre_call/post_call
+    on_failure: block/warn
+    required: true/false
+```
+---
+
+### Secrets Detector
+
+**Evaluator Slug:** `secrets-detector`
+
+**Category:** Safety
+
+**Description:**
+
+Identifies exposed credentials, API keys, tokens, passwords, and other secrets using pattern matching and entropy analysis. Detects secrets from major providers including AWS, Azure, GitHub, Stripe, OpenAI, and custom patterns.
+
+**Recommended Mode:** ✅ Post-call (primary), Pre-call (secondary)
+
+**Configuration Example:**
+
+```yaml
+guards:
+  - name: secrets-output-block
+    provider: traceloop
+    evaluator_slug: secrets-detector
+    mode: pre_call/post_call
+    on_failure: block/warn
+    required: true/false
+```
+
+---
+
+### Prompt Injection
+
+**Evaluator Slug:** `prompt-injection`
+
+**Category:** Safety
+
+**Description:**
+
+Detects prompt injection attacks where users attempt to manipulate the LLM by injecting malicious instructions, role-playing commands, jailbreaking attempts, or context overrides. Identifies attempts to bypass system prompts or extract sensitive information.
+
+**Recommended Mode:** ✅ Pre-call only
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `threshold` | float | No | 0.5 | Detection sensitivity (0.0-1.0). Higher values = more sensitive detection. |
+
+**Configuration Example:**
+
+```yaml
+guards:
+  - name: injection-defense
+    provider: traceloop
+    evaluator_slug: prompt-injection
+    mode: pre_call
+    on_failure: block
+    required: true
+    params:
+      threshold: 0.7  # Moderate sensitivity
+```
+
+---
+
+### Profanity Detector
+
+**Evaluator Slug:** `profanity-detector`
+
+**Category:** Safety
+
+**Description:**
+
+Detects profanity, obscene language, vulgar expressions, and curse words across multiple languages. Useful for maintaining professional communication standards, brand voice, and family-friendly environments.
+
+**Recommended Mode:** ✅ Both (use case dependent)
+
+**Configuration Example:**
+
+```yaml
+guards:
+  - name: profanity-filter
+    provider: traceloop
+    evaluator_slug: profanity-detector
+    mode: pre_call/post_call
+    on_failure: block/warn
+    required: true/false
+```
+
+---
+
+### Sexism Detector
+
+**Evaluator Slug:** `sexism-detector`
+
+**Category:** Safety
+
+**Description:**
+
+Identifies sexist language, gender-based discrimination, stereotyping, and biased content. Helps maintain inclusive, respectful communication and comply with diversity and equality standards.
+
+**Recommended Mode:** ✅ Both (highly recommended)
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `threshold` | float | No | 0.5 | Detection sensitivity (0.0-1.0). Lower values = more sensitive detection. |
+
+**Configuration Example:**
+
+```yaml
+guards:
+  - name: sexism-detector
+    provider: traceloop
+    evaluator_slug: sexism-detector
+    mode: pre_call/post_call
+    on_failure: block/warn
+    required: true/false
+    params:
+      threshold: 0.5
+```
+
+---
+
+### Toxicity Detector
+
+**Evaluator Slug:** `toxicity-detector`
+
+**Category:** Safety
+
+**Description:**
+
+Detects toxic language including personal attacks, threats, hate speech, mockery, insults, and aggressive communication. Provides granular toxicity scoring across multiple harm categories.
+
+**Recommended Mode:** ✅ Both (essential for safety)
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `threshold` | float | No | 0.5 | Toxicity score threshold (0.0-1.0). Lower values = more sensitive detection. |
+
+**Configuration Example:**
+
+```yaml
+guards:
+  - name: toxicity-detector
+    provider: traceloop
+    evaluator_slug: toxicity-detector
+    mode: pre_call/post_call
+    on_failure: block/warn
+    required: true/false
+    params:
+      threshold: 0.5
+```
+
+---
+
+## Validation Evaluators
+
+### Regex Validator
+
+**Evaluator Slug:** `regex-validator`
+
+**Category:** Validation
+
+**Description:**
+
+Validates text against custom regular expression patterns. Flexible evaluator for enforcing format requirements, checking for specific patterns, or blocking unwanted content structures.
+
+**Recommended Mode:** ✅ Both (use case dependent)
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `regex` | string | **Yes** | - | Regular expression pattern to match |
+| `should_match` | boolean | No | true | If true, text must match pattern. If false, text must NOT match pattern. |
+| `case_sensitive` | boolean | No | true | Whether matching is case-sensitive |
+| `dot_include_nl` | boolean | No | false | Whether dot (.) matches newline characters |
+| `multi_line` | boolean | No | false | Whether ^ and $ match line boundaries |
+
+**Configuration Example:**
+
+```yaml
+guards:
+  - name: regex-validator
+    provider: traceloop
+    evaluator_slug: regex-validator
+    mode: pre_call/post_call
+    on_failure: block/warn
+    required: true/false
+    params:
+      regex: "your-pattern-here"
+      should_match: true
+      case_sensitive: true
+```
+
+---
+
+### JSON Validator
+
+**Evaluator Slug:** `json-validator`
+
+**Category:** Validation
+
+**Description:**
+
+Validates JSON structure and optionally validates against JSON Schema. Ensures LLM-generated JSON is well-formed and meets specific structural requirements.
+
+**Recommended Mode:** ✅ Post-call (primary), Pre-call (secondary)
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `enable_schema_validation` | boolean | No | false | Whether to validate against a JSON Schema |
+| `schema_string` | string | No | null | JSON Schema to validate against (required if `enable_schema_validation` is true) |
+
+**Configuration Example:**
+
+```yaml
+guards:
+  - name: json-validator
+    provider: traceloop
+    evaluator_slug: json-validator
+    mode: pre_call/post_call
+    on_failure: block/warn
+    required: true/false
+    params:
+      enable_schema_validation: true/false
+      schema_string: "your-json-schema-here"
+```
+
+---
+
+### SQL Validator
+
+**Evaluator Slug:** `sql-validator`
+
+**Category:** Validation
+
+**Description:**
+
+Validates SQL query syntax without executing the query. Checks for proper SQL structure, detects syntax errors, and ensures query safety. Does not execute queries or connect to databases.
+
+**Recommended Mode:** ✅ Both (use case dependent)
+
+**Configuration Example:**
+
+```yaml
+guards:
+  - name: sql-validator
+    provider: traceloop
+    evaluator_slug: sql-validator
+    mode: pre_call/post_call
+    on_failure: block/warn
+    required: true/false
+```
+
+---
+
+## Quality Evaluators
+
+### Tone Detection
+
+**Evaluator Slug:** `tone-detection`
+
+**Category:** Quality
+
+**Description:**
+
+Analyzes communication tone and emotional sentiment. Identifies whether text is professional, casual, aggressive, empathetic, formal, informal, friendly, or dismissive. Helps maintain consistent brand voice and appropriate communication style.
+
+**Recommended Mode:** ✅ Post-call (primary), Pre-call (secondary)
+
+
+**Configuration Example:**
+
+```yaml
+guards:
+  - name: tone-detection
+    provider: traceloop
+    evaluator_slug: tone-detection
+    mode: pre_call/post_call
+    on_failure: block/warn
+    required: true/false
+```
+
+---
+
+### Prompt Perplexity
+
+**Evaluator Slug:** `prompt-perplexity`
+
+**Category:** Quality
+
+**Description:**
+
+Measures the perplexity (predictability/complexity) of prompts. Low perplexity indicates clear, well-formed, coherent prompts. High perplexity may indicate unclear, ambiguous, garbled, or potentially problematic inputs.
+
+**Recommended Mode:** ✅ Pre-call only
+
+**Configuration Example:**
+
+```yaml
+guards:
+  - name: prompt-perplexity
+    provider: traceloop
+    evaluator_slug: prompt-perplexity
+    mode: pre_call
+    on_failure: block/warn
+    required: true/false
+```
+
+---
+
+### Uncertainty Detector
+
+**Evaluator Slug:** `uncertainty-detector`
+
+**Category:** Quality
+
+**Description:**
+
+Detects hedging language and uncertainty markers in text such as "maybe", "possibly", "I think", "might", "could be", "perhaps". Useful for identifying when LLM responses lack confidence or are speculative.
+
+**Recommended Mode:** ✅ Post-call only
+
+
+**Configuration Example:**
+
+```yaml
+guards:
+  - name: uncertainty-detector
+    provider: traceloop
+    evaluator_slug: uncertainty-detector
+    mode: post_call
+    on_failure: block/warn
+    required: true/false
+```
+
+---
