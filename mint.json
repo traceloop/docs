@@ -135,6 +135,7 @@
         "openllmetry/integrations/langsmith",
         "openllmetry/integrations/middleware",
         "openllmetry/integrations/newrelic",
+        "openllmetry/integrations/oodle",
         "openllmetry/integrations/otel-collector",
         "openllmetry/integrations/oraclecloud",
         "openllmetry/integrations/scorecard",
