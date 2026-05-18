@@ -331,7 +331,8 @@
         "api-reference/auto-monitor-setups/delete-an-auto-monitor-setup-by-external-id",
         "api-reference/auto-monitor-setups/get-an-auto-monitor-setup-by-external-id",
         "api-reference/auto-monitor-setups/list-auto-monitor-setups",
-        "api-reference/auto-monitor-setups/update-an-auto-monitor-setup-by-external-id"
+        "api-reference/auto-monitor-setups/update-an-auto-monitor-setup-by-external-id",
+        "api-reference/auto-monitor-setups/upsert-an-auto-monitor-setup-by-external-id"
       ]
     }
   ],
