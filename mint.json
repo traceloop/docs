@@ -328,6 +328,7 @@
       "group": "Auto-monitor-setups",
       "pages": [
         "api-reference/auto-monitor-setups/create-an-auto-monitor-setup",
+        "api-reference/auto-monitor-setups/bulk-upsert-auto-monitor-setups",
         "api-reference/auto-monitor-setups/delete-an-auto-monitor-setup-by-external-id",
         "api-reference/auto-monitor-setups/get-an-auto-monitor-setup-by-external-id",
         "api-reference/auto-monitor-setups/list-auto-monitor-setups",

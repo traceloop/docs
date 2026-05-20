@@ -1,0 +1,132 @@
+---
+title: "Bulk Upsert Auto Monitor Setups"
+description: "Create or update up to 100 auto monitor setups in a single request, keyed by external_id"
+api: "POST /v2/auto-monitor-setups/bulk"
+---
+
+Creates or updates up to 100 [auto monitor setups](/monitoring/introduction) in one request, keyed by `external_id`. Designed for IaC-style clients that would otherwise fan out one HTTP call per setup.
+
+Each item is upserted independently using the same semantics as [Update by External ID](/api-reference/auto-monitor-setups/update-an-auto-monitor-setup-by-external-id): if a setup with the given `external_id` exists in the project it is replaced (status reset to `pending`, evaluators replaced wholesale); otherwise it is created.
+
+<Note>
+  All API requests require authentication. Pass your API key as a Bearer token in the `Authorization` header.
+  See [Authentication](/api-reference/introduction) for details.
+</Note>
+
+## Partial Success Semantics
+
+The endpoint returns **`207 Multi-Status`** when the batch is accepted, even if some items inside fail. Each item carries its own `status` (`ok` or `error`) — you must iterate the response array to check per-item results.
+
+Request-level errors (empty batch, more than 100 items, duplicate `external_id` within the batch, missing `external_id` on any item) reject the **entire** batch with `400 Bad Request`. No items are written.
+
+## Request Body
+
+<ParamField body="setups" type="object[]" required>
+  Array of setups to upsert. Must contain between 1 and 100 items. Each item has the same shape as the [Create](/api-reference/auto-monitor-setups/create-an-auto-monitor-setup) request body:
+
+  | Field | Type | Required | Description |
+  |-------|------|----------|-------------|
+  | `external_id` | string | Yes | Unique identifier for the setup within the project. Must be unique across items in the same batch. |
+  | `evaluators` | string[] | Yes | List of evaluator slugs to run on matched spans. See [Evaluator Slugs](/evaluators/evaluator-slugs). |
+  | `selector` | object[] | No | Array of filter rules used to match spans. See the [Create](/api-reference/auto-monitor-setups/create-an-auto-monitor-setup) endpoint for the selector schema. |
+  | `evaluator_configs` | object[] | No | Optional per-evaluator configuration overrides. |
+</ParamField>
+
+## Example Request
+
+```bash
+curl -X POST https://api.traceloop.com/v2/auto-monitor-setups/bulk \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "setups": [
+      {
+        "external_id": "openai-gpt4o-monitor",
+        "evaluators": ["answer-relevancy", "toxicity-detector"],
+        "selector": [
+          {"key": "gen_ai.system", "value": "openai", "source": "span_attributes"},
+          {"key": "gen_ai.request.model", "value": "gpt-4o", "source": "span_attributes"}
+        ]
+      },
+      {
+        "external_id": "anthropic-monitor",
+        "evaluators": ["answer-relevancy"],
+        "selector": [
+          {"key": "gen_ai.system", "value": "anthropic", "source": "span_attributes"}
+        ]
+      }
+    ]
+  }'
+```
+
+## Response
+
+### 207 Multi-Status
+
+Returned when the batch is accepted. The `setups` array contains one entry per input item, in the **same order** as the request.
+
+Each entry has:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `external_id` | string | The `external_id` of the input item. |
+| `status` | string | `ok` if the item was upserted, `error` if it failed. |
+| `result` | object | Present when `status` is `ok`. The full upserted setup, matching the [Create](/api-reference/auto-monitor-setups/create-an-auto-monitor-setup) response shape. |
+| `error` | string | Present when `status` is `error`. Human-readable message prefixed with the item index, e.g. `setups[1]: unknown evaluator slug "..."`. Internal errors are reported as `setups[N]: internal error` — the underlying cause is logged server-side but not returned to the client. |
+
+```json
+{
+  "setups": [
+    {
+      "external_id": "openai-gpt4o-monitor",
+      "status": "ok",
+      "result": {
+        "id": "cmm...",
+        "external_id": "openai-gpt4o-monitor",
+        "org_id": "c108269c-...",
+        "project_id": "cm9v2g95l...",
+        "env_project_id": "cm9v2ga9i...",
+        "init_rules": [
+          { "key": "gen_ai.system", "value": "openai", "source": "span_attributes", "operator": "equals" },
+          { "key": "gen_ai.request.model", "value": "gpt-4o", "source": "span_attributes", "operator": "equals" }
+        ],
+        "evaluators": [
+          { "evaluator_type": "answer-relevancy", "status": "pending" },
+          { "evaluator_type": "toxicity-detector", "status": "pending" }
+        ],
+        "status": "pending",
+        "created_at": "2026-05-20T10:30:00Z",
+        "updated_at": "2026-05-20T10:30:00Z"
+      }
+    },
+    {
+      "external_id": "anthropic-monitor",
+      "status": "error",
+      "error": "setups[1]: unknown evaluator slug \"answer-relevancy-typo\""
+    }
+  ]
+}
+```
+
+### 400 Bad Request
+
+Returned when the batch is rejected without writing any items. Causes:
+
+- Empty `setups` array
+- More than 100 items
+- Any item missing `external_id`
+- Two items in the batch share the same `external_id`
+
+```json
+{
+  "error": "setups[2]: duplicate external_id \"openai-gpt4o-monitor\" (also at setups[0])"
+}
+```
+
+### 500 Internal Server Error
+
+```json
+{
+  "error": "internal server error"
+}
+```
