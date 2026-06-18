@@ -725,6 +725,63 @@
         ]
       }
     },
+    "/v2/evaluators/action-advancement/execute": {
+      "post": {
+        "description": "Measure whether the assistant made progress toward at least one user goal in a conversation\n\n**Request Body:**\n- `input.messages` (string, required): JSON array of the conversation messages assembled from the trace",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.ActionAdvancementRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ActionAdvancementResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute action-advancement evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
     "/v2/evaluators/answer-completeness/execute": {
       "post": {
         "description": "Evaluate whether the answer is complete and contains all the necessary information\n\n**Request Body:**\n- `input.question` (string, required): The original question\n- `input.completion` (string, required): The completion to evaluate for completeness\n- `input.context` (string, required): The context that provides the complete information",
@@ -2610,6 +2667,29 @@
         },
         "type": "object"
       },
+      "request.ActionAdvancementInput": {
+        "properties": {
+          "messages": {
+            "example": "[{\"role\":\"user\",\"content\":\"Book me a flight to Paris\"},{\"role\":\"assistant\",\"content\":\"I found 3 flights to Paris. Booking the cheapest one now.\"}]",
+            "type": "string"
+          }
+        },
+        "required": [
+          "messages"
+        ],
+        "type": "object"
+      },
+      "request.ActionAdvancementRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.ActionAdvancementInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
       "request.AgentEfficiencyInput": {
         "properties": {
           "trajectory_completions": {
@@ -3988,6 +4068,19 @@
         "required": [
           "input"
         ],
+        "type": "object"
+      },
+      "response.ActionAdvancementResponse": {
+        "properties": {
+          "pass": {
+            "example": true,
+            "type": "boolean"
+          },
+          "reason": {
+            "example": "The assistant advanced the user's goal by booking the requested flight",
+            "type": "string"
+          }
+        },
         "type": "object"
       },
       "response.AgentEfficiencyResponse": {
