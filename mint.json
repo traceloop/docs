@@ -280,11 +280,13 @@
       "group": "Evaluators",
       "pages": [
         "api-reference/evaluators/create-a-custom-llm-as-a-judge-evaluator",
+        "api-reference/evaluators/execute-action-advancement-evaluator",
         "api-reference/evaluators/execute-agent-efficiency-evaluator",
         "api-reference/evaluators/execute-agent-flow-quality-evaluator",
         "api-reference/evaluators/execute-agent-goal-accuracy-evaluator",
         "api-reference/evaluators/execute-agent-goal-completeness-evaluator",
         "api-reference/evaluators/execute-agent-tool-error-detector-evaluator",
+        "api-reference/evaluators/execute-agent-tool-selection-quality-evaluator",
         "api-reference/evaluators/execute-agent-tool-trajectory-evaluator",
         "api-reference/evaluators/execute-answer-completeness-evaluator",
         "api-reference/evaluators/execute-answer-correctness-evaluator",
