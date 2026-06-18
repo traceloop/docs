@@ -1,0 +1,130 @@
+---
+title: "Upsert an Auto Monitor Setup by External ID"
+description: "Idempotently create or fully replace an auto monitor setup identified by external ID"
+api: "PUT /v2/auto-monitor-setups/by-external-id/{external_id}"
+---
+
+Idempotent full-replace of an auto monitor setup keyed by `external_id`. If no setup with the given `external_id` exists for the org/project, one is created and the response is `201 Created`. If a setup already exists, all fields in the body fully replace the existing record and the response is `200 OK`.
+
+The `env_project_id` is preserved across updates — it is only set on the create branch.
+
+<Note>
+  All API requests require authentication. Pass your API key as a Bearer token in the `Authorization` header.
+  See [Authentication](/api-reference/introduction) for details.
+</Note>
+
+## Path Parameters
+
+<ParamField path="external_id" type="string" required>
+  The external ID of the auto monitor setup to create or replace.
+
+  **Example:** `"my-agent-monitor-1"`
+</ParamField>
+
+## Request Body
+
+<ParamField body="selector" type="object[]" required>
+  An array of filter rules used to match spans. Each rule specifies an attribute key, a value to match, and a source indicating where the attribute lives. Only spans matching **all** provided rules will be evaluated. Must contain at least one filter.
+
+  Each rule has the following fields:
+
+  | Field | Type | Required | Description |
+  |-------|------|----------|-------------|
+  | `key` | string | Yes | The attribute key to filter on (e.g., `gen_ai.system`, `service.name`) |
+  | `value` | string | Conditional | The value to match against. **Required** for `equals`, `not_equals`, `contains`, `not_contains` operators |
+  | `values` | string[] | Conditional | List of values to match against. **Required** for `in`, `not_in` operators |
+  | `source` | string | Yes | Where the attribute lives: `span_attributes` or `resource_attributes` |
+  | `operator` | string | No | Comparison operator. Defaults to `equals`. One of: `equals`, `not_equals`, `contains`, `not_contains`, `exists`, `not_exists`, `in`, `not_in` |
+</ParamField>
+
+<ParamField body="evaluators" type="string[]">
+  List of evaluator slugs to run on matched spans. One of `evaluators` or `evaluator_configs` is required.
+
+  **Example:** `["answer-relevancy", "toxicity-detector"]`
+
+  See the full list of available slugs in the [Evaluator Slugs](/evaluators/evaluator-slugs) reference.
+</ParamField>
+
+<ParamField body="evaluator_configs" type="object[]">
+  Per-evaluator configuration, used in place of `evaluators` when you need to pass evaluator-specific options. One of `evaluators` or `evaluator_configs` is required.
+</ParamField>
+
+## Example Request
+
+```bash
+curl -X PUT https://api.traceloop.com/v2/auto-monitor-setups/by-external-id/my-agent-monitor-1 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "evaluators": ["answer-relevancy", "toxicity-detector"],
+    "selector": [
+      {"key": "gen_ai.system", "value": "openai", "source": "span_attributes"},
+      {"key": "gen_ai.request.model", "value": "gpt-4o", "source": "span_attributes"}
+    ]
+  }'
+```
+
+## Response
+
+### 200 OK
+
+Returned when an existing setup was replaced. The response body is the updated auto monitor setup.
+
+### 201 Created
+
+Returned when a new setup was created. The response body is the newly created auto monitor setup. See the [Create endpoint](/api-reference/auto-monitor-setups/create-an-auto-monitor-setup) for the full response shape.
+
+```json
+{
+  "id": "cmm...",
+  "external_id": "my-agent-monitor-1",
+  "org_id": "c108269c-...",
+  "project_id": "cm9v2g95l...",
+  "env_project_id": "cm9v2ga9i...",
+  "init_rules": [
+    {
+      "key": "gen_ai.system",
+      "value": "openai",
+      "source": "span_attributes",
+      "operator": "equals"
+    },
+    {
+      "key": "gen_ai.request.model",
+      "value": "gpt-4o",
+      "source": "span_attributes",
+      "operator": "equals"
+    }
+  ],
+  "evaluators": [
+    {
+      "evaluator_type": "answer-relevancy",
+      "status": "pending"
+    },
+    {
+      "evaluator_type": "toxicity-detector",
+      "status": "pending"
+    }
+  ],
+  "status": "pending",
+  "created_at": "2026-01-15T10:30:00Z",
+  "updated_at": "2026-01-15T10:30:00Z"
+}
+```
+
+### 400 Bad Request
+
+Returned when the request body is invalid (e.g. empty `selector`, missing both `evaluators` and `evaluator_configs`, or an unknown evaluator slug).
+
+```json
+{
+  "error": "selector must have at least 1 filter"
+}
+```
+
+### 500 Internal Server Error
+
+```json
+{
+  "error": "internal server error"
+}
+```
