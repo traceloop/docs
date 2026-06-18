@@ -611,6 +611,63 @@
         ]
       }
     },
+    "/v2/evaluators/agent-tool-selection-quality/execute": {
+      "post": {
+        "description": "Evaluate whether the agent selected the most appropriate tool(s) for the task at hand\n\n**Request Body:**\n- `input.input_messages` (array of objects, required): The agent's input messages — system prompt + conversation history as a JSON array of message objects (`role`, `content`, optional `tool_calls`, etc.)\n- `input.output_messages` (array of objects, required): The agent's output messages for this step as a JSON array of message objects (may contain tool calls or plain text)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.AgentToolSelectionQualityRequest"
+              }
+            }
+          },
+          "description": "Request body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.AgentToolSelectionQualityResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Execute agent-tool-selection-quality evaluator",
+        "tags": [
+          "evaluators"
+        ]
+      }
+    },
     "/v2/evaluators/agent-tool-trajectory/execute": {
       "post": {
         "description": "Compare actual tool calls against expected reference tool calls\n\n**Request Body:**\n- `input.executed_tool_calls` (string, required): JSON array of actual tool calls made by the agent\n- `input.expected_tool_calls` (string, required): JSON array of expected/reference tool calls\n- `config.threshold` (float, optional): Score threshold for pass/fail determination (default: 0.5)\n- `config.mismatch_sensitive` (bool, optional): Whether tool calls must match exactly (default: false)\n- `config.order_sensitive` (bool, optional): Whether order of tool calls matters (default: false)\n- `config.input_params_sensitive` (bool, optional): Whether to compare input parameters (default: true)",
@@ -2778,6 +2835,34 @@
         ],
         "type": "object"
       },
+      "request.AgentToolSelectionQualityInput": {
+        "properties": {
+          "input_messages": {
+            "example": "[{\"role\":\"system\",\"content\":\"You are a helpful assistant with access to tools: 1. get_weather(city) - Get current weather. 2. search_web(query) - Search the web.\"},{\"role\":\"user\",\"content\":\"What is the weather like in Paris?\"}]",
+            "type": "string"
+          },
+          "output_messages": {
+            "example": "[{\"role\":\"assistant\",\"tool_calls\":[{\"name\":\"get_weather\",\"arguments\":{\"city\":\"Paris\"}}]}]",
+            "type": "string"
+          }
+        },
+        "required": [
+          "input_messages",
+          "output_messages"
+        ],
+        "type": "object"
+      },
+      "request.AgentToolSelectionQualityRequest": {
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/request.AgentToolSelectionQualityInput"
+          }
+        },
+        "required": [
+          "input"
+        ],
+        "type": "object"
+      },
       "request.AgentToolTrajectoryRequest": {
         "properties": {
           "config": {
@@ -3978,6 +4063,27 @@
           "success": {
             "example": true,
             "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "response.AgentToolSelectionQualityResponse": {
+        "properties": {
+          "correct_args": {
+            "example": true,
+            "type": "boolean"
+          },
+          "correct_args_reason": {
+            "example": "The city argument matches the user's request",
+            "type": "string"
+          },
+          "tool_selection": {
+            "example": "correct",
+            "type": "string"
+          },
+          "tool_selection_reason": {
+            "example": "The agent correctly chose get_weather for the weather query",
+            "type": "string"
           }
         },
         "type": "object"
