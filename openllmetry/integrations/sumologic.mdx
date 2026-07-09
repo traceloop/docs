@@ -1,0 +1,63 @@
+---
+title: "LLM Observability with Sumo Logic and OpenLLMetry"
+sidebarTitle: "Sumo Logic"
+---
+
+Sumo Logic natively supports OpenTelemetry, so you can send LLM traces directly to its OTLP/HTTP source endpoint or route them through an OpenTelemetry Collector.
+
+## Option 1: Direct OTLP/HTTP Source
+
+Create an [OTLP/HTTP Source](https://www.sumologic.com/help/docs/send-data/hosted-collectors/http-source/otlp/) on a Hosted Collector in Sumo Logic. This gives you a presigned URL with the authentication token embedded.
+
+Set the `TRACELOOP_BASE_URL` to your source endpoint:
+
+```bash
+TRACELOOP_BASE_URL=https://collectors.sumologic.com/receiver/v1/otlp/<YOUR_TOKEN>/v1/traces
+```
+
+Alternatively, you can use the base endpoint with an authentication header:
+
+```bash
+TRACELOOP_BASE_URL=https://collectors.sumologic.com/receiver/v1/otlp
+TRACELOOP_HEADERS="x-sumo-token=<YOUR_HTTP_SOURCE_TOKEN>"
+```
+
+## Option 2: OpenTelemetry Collector
+
+Install the [Sumo Logic OpenTelemetry Collector](https://www.sumologic.com/help/docs/send-data/opentelemetry-collector/) with the default configuration.
+
+Ensure the OTLP receiver is configured:
+
+```yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+```
+
+Then point `TRACELOOP_BASE_URL` to your collector:
+
+```bash
+TRACELOOP_BASE_URL=http://localhost:4318
+```
+
+The collector handles authentication and forwarding to Sumo Logic automatically using its installation token.
+
+## Viewing Traces in Sumo Logic
+
+Once configured, LLM traces will appear in Sumo Logic's tracing view:
+
+<Frame>
+  <img src="/img/integrations/sumologic-traces.png" />
+</Frame>
+
+You can drill into individual traces to see detailed span information:
+
+<Frame>
+  <img src="/img/integrations/sumologic-trace-detail.png" />
+</Frame>
+
+For more information, see the [Sumo Logic OpenLLMetry documentation](https://www.sumologic.com/help/docs/integrations/aiml/opentelemetry/openllmetry/).
