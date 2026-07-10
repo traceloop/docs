@@ -142,6 +142,7 @@
         "openllmetry/integrations/signoz",
         "openllmetry/integrations/sentry",
         "openllmetry/integrations/splunk",
+        "openllmetry/integrations/sumologic",
         "openllmetry/integrations/tencent"
       ]
     },
