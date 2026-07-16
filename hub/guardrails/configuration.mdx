@@ -1,0 +1,316 @@
+---
+title: "Configuration"
+description: "Complete guide to configuring guardrails in Traceloop Hub"
+---
+
+## Configuration Structure
+
+Guardrails are configured in your Hub YAML configuration file. The configuration has three main sections:
+
+1. **Providers** - Define guardrail evaluation services
+2. **Guards** - Configure individual guardrail instances
+3. **Pipelines** - Attach guards to specific pipelines
+
+```yaml
+guardrails:
+  providers:
+    - name: <provider-name>
+      api_base: <api-url>
+      api_key: <api-key>
+
+  guards:
+    - name: <guard-name>
+      provider: <provider-name>
+      evaluator_slug: <evaluator-type>
+      mode: <pre_call|post_call>
+      on_failure: <block|warn>
+      required: <true|false>
+      params:
+        <evaluator-specific-params>
+
+pipelines:
+  - name: <pipeline-name>
+    guards:
+      - <guard-name>
+    plugins:
+      - model-router:
+          models: 
+            - <model-name>
+```
+
+## Provider Configuration
+
+Providers are the services that can execute guardrails. Define your providers first, then reference them in guard configurations.
+
+### Traceloop Provider
+
+```yaml
+guardrails:
+  providers:
+    - name: traceloop
+      api_base: https://api.traceloop.com
+      api_key: ${TRACELOOP_API_KEY}
+```
+
+## Guard Definition
+
+Guards are configured instances of evaluators. Each guard defines what to check, when to check it, and how to respond to failures.
+
+### Complete Guard Configuration
+
+```yaml
+guards:
+  - name: my-guard
+    provider: traceloop
+    evaluator_slug: prompt-injection
+    mode: pre_call
+    on_failure: block
+    required: true
+    params:
+      threshold: 0.7
+```
+
+### Guard Fields Reference
+
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `name` | string | **Yes** | - | Unique identifier for this guard |
+| `provider` | string | **Yes** | - | Provider name (must match a defined provider) |
+| `evaluator_slug` | string | **Yes** | - | Evaluator type to use (see [Evaluators Reference](/hub/guardrails-evaluators)) |
+| `mode` | enum | **Yes** | - | When to execute: `pre_call` or `post_call` |
+| `on_failure` | enum | No | `warn` | Response when evaluation fails: `block` or `warn` |
+| `required` | boolean | No | `false` | Fail-closed (`true`) or fail-open (`false`) |
+| `params` | object | No | `{}` | Evaluator-specific configuration parameters |
+| `api_base` | string | No | (from provider) | Optional: override provider's API base URL |
+| `api_key` | string | No | (from provider) | Optional: override provider's API key |
+
+### Mode: Pre-call vs Post-call
+
+**`pre_call`** - Executes on user input before the LLM call:
+
+```yaml
+- name: input-pii-check
+  evaluator_slug: pii-detector
+  mode: pre_call  # Check user's prompt
+  on_failure: block
+```
+
+**`post_call`** - Executes on LLM output after the response:
+
+```yaml
+- name: output-pii-check
+  evaluator_slug: pii-detector
+  mode: post_call  # Check LLM's response
+  on_failure: block
+```
+
+<Info>
+Some evaluators work best in specific modes (e.g., prompt-injection in pre_call), while others are valuable in both modes (e.g., pii-detector). See the [Evaluators Reference](/hub/guardrails-evaluators) for recommendations.
+</Info>
+
+### On Failure: Block vs Warn
+
+**`block`** - Return HTTP 403 when evaluation fails:
+
+```yaml
+- name: security-guard
+  on_failure: block  # Stop requests that fail
+```
+
+Response when blocked:
+
+```json
+{
+  "error": {
+    "type": "guardrail_blocked",
+    "guardrail": "security-guard",
+    "message": "Request blocked by guardrail 'security-guard'",
+    "evaluation_result": {
+          "is_safe": false
+    },
+    "reason": "evaluation_failed"
+  }
+}
+```
+
+**`warn`** - Add warning header but continue:
+
+```yaml
+- name: quality-check
+  on_failure: warn  # Log but don't block
+```
+
+Response includes header:
+
+```
+x-traceloop-guardrail-warning: guardrail_name="quality-check", reason="failed"
+```
+
+### Required: Fail-Closed vs Fail-Open
+
+The `required` flag controls behavior when the evaluator service is unavailable, times out, or errors.
+
+**Default: `false`**
+
+**`required: true` (Fail-Closed)** - Treat evaluator errors as failures:
+
+```yaml
+- name: critical-pii-check
+  on_failure: block
+  required: true  # Block if evaluator is down
+```
+
+If evaluator unavailable → HTTP 403 (same as evaluation failure)
+
+**`required: false` (Fail-Open)** - Continue when evaluator errors:
+
+```yaml
+- name: optional-tone-check
+  on_failure: warn
+  required: false  # Continue if evaluator is down
+```
+
+If evaluator unavailable → Add warning header, continue request
+
+### Parameters
+
+Each evaluator accepts specific configuration parameters. Common parameters include:
+
+```yaml
+# Prompt injection with threshold
+- name: probability_threshold-strict
+  evaluator_slug: prompt-injection
+  params:
+    threshold: 0.8
+
+# Regex Validator with pattern
+- name: email-validator
+  evaluator_slug: regex-validator
+  params:
+    regex: "^[\\w\\.-]+@[\\w\\.-]+\\.\\w+$"
+    should_match: true
+    case_sensitive: false
+
+# JSON Validator with schema
+- name: json-schema-check
+  evaluator_slug: json-validator
+  params:
+    enable_schema_validation: true
+    schema_string: |
+      {
+        "type": "object",
+        "required": ["status", "message"]
+      }
+```
+
+See the [Evaluators Reference](/hub/guardrails-evaluators) for complete parameter documentation for each evaluator.
+
+
+## Pipeline Integration
+
+Attach guards to pipelines to enable guardrails for specific endpoints.
+Each pipeline request will perform the attached guards. 
+
+### Basic Pipeline Configuration
+
+```yaml
+pipelines:
+  - name: default
+    type: chat
+    guards:
+      - pii-check
+      - injection-check
+      - toxicity-check
+    plugins:
+      - model-router:
+          models: [gpt-4]
+```
+
+### Multiple Pipelines with Different Guards
+
+```yaml
+guardrails:
+  providers:
+    - name: traceloop
+      api_base: https://api.traceloop.com
+      api_key: ${TRACELOOP_API_KEY}
+
+  guards:
+    # Basic security guards
+    - name: pii-check
+      provider: traceloop
+      evaluator_slug: pii-detector
+      mode: pre_call
+      on_failure: block
+
+    - name: injection-check
+      provider: traceloop
+      evaluator_slug: prompt-injection
+      mode: pre_call
+      on_failure: block
+
+    # Advanced quality guards
+    - name: tone-check
+      provider: traceloop
+      evaluator_slug: tone-detection
+      mode: post_call
+      on_failure: warn
+
+    - name: uncertainty-check
+      provider: traceloop
+      evaluator_slug: uncertainty-detector
+      mode: post_call
+      on_failure: warn
+
+pipelines:
+  # Public API: strict security only
+  - name: public-api
+    type: chat
+    guards:
+      - pii-check
+      - injection-check
+    plugins:
+      - model-router:
+          models: [gpt-4o-mini]
+
+  # Internal tools: security + quality
+  - name: internal-tools
+    type: chat
+    guards:
+      - pii-check
+      - injection-check
+      - tone-check
+      - uncertainty-check
+    plugins:
+      - model-router:
+          models: [gpt-4]
+```
+
+## Runtime Guard Control
+
+Add additional guards at runtime using the `x-traceloop-guardrails` header with a comma-separated list of guard names.
+This is **additive only** - you cannot remove pipeline guards via headers.
+
+<Info>
+You can configure pipelines with no guards and rely entirely on the header to specify which guards to run. This provides maximum flexibility for dynamic guard selection per request.
+</Info>
+
+### Header Format
+
+```bash
+curl https://your-hub.com/v1/chat/completions \
+  -H "x-traceloop-guardrails: extra-guard-1, extra-guard-2" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4",
+    "messages": [{"role": "user", "content": "Hello"}]
+  }'
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Evaluators Reference" icon="shield" href="/hub/evaluators">
+    Complete reference for all 12 evaluators with parameters
+  </Card>
+</CardGroup>

@@ -65,7 +65,14 @@ Ensure consistent brand voice:
 
 ## Implementation
 
-### Basic Setup
+Guardrails can be implemented in two modes:
+
+1. **Database Mode** - Evaluators configured in Traceloop dashboard, applied via SDK decorators in your application code (shown below)
+2. **Config Mode** - Available in Traceloop Hub v1, guardrails and evaluators fully defined in YAML (see [Config Mode Guardrails](#config-mode-guardrails-v1))
+
+### Database Mode
+
+#### Basic Setup
 
 First, initialize the Traceloop SDK in your application:
 
@@ -271,6 +278,118 @@ async def get_response(prompt: str) -> str:
     # Your implementation
     pass
 ```
+
+## Config Mode Guardrails (v1)
+
+<Note>
+Config mode is available in **Traceloop Hub v1** and provides a declarative way to apply guardrails without code changes or dashboard configuration.
+</Note>
+
+Instead of configuring evaluators in the Traceloop dashboard and using decorators in your application code, you can fully define guardrails in Traceloop Hub's YAML configuration file. This approach is ideal for:
+
+- Centralizing guardrail and evaluator configuration in code (infrastructure as code)
+- Managing guardrails without code deployments or dashboard changes
+- Version controlling your entire guardrail configuration
+- Applying guardrails to proxied LLM requests in the gateway
+
+### Configuration Structure
+
+Add a `guardrails` section to your Hub config file:
+
+```yaml
+guardrails:
+  providers:
+    - name: traceloop
+      api_base: ${TRACELOOP_BASE_URL}
+      api_key: ${TRACELOOP_API_KEY}
+
+  guards:
+    # Pre-call guards (run before LLM request)
+    - name: pii-check
+      provider: traceloop
+      evaluator_slug: pii-detector
+      mode: pre_call
+      on_failure: block
+      required: true
+
+    - name: injection-check
+      provider: traceloop
+      evaluator_slug: prompt-injection
+      params:
+        threshold: 0.8
+      mode: pre_call
+      on_failure: block
+      required: false
+
+    # Post-call guards (run after LLM response)
+    - name: toxicity-filter
+      provider: traceloop
+      evaluator_slug: toxicity-detector
+      mode: post_call
+      on_failure: block
+
+    - name: secrets-check
+      provider: traceloop
+      evaluator_slug: secrets-detector
+      mode: post_call
+      on_failure: warn
+```
+
+### Applying Guards to Pipelines
+
+Reference guards by name in your pipeline configurations:
+
+```yaml
+pipelines:
+  - name: default
+    type: chat
+    guards:
+      - pii-check
+      - injection-check
+    plugins:
+      - model-router:
+          models:
+            - gpt-4
+            - claude-3-5-sonnet
+```
+
+### Guard Configuration Options
+
+Each guard supports the following options:
+
+- **name** - Unique identifier for the guard
+- **provider** - Guardrails provider (e.g., `traceloop`)
+- **evaluator_slug** - The evaluator to use (must exist in your Traceloop account)
+- **mode** - When to run the guard:
+  - `pre_call` - Before the LLM request (validate inputs)
+  - `post_call` - After the LLM response (validate outputs)
+- **on_failure** - Action to take when guard detects an issue:
+  - `block` - Reject the request/response
+  - `warn` - Log the issue but allow the request to proceed
+- **required** - If `true`, request fails if the guard itself is unavailable
+- **params** - Optional parameters passed to the evaluator (e.g., `threshold`)
+
+### Example: Multi-Layer Protection
+
+```yaml
+pipelines:
+  - name: customer-support
+    type: chat
+    guards:
+      # Input validation
+      - pii-check          # Block PII in user inputs
+      - injection-check    # Block prompt injection attempts
+
+      # Output validation
+      - toxicity-filter    # Block toxic responses
+      - secrets-check      # Warn if secrets detected in output
+    plugins:
+      - model-router:
+          models:
+            - gpt-4
+```
+
+See the [config-example.yaml](https://github.com/traceloop/hub/blob/main/config-example.yaml) for a complete configuration example.
 
 ## Monitoring Guardrail Performance
 
