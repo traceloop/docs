@@ -1,0 +1,17 @@
+---
+title: "LLM Observability with telemetry.dev and OpenLLMetry"
+sidebarTitle: "telemetry.dev"
+---
+
+<Frame>
+  <img src="/img/integrations/telemetry-dev.png" />
+</Frame>
+
+[telemetry.dev](https://telemetry.dev) is an OpenTelemetry-native observability platform for AI applications that can receive your OpenLLMetry traces through its OTLP ingest API.
+
+```bash
+TRACELOOP_BASE_URL="https://ingest.telemetry.dev"
+TRACELOOP_HEADERS="Authorization=Bearer <YOUR_TD_LIVE_KEY>"
+```
+
+For more information check out the [documentation](https://telemetry.dev/integrations/opentelemetry).
