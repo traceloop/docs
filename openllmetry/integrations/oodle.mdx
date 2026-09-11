@@ -1,0 +1,25 @@
+---
+title: "LLM Observability with Oodle and OpenLLMetry"
+sidebarTitle: "Oodle"
+---
+
+<Frame>
+  <img src="/img/integrations/oodle.png" />
+</Frame>
+
+[Oodle](https://oodle.ai) is an OpenTelemetry-native observability platform for metrics, logs, traces and agent traces. It ingests the GenAI spans OpenLLMetry emits and shows each trace with the full transcript, token counts and cost per model, and the agent structure (workflows, tasks and tool calls).
+
+Route your traces straight to Oodle's OTLP endpoint. You will need your instance ID, an API key and your OTLP endpoint, all shown on the **Traceloop** tile on the Integrations page of your Oodle account (or under **Settings → API Keys**).
+
+```bash
+TRACELOOP_BASE_URL=https://<OTLP_ENDPOINT>
+TRACELOOP_HEADERS="X-API-KEY=<OODLE_API_KEY>,X-OODLE-INSTANCE=<OODLE_INSTANCE>"
+# Optional: compress the export, prompt payloads are large
+OTEL_EXPORTER_OTLP_COMPRESSION=gzip
+```
+
+The SDK appends `/v1/traces` to the base URL. Prompt and response content is captured by default; set `TRACELOOP_TRACE_CONTENT=false` to send only metadata.
+
+Then, run your application and open **Agent Observability → Traces** in Oodle. If nothing arrives, the OTLP gateway answers `401` when the instance or key header is missing.
+
+For more information, check out the [Oodle Traceloop documentation](https://docs.oodle.ai/integrations/agent-observability/traceloop).
