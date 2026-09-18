@@ -1,0 +1,19 @@
+---
+title: "LLM Observability with Logfire and OpenLLMetry"
+sidebarTitle: "Logfire"
+---
+
+<Frame>
+  <img src="/img/integrations/logfire.png" />
+</Frame>
+
+[Logfire](https://pydantic.dev/logfire) is an OpenTelemetry-native observability platform built by the team behind Pydantic. You can route your traces directly to Logfire's OTLP endpoint using a [write token](https://pydantic.dev/docs/logfire/how-to-guides/create-write-tokens/).
+
+```bash
+TRACELOOP_BASE_URL="https://logfire-us.pydantic.dev"
+TRACELOOP_HEADERS="Authorization=<YOUR_LOGFIRE_WRITE_TOKEN>"
+```
+
+Use `https://logfire-eu.pydantic.dev` instead if your data should stay in the EU region.
+
+For more information check out the [documentation](https://pydantic.dev/docs/logfire/how-to-guides/alternative-clients/).
