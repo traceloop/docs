@@ -133,6 +133,7 @@
         "openllmetry/integrations/laminar",
         "openllmetry/integrations/langfuse",
         "openllmetry/integrations/langsmith",
+        "openllmetry/integrations/langwatch",
         "openllmetry/integrations/middleware",
         "openllmetry/integrations/newrelic",
         "openllmetry/integrations/otel-collector",
