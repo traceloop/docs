@@ -122,6 +122,7 @@
         "openllmetry/integrations/datadog",
         "openllmetry/integrations/dynatrace",
         "openllmetry/integrations/elasticsearch-apm",
+        "openllmetry/integrations/futureagi",
         "openllmetry/integrations/gcp",
         "openllmetry/integrations/grafana",
         "openllmetry/integrations/groundcover",
